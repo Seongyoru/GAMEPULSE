@@ -73,7 +73,12 @@ export function PulseItemCard({ item, serverNow, actions, className }: PulseItem
         />
       </div>
     );
-  } else if (item.type === 'PATCH' || item.type === 'UPDATE' || item.type === 'ANNOUNCEMENT') {
+  } else if (
+    item.type === 'PATCH' ||
+    item.type === 'UPDATE' ||
+    item.type === 'ANNOUNCEMENT' ||
+    (item.startAt === null && item.endAt === null)
+  ) {
     const at = item.startAt ?? item.sourcePublishedAt ?? item.publishedAt;
     meta = (
       <p className="font-mono text-xs tabular-nums text-muted">

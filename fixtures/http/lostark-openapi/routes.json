@@ -1,0 +1,24 @@
+{
+  "description": "Synthetic responses shaped like the Lost Ark Open API Swagger schema (/swagger-doc/endpoints/news, checked 2026-10-02). Development data for mock mode: titles are fictional and links point to the official news list pages, not to real articles.",
+  "routes": [
+    {
+      "url": "https://developer-lostark.game.onstove.com/news/events",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "x-ratelimit-limit": "100",
+        "x-ratelimit-remaining": "99"
+      },
+      "bodyFile": "events.json"
+    },
+    {
+      "url": "https://developer-lostark.game.onstove.com/news/notices?type=%EC%A0%90%EA%B2%80",
+      "headers": { "content-type": "application/json; charset=utf-8" },
+      "bodyFile": "notices-maintenance.json"
+    },
+    {
+      "url": "https://developer-lostark.game.onstove.com/news/notices?type=%EA%B3%B5%EC%A7%80",
+      "headers": { "content-type": "application/json; charset=utf-8" },
+      "bodyFile": "notices-general.json"
+    }
+  ]
+}

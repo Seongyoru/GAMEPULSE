@@ -24,7 +24,23 @@ interface SourceAdapter {
 | `mock`    | A real source adapter against recorded/synthetic HTTP responses (`MockTransport`)       | none    |
 | `live`    | A real source adapter against the real source (credentials when required)               | yes     |
 
-The same adapter code runs in `mock` and `live`; only the transport differs.
+The same adapter code runs in `mock` and `live`; only the transport differs. In `mock` mode the context's transport
+replays `fixtures/http/<adapter>/routes.json` (documented response shapes or official data excerpts), and the adapter
+reports a **twin source** `<source>-mock` of type `FIXTURE`: mock records are synthetic, labelled, refused in
+production, and can never supersede or be confused with records from the real official source.
+
+## Live adapters
+
+| Adapter              | Resources                                                                   | Identity                           | Notes                                                                                                                                                    |
+| -------------------- | --------------------------------------------------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lol-ddragon`        | `realms/kr.json`, `api/versions.json`, `championFull.json` + `item.json` ×2 | `ddragon:<version>`                | One PATCH per Data Dragon version with numeric diffs vs the previous version (base stats, spell cooldown/cost/range, Rift item price/stats). 304 ⇒ skip. |
+| `lol-status`         | `lol/status/v4/platform-data` (KR)                                          | `maintenance:<id>`/`incident:<id>` | No structured window ⇒ times null; latest Korean update line (≤ 200 chars) as summary; `info` incidents skipped.                                         |
+| `lostark-openapi`    | `/news/events`, `/news/notices?type=점검`, `/news/notices?type=공지`        | `event:<id>` / `notice:<id>`       | `RewardDate` ⇒ REWARD (claim deadline) linked to its event; maintenance window unknown ⇒ null; thumbnails dropped.                                       |
+| `maplestory-openapi` | `/maplestory/v1/notice-event`, `/notice-update`, `/notice`                  | `event:<notice_id>` …              | Event windows with explicit `+09:00`; attribution "Data based on NEXON Open API" travels with the source.                                                |
+
+Shared helpers: `fetchJsonDocument` (polite GET with conditional validators), `parseSourceDateTime` (explicit offsets
+honoured; offset-less values only in the zone declared by the source policy; `9999-…` sentinels ⇒ null),
+`healthReport`, `isAllowedHost` (item links outside the source's allowed hosts are dropped with a warning).
 
 ## Adding a source
 

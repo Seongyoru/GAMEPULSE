@@ -9,6 +9,7 @@ import type { Logger } from '@gamepulse/observability';
 import type { AIParser } from '@gamepulse/parsers';
 import { defaultFixtureAnchor } from './fixtures/relative-time';
 import { HttpClient } from './http/client';
+import { loadRecordedTransport } from './http/recorded';
 import { RobotsCache } from './http/robots';
 import { FetchTransport, type HttpTransport } from './http/transport';
 import type { AdapterContext, CredentialName } from './types';
@@ -41,7 +42,11 @@ export interface CreateAdapterContextOptions {
 
 export function createAdapterContext(options: CreateAdapterContextOptions): AdapterContext {
   const clock = options.clock ?? (() => new Date());
-  const transport = options.transport ?? new FetchTransport();
+  const fixturesDir = options.fixturesDir ?? defaultFixturesDir();
+  // Mock mode never touches the network: recorded responses stand in for official APIs.
+  const transport =
+    options.transport ??
+    (options.mode === 'mock' ? loadRecordedTransport(fixturesDir) : new FetchTransport());
   const userAgent = collectorUserAgent(options.env);
   const credentials: Partial<Record<CredentialName, string>> = {};
   if (options.env.RIOT_API_KEY) credentials.RIOT_API_KEY = options.env.RIOT_API_KEY;
@@ -60,7 +65,7 @@ export function createAdapterContext(options: CreateAdapterContextOptions): Adap
     logger: options.logger,
     clock,
     credentials,
-    fixturesDir: options.fixturesDir ?? defaultFixturesDir(),
+    fixturesDir,
     fixtureAnchor:
       options.fixtureAnchor ??
       (options.env.FIXTURE_ANCHOR

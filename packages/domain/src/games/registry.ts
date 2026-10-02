@@ -39,7 +39,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
       banners: 'unsupported',
       redeemCodes: 'unsupported',
     },
-    adapters: ['lol-fixture'],
+    adapters: ['lol-fixture', 'lol-ddragon', 'lol-status'],
     accent: 'sky',
     terminology: {},
     seoKeywords: { 'ko-KR': ['롤 패치', '롤 패치노트', '리그 오브 레전드 패치', '롤 점검'] },
@@ -75,7 +75,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
       banners: 'unsupported',
       redeemCodes: 'limited',
     },
-    adapters: ['lostark-fixture'],
+    adapters: ['lostark-fixture', 'lostark-openapi'],
     accent: 'amber',
     terminology: {},
     seoKeywords: {
@@ -118,7 +118,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
       banners: 'unsupported',
       redeemCodes: 'limited',
     },
-    adapters: ['maplestory-fixture'],
+    adapters: ['maplestory-fixture', 'maplestory-openapi'],
     accent: 'orange',
     terminology: {},
     seoKeywords: {

@@ -25,6 +25,28 @@ describe('planSchedule', () => {
   });
 });
 
+describe('live schedule', () => {
+  it('schedules only ENABLED sources and skips held ones with a reason', () => {
+    const { scheduled, skipped } = planSchedule(
+      parseServerEnv({
+        COLLECTOR_MODE: 'live',
+        LOSTARK_API_KEY: 'k',
+        NEXON_OPEN_API_KEY: 'k',
+        RIOT_API_KEY: 'k',
+      }),
+    );
+    expect(scheduled.map((entry) => [entry.definition.id, entry.everyMinutes])).toEqual([
+      ['lol-ddragon', 180],
+    ]);
+    expect(skipped.find((entry) => entry.adapterId === 'lostark-openapi')?.reason).toBe(
+      'source is PENDING_REVIEW',
+    );
+    expect(skipped.find((entry) => entry.adapterId === 'maplestory-openapi')?.reason).toBe(
+      'source is PENDING_REVIEW',
+    );
+  });
+});
+
 describe('production safety', () => {
   it('refuses fixture and mock collection in production', () => {
     for (const mode of ['fixture', 'mock'] as const) {

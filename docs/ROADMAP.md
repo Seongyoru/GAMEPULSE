@@ -33,21 +33,29 @@ Status legend: ✅ done · 🚧 in progress · ⏳ planned · ⛔ blocked (exter
 
 **DoD:** a user can interact with all five games without any external API ✅ (`pnpm test:e2e`: 26 passing)
 
-## Phase 3 — First live adapters ⏳
+## Phase 3 — First live adapters ✅ (collection enabled where terms allow)
 
 Engineering order: Lost Ark → League of Legends → MapleStory → Genshin Impact → Wuthering Waves.
 Per adapter: research source · document terms · implement · fixture/mock tests · live smoke test · normalize · validate ·
 deduplicate · monitor. Research and terms findings: [research log](research/), [DATA_SOURCES.md](DATA_SOURCES.md),
 [LEGAL_NOTES.md](LEGAL_NOTES.md).
 
-- ⏳ Lost Ark Open API adapter (notices, events) — built against the documented API, mock-tested; **held at
-  PENDING_REVIEW** until Smilegate clarifies the "storing content" clause; needs `LOSTARK_API_KEY`.
-- ⏳ League of Legends: Data Dragon structured stat diffs (keyless, official static data); lol-status-v4 maintenance
-  adapter (needs a production `RIOT_API_KEY` + product registration). Patch-notes website: manual only (Riot ToS).
-- ⏳ MapleStory NEXON Open API notice/event adapter — attribution required; **held at PENDING_REVIEW** (storage,
-  30-day TTL and commercial-use terms need legal review); needs `NEXON_OPEN_API_KEY`.
+- ✅ Shared live-adapter infrastructure: recorded-response transport for mock mode (`fixtures/http/`), synthetic twin
+  sources for mock data, source-time normalization, JSON document fetching, health reports, reference entries for
+  sources that are deliberately not collected.
+- ✅ Lost Ark Open API adapter `lostark-openapi` (events, reward claim deadlines, maintenance and general notices) —
+  mock-tested end to end; **held at PENDING_REVIEW** until Smilegate clarifies the "storing content" clause; needs
+  `LOSTARK_API_KEY`.
+- ✅ League of Legends `lol-ddragon` — keyless official static data, **ENABLED**; live smoke test on 2026-10-02
+  produced the 16.18.1 → 16.19.1 diff (9 structured changes).
+- ✅ League of Legends `lol-status` (lol-status-v4 maintenance/incidents) — mock-tested; **held at PENDING_REVIEW**
+  until product registration and a production `RIOT_API_KEY`. Patch-notes website: manual only (Riot ToS).
+- ✅ MapleStory `maplestory-openapi` (NEXON event/update/general notices) — mock-tested; **held at PENDING_REVIEW**
+  (storage, 30-day TTL, commercial use and attribution display need legal review); needs `NEXON_OPEN_API_KEY`.
 - ⛔ Genshin Impact / Wuthering Waves website collection — publisher terms prohibit scraping/copying without written
-  permission → manual ingestion until permission is granted.
+  permission → `DISABLED` reference sources; manual ingestion until permission is granted.
+- ⏳ Before enabling a held source: verify the first live responses against the mock fixtures, enforce
+  `dataRetentionDays` for TTL-bound sources, show source attribution on every card that displays its data.
 
 ## Phase 4 — AI parsing ⏳
 

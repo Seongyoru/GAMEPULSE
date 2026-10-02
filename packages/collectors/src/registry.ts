@@ -3,11 +3,26 @@
  * game's `adapters` list in the domain registry). Nothing else branches on game ids.
  */
 import { GAMES, listGames, type CollectorMode, type SourceDefinition } from '@gamepulse/domain';
+import { dataDragonDefinition } from './adapters/lol/ddragon';
+import { lolStatusDefinition } from './adapters/lol/status';
+import { lostArkOpenApiDefinition } from './adapters/lostark/adapter';
+import { mapleStoryNoticeDefinition } from './adapters/maplestory/nexon';
 import { fixtureAdapterDefinition } from './fixtures/fixture-adapter';
-import { manualSourceFor } from './sources';
+import { manualSourceFor, mockSourceFor, REFERENCE_SOURCES } from './sources';
 import type { AdapterDefinition } from './types';
 
-const DEFINITIONS: readonly AdapterDefinition[] = [...GAMES.map(fixtureAdapterDefinition)];
+/** Live adapters for official sources. Their source's collectorStatus gates live runs. */
+const LIVE_DEFINITIONS: readonly AdapterDefinition[] = [
+  dataDragonDefinition,
+  lolStatusDefinition,
+  lostArkOpenApiDefinition,
+  mapleStoryNoticeDefinition,
+];
+
+const DEFINITIONS: readonly AdapterDefinition[] = [
+  ...GAMES.map(fixtureAdapterDefinition),
+  ...LIVE_DEFINITIONS,
+];
 
 const BY_ID = new Map(DEFINITIONS.map((definition) => [definition.id, definition]));
 
@@ -28,10 +43,17 @@ export function getAdapterDefinition(id: string): AdapterDefinition | undefined 
 /** Every source GAMEPULSE knows about (adapter sources + manual input per game). */
 export function listSourceDefinitions(): SourceDefinition[] {
   const sources = new Map<string, SourceDefinition>();
-  for (const definition of DEFINITIONS) sources.set(definition.source.id, definition.source);
+  for (const definition of DEFINITIONS) {
+    sources.set(definition.source.id, definition.source);
+    if (definition.source.type !== 'FIXTURE' && definition.supportedModes.includes('mock')) {
+      const mock = mockSourceFor(definition.source);
+      sources.set(mock.id, mock);
+    }
+  }
   for (const game of listGames()) {
     const manual = manualSourceFor(game);
     sources.set(manual.id, manual);
   }
+  for (const reference of REFERENCE_SOURCES) sources.set(reference.id, reference);
   return [...sources.values()].sort((a, b) => a.id.localeCompare(b.id));
 }

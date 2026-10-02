@@ -235,6 +235,7 @@ describe('parseSourceWallTime', () => {
     ['2026-10-08 04:59', { year: 2026, month: 10, day: 8, hour: 4, minute: 59 }],
     ['2026년 10월 8일 (수) 11:00', { year: 2026, month: 10, day: 8, hour: 11, minute: 0 }],
     ['2026.10.08 06:00', { year: 2026, month: 10, day: 8, hour: 6, minute: 0 }],
+    ['2026-10-08T06:00:00', { year: 2026, month: 10, day: 8, hour: 6, minute: 0 }],
   ])('%s', (text, expected) => {
     expect(parseSourceWallTime(text)).toEqual(expected);
   });

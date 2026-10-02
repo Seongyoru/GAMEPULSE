@@ -99,6 +99,13 @@ export function classifyTodayItem(
       const state = computeMaintenanceState(item, nowMs);
       if (state === 'IN_PROGRESS') return 'critical';
       if (state === 'SCHEDULED' && startsWithin(options.upcomingWindowMs)) return 'maintenance';
+      // A maintenance notice whose window the source does not state: shown while it is fresh.
+      if (state === 'UNKNOWN' && item.startAt === null && item.endAt === null) {
+        const published = effectiveStartMs(item);
+        return published !== null && nowMs - published <= options.announcementWindowMs
+          ? 'maintenance'
+          : null;
+      }
       return null;
     }
     case 'PATCH':

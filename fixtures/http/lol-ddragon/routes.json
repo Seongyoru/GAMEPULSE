@@ -1,0 +1,42 @@
+{
+  "description": "Excerpts of official Riot Data Dragon files (realms/kr.json, api/versions.json, championFull.json and item.json for 16.18.1 and 16.19.1, retrieved 2026-10-02), trimmed to 7 champions and 4 items and to the fields GAMEPULSE reads.",
+  "routes": [
+    {
+      "url": "https://ddragon.leagueoflegends.com/realms/kr.json",
+      "headers": { "content-type": "application/json" },
+      "bodyFile": "realm-kr.json"
+    },
+    {
+      "url": "https://ddragon.leagueoflegends.com/api/versions.json",
+      "headers": { "content-type": "application/json" },
+      "bodyFile": "versions.json"
+    },
+    {
+      "url": "https://ddragon.leagueoflegends.com/cdn/16.19.1/data/ko_KR/championFull.json",
+      "headers": {
+        "content-type": "application/json",
+        "last-modified": "Wed, 23 Sep 2026 21:09:19 GMT",
+        "etag": "\"ed976552ec7aa51b417defb7a29b8ca9\""
+      },
+      "bodyFile": "championFull-16.19.1.json"
+    },
+    {
+      "url": "https://ddragon.leagueoflegends.com/cdn/16.19.1/data/ko_KR/item.json",
+      "headers": {
+        "content-type": "application/json",
+        "last-modified": "Wed, 23 Sep 2026 21:09:19 GMT"
+      },
+      "bodyFile": "item-16.19.1.json"
+    },
+    {
+      "url": "https://ddragon.leagueoflegends.com/cdn/16.18.1/data/ko_KR/championFull.json",
+      "headers": { "content-type": "application/json" },
+      "bodyFile": "championFull-16.18.1.json"
+    },
+    {
+      "url": "https://ddragon.leagueoflegends.com/cdn/16.18.1/data/ko_KR/item.json",
+      "headers": { "content-type": "application/json" },
+      "bodyFile": "item-16.18.1.json"
+    }
+  ]
+}

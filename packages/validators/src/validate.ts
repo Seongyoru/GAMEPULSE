@@ -87,9 +87,9 @@ function hostAllowed(url: string, allowedHosts: readonly string[]): boolean {
 }
 
 const WALL_TIME_PATTERN =
-  /(\d{4})\s*[-./년]\s*(\d{1,2})\s*[-./월]\s*(\d{1,2})\s*일?\s*(?:\([^)]*\)\s*)?(\d{1,2}):(\d{2})/;
+  /(\d{4})\s*[-./년]\s*(\d{1,2})\s*[-./월]\s*(\d{1,2})\s*일?\s*(?:\([^)]*\)\s*)?T?(\d{1,2}):(\d{2})/;
 
-/** Parses the first "YYYY/MM/DD HH:mm"-style wall time in a source string. */
+/** Parses the first "YYYY/MM/DD HH:mm"-style (or ISO "YYYY-MM-DDTHH:mm") wall time in a source string. */
 export function parseSourceWallTime(
   text: string,
 ): { year: number; month: number; day: number; hour: number; minute: number } | null {

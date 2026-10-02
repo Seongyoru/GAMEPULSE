@@ -146,3 +146,31 @@ Web (fixture store), worker (fixture/mock collection) and `pnpm seed` (fixture i
 `NODE_ENV=production` unless `GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION=true` (previews/CI). Production registry syncs use
 `pnpm seed --registry-only`. `REVALIDATE_SECONDS` was removed: Next.js requires a literal `revalidate`, so the ISR
 interval (300 s) is set in each route.
+
+## D-024 · Mock mode stores data under synthetic twin sources (2026-10-02)
+
+A live adapter in `mock` mode replays `fixtures/http/<adapter>/` and reports `mockSourceFor(source)` — id
+`<source>-mock`, type `FIXTURE`. The validator keeps rejecting synthetic items from real sources, mock records stay
+labelled and refused in production, and they can never supersede records from the real source (lowest authority).
+
+## D-025 · Data Dragon diffs are labelled with Data Dragon versions (2026-10-02)
+
+`lol-ddragon` publishes one PATCH per Data Dragon version (`Data Dragon 16.19.1`) with numeric differences only.
+Riot does not document the mapping between Data Dragon versions and patch numbers (26.19), so GAMEPULSE never infers
+it; official patch numbers and dates come from Riot's schedule via manual ingestion. Ability text is not diffed.
+The raw document is a compact deterministic extract of the four official files, so unchanged versions hash
+identically and a 304 on the versioned champion file skips all downloads.
+
+## D-026 · Source time zones are a source policy, never a per-item guess (2026-10-02)
+
+`parseSourceDateTime` honours explicit offsets and interprets offset-less values only in the zone the source policy
+declares (Lost Ark KR Open API → Asia/Seoul). `9999-…` dates are "no end" sentinels and become null. The validator's
+wall-time check now understands ISO `YYYY-MM-DDTHH:mm` source strings, so stored source text and UTC instants are
+cross-checked for API sources too.
+
+## D-027 · Maintenance notices without a stated window (2026-10-02)
+
+Several official APIs list maintenance notices without their window (Lost Ark, NEXON, lol-status). They are stored as
+MAINTENANCE with null times (never guessed) and shown in TODAY's maintenance section while the notice is fresh
+(≤ 48 h), with the publication time and a link to the official notice. Windows can be added later by manual input or
+evidence-checked parsing of the notice text.

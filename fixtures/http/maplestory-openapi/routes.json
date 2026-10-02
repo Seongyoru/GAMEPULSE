@@ -1,0 +1,20 @@
+{
+  "description": "Synthetic responses shaped like the NEXON Open API MapleStory notice schema (27_ko_script20251218035959.yaml, checked 2026-10-02). Development data for mock mode: titles and notice ids are fictional and links point to the official news list pages.",
+  "routes": [
+    {
+      "url": "https://open.api.nexon.com/maplestory/v1/notice-event",
+      "headers": { "content-type": "application/json; charset=utf-8" },
+      "bodyFile": "notice-event.json"
+    },
+    {
+      "url": "https://open.api.nexon.com/maplestory/v1/notice-update",
+      "headers": { "content-type": "application/json; charset=utf-8" },
+      "bodyFile": "notice-update.json"
+    },
+    {
+      "url": "https://open.api.nexon.com/maplestory/v1/notice",
+      "headers": { "content-type": "application/json; charset=utf-8" },
+      "bodyFile": "notice.json"
+    }
+  ]
+}

@@ -249,3 +249,20 @@ describe('calendar', () => {
     expect(oct7?.entries.some((entry) => entry.marker === 'RESET')).toBe(true);
   });
 });
+
+describe('maintenance notices without a stated window', () => {
+  const notice = (publishedHoursAgo: number) =>
+    makePulseItem({
+      id: `maint-unknown-${publishedHoursAgo}`,
+      type: 'MAINTENANCE',
+      gameId: 'lostark',
+      startAt: null,
+      endAt: null,
+      sourcePublishedAt: hoursFrom(now, -publishedHoursAgo),
+    });
+
+  it('are listed under maintenance while the notice is fresh', () => {
+    expect(classifyTodayItem(notice(5), now.getTime())).toBe('maintenance');
+    expect(classifyTodayItem(notice(60), now.getTime())).toBeNull();
+  });
+});
