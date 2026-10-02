@@ -111,6 +111,30 @@ Slugs are ASCII, assigned once, and never change.
 - Locale-ready routing: Korean at the root today; future locales under prefixes (`/en`, `/ja`, `/zh-tw`) with
   `hreflang` alternates — canonical Korean URLs never change.
 
+## Adding a game
+
+Games are data, not code paths: nothing in the web app, the domain engines or the pipeline branches on a game id.
+
+1. **Research** the official sources, terms, robots policy, time zones and reset schedule; record them in
+   `docs/research/<date>-<game>.md` and [DATA_SOURCES.md](DATA_SOURCES.md).
+2. **Registry** — add a `GameConfig` to `packages/domain/src/games/registry.ts`: id and immutable slug, localized and
+   short names, publisher, official URL and hosts (item links must stay on them), status, time zone and regions
+   (IANA or fixed offsets such as `UTC+8`), feature support per content type (drives game tabs), an accent from
+   `GAME_ACCENTS`, terminology (e.g. what the game calls a banner), SEO keywords, `defaultForAnonymous`, sort order.
+3. **Reset rules** — add researched rules to `packages/domain/src/games/reset-rules.ts` with their `sourceUrl`, as
+   `UNVERIFIED` until a person confirms them in game.
+4. **Fixture feed** — `fixtures/sources/<gameId>.json` with synthetic, clearly fictional items for every supported
+   content type (relative times, `GPTEST-` codes, links to the publisher's news page only). The fixture adapter is
+   registered automatically for every game.
+5. **Sources and adapters** — add a live adapter only where the terms allow automated collection (`collectorStatus`),
+   with recorded responses under `fixtures/http/<adapter>/` and mock-mode tests; otherwise add a reference source and
+   use `pnpm ingest:manual` / `pnpm ingest:text`. List adapter ids in the game's `adapters`.
+6. **Run** `pnpm seed`, `pnpm test:unit` (registry consistency, fixtures, reset rules) and `pnpm test:e2e` (update the
+   game list in `apps/web/e2e/helpers.ts`).
+
+Everything else — TODAY, MY GAMES (including the pre-paint CSS), game pages and tabs, calendar, sitemap, structured
+data — picks the new game up from the registry.
+
 ## Queue
 
 BullMQ on Redis (`gamepulse-ingest`). MVP combines the stages in one job per adapter run (stage boundaries remain

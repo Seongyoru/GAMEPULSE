@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { ko } from '@/lib/i18n';
 import { formatInstant } from '@/lib/present';
-import { PulseItemCard } from '../pulse-item-card';
+import { ContentItemCard } from '../event-item-card';
 import { GameSnapshotCard } from '../today/game-snapshot-card';
 import { ResetList } from './reset-list';
 
@@ -67,7 +67,7 @@ export function GameOverview({
   const list = (entries: PulseItem[]) => (
     <div className="grid gap-2">
       {entries.map((item) => (
-        <PulseItemCard key={item.id} item={item} serverNow={serverNow} />
+        <ContentItemCard key={item.id} item={item} serverNow={serverNow} />
       ))}
     </div>
   );

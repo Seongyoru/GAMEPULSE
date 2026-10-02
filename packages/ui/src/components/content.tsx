@@ -140,6 +140,90 @@ export function PulseCard({
   );
 }
 
+export interface EventCardProps {
+  href: string;
+  title: string;
+  game: { gameId: string; name: string; accent: GameAccent };
+  typeLabel: string;
+  status: { tone: Tone; label: string } | null;
+  /** Pre-formatted period in the viewer zone, e.g. "10.01 (목) 10:00 – 10.21 (수) 03:59". */
+  period: string | null;
+  /** Live part (countdown) rendered by the app. */
+  meta?: ReactNode;
+  rewards?: readonly RewardItem[];
+  /** Featured units of a banner (gacha) — names only. */
+  featured?: readonly string[];
+  sample?: boolean;
+  sampleLabel?: string;
+  trackEvent?: string;
+  className?: string;
+}
+
+/** Card for time-bounded content (events, banners): the period is always visible. */
+export function EventCard({
+  href,
+  title,
+  game,
+  typeLabel,
+  status,
+  period,
+  meta,
+  rewards,
+  featured,
+  sample,
+  sampleLabel = '샘플',
+  trackEvent,
+  className,
+}: EventCardProps) {
+  return (
+    <article
+      data-mg-game={game.gameId}
+      data-testid="event-card"
+      className={cx(
+        'group relative flex gap-3 rounded-lg border border-border bg-surface p-3 transition-colors hover:border-zinc-400/60',
+        className,
+      )}
+    >
+      <span
+        aria-hidden
+        className={cx('w-1 shrink-0 rounded-full', ACCENT_CLASSES[game.accent].bar)}
+      />
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <GameBadge name={game.name} accent={game.accent} />
+          <span className="text-[11px] font-bold uppercase tracking-wider text-muted">
+            {typeLabel}
+          </span>
+          {status ? <StatusChip tone={status.tone}>{status.label}</StatusChip> : null}
+          {sample ? <StatusChip tone="sample">{sampleLabel}</StatusChip> : null}
+        </div>
+        <h3 className="mt-1 font-semibold leading-snug text-text">
+          <Link
+            href={href}
+            data-track-event={trackEvent}
+            data-track-id={href}
+            className="after:absolute after:inset-0 focus:outline-none focus-visible:underline"
+          >
+            {title}
+          </Link>
+        </h3>
+        {period ? (
+          <p className="mt-0.5 font-mono text-xs tabular-nums text-muted">{period}</p>
+        ) : null}
+        {featured && featured.length > 0 ? (
+          <p className="mt-0.5 truncate text-sm text-text">{featured.join(' · ')}</p>
+        ) : null}
+        {rewards && rewards.length > 0 ? <RewardBadge items={rewards} className="mt-1" /> : null}
+      </div>
+      {meta ? (
+        <div className="flex shrink-0 flex-col items-end justify-center text-right text-sm">
+          {meta}
+        </div>
+      ) : null}
+    </article>
+  );
+}
+
 export interface SourceBadgeProps {
   sourceName: string;
   url: string;

@@ -211,3 +211,9 @@ Privacy, terms and data-sources pages are generated from facts the code enforces
 localStorage, analytics off by default, sources and their collection status from the source registry). They are
 drafts until legal review; the sources page renders from `listSourceDefinitions()`, so it cannot drift from the
 registry.
+
+## D-033 · No route-level loading boundaries on routes that can 404 (2026-10-02)
+
+A `loading.tsx` boundary makes on-demand (ISR) pages start streaming with HTTP 200 before the page can call
+`notFound()`, turning unknown slugs into soft 404s. Content and game routes therefore have no loading boundary; their
+pages are prerendered or render quickly on first request. E2E tests assert real 404 status codes.

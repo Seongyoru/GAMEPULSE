@@ -21,7 +21,7 @@ Status legend: ✅ done · 🚧 in progress · ⏳ planned · ⛔ blocked (exter
 
 ## Phase 2 — Product shell ✅
 
-- ✅ Design system (`@gamepulse/ui`): GameBadge, PulseCard (event/item card), StatusChip, Countdown, RewardBadge,
+- ✅ Design system (`@gamepulse/ui`): GameBadge, PulseCard, EventCard, StatusChip, Countdown, RewardBadge,
   PatchChange, ResetTimer, SourceBadge, GameFilter, Timeline, Calendar, EmptyState, Skeleton, AdSlot
 - ✅ Homepage, `/today`, MY GAMES (`/my-games`, localStorage behind `PreferencesStore`, pre-paint boot script),
   games index, game overview + patches/events/rewards/resets/calendar tabs (feature-aware), content detail pages

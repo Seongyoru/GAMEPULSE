@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Countdown, GameFilter } from '../client';
-import { AdSlot, PatchChange, RewardBadge, StatusChip } from '../index';
+import { AdSlot, EventCard, PatchChange, RewardBadge, StatusChip } from '../index';
 
 afterEach(cleanup);
 
@@ -122,5 +122,31 @@ describe('primitives', () => {
     expect(screen.getByText('아리')).toBeTruthy();
     expect(screen.getByText('상향')).toBeTruthy();
     expect(screen.getByLabelText('80에서 90로')).toBeTruthy();
+  });
+});
+
+describe('EventCard', () => {
+  it('shows the period, featured units and rewards, and links to the detail page', () => {
+    render(
+      <EventCard
+        href="/events/genshin-impact-banner-starlight-song-wish"
+        title="「별빛의 노래」 기원"
+        game={{ gameId: 'genshin', name: '원신', accent: 'teal' }}
+        typeLabel="기원"
+        status={{ tone: 'live', label: '진행 중' }}
+        period="10.01 (목) 10:00 – 10.21 (수) 03:59"
+        featured={['가상의 가수', '가상의 기사']}
+        rewards={[{ name: '원석', quantity: 160, unit: null }]}
+        sample
+      />,
+    );
+    expect(screen.getByRole('link', { name: '「별빛의 노래」 기원' }).getAttribute('href')).toBe(
+      '/events/genshin-impact-banner-starlight-song-wish',
+    );
+    expect(screen.getByText('10.01 (목) 10:00 – 10.21 (수) 03:59')).toBeTruthy();
+    expect(screen.getByText('가상의 가수 · 가상의 기사')).toBeTruthy();
+    expect(screen.getByText('진행 중')).toBeTruthy();
+    expect(screen.getByText('샘플')).toBeTruthy();
+    expect(screen.getByTestId('event-card').getAttribute('data-mg-game')).toBe('genshin');
   });
 });

@@ -10,7 +10,7 @@ import { EmptyState, SectionHeader } from '@gamepulse/ui';
 import { useNow } from '@gamepulse/ui/client';
 import { useMemo } from 'react';
 import { ko } from '@/lib/i18n';
-import { PulseItemCard } from '../pulse-item-card';
+import { ContentItemCard } from '../event-item-card';
 
 const GROUP_META: Readonly<Record<TimelineGroup, { eyebrow: string; title: string }>> = {
   current: { eyebrow: 'NOW', title: ko.game.current },
@@ -51,7 +51,7 @@ export function TimelineGroups({
             />
             <div className="grid gap-2 md:grid-cols-2">
               {groups[group].map((item) => (
-                <PulseItemCard key={item.id} item={item} serverNow={serverNow} />
+                <ContentItemCard key={item.id} item={item} serverNow={serverNow} />
               ))}
             </div>
           </section>

@@ -25,11 +25,13 @@ export {
   type StatusChipProps,
 } from './components/primitives';
 export {
+  EventCard,
   PatchChange,
   PulseCard,
   ResetTimer,
   SourceBadge,
   Timeline,
+  type EventCardProps,
   type PatchChangeProps,
   type PulseCardProps,
   type ResetTimerProps,

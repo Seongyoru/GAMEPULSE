@@ -18,14 +18,14 @@ import {
   VIEWER_TIMEZONE,
 } from '@/lib/present';
 
-function trackEventFor(item: PulseItem): string {
+export function trackEventFor(item: PulseItem): string {
   if (item.type === 'PATCH' || item.type === 'UPDATE') return 'patch_opened';
   if (item.type === 'REWARD' || item.type === 'REDEEM_CODE') return 'reward_opened';
   return 'pulse_opened';
 }
 
 /** The moment that matters for this item right now, with a label. */
-function focusMoment(item: PulseItem, nowMs: number): { label: string; at: string } | null {
+export function focusMoment(item: PulseItem, nowMs: number): { label: string; at: string } | null {
   const t = ko.time;
   const start = toEpochMs(item.startAt);
   if (item.type === 'MAINTENANCE') {
@@ -46,6 +46,27 @@ function focusMoment(item: PulseItem, nowMs: number): { label: string; at: strin
   return null;
 }
 
+/** "종료까지 / 02:13:45" — the label and live countdown of an item's focus moment. */
+export function MomentMeta({
+  moment,
+  precision,
+}: {
+  moment: { label: string; at: string };
+  precision: PulseItem['timePrecision'];
+}) {
+  return (
+    <div className="leading-tight">
+      <p className="text-[11px] text-muted">{moment.label}</p>
+      <Countdown
+        target={moment.at}
+        timeZone={VIEWER_TIMEZONE}
+        precision={precision}
+        className="text-sm font-bold text-text"
+      />
+    </div>
+  );
+}
+
 export interface PulseItemCardProps {
   item: PulseItem;
   /** Page generation time (epoch ms) used for SSR/hydration. */
@@ -62,17 +83,7 @@ export function PulseItemCard({ item, serverNow, actions, className }: PulseItem
 
   let meta: ReactNode = null;
   if (moment) {
-    meta = (
-      <div className="leading-tight">
-        <p className="text-[11px] text-muted">{moment.label}</p>
-        <Countdown
-          target={moment.at}
-          timeZone={VIEWER_TIMEZONE}
-          precision={item.timePrecision}
-          className="text-sm font-bold text-text"
-        />
-      </div>
-    );
+    meta = <MomentMeta moment={moment} precision={item.timePrecision} />;
   } else if (
     item.type === 'PATCH' ||
     item.type === 'UPDATE' ||
