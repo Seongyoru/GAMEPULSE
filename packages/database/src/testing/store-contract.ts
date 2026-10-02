@@ -276,6 +276,70 @@ export function describeContentStoreContract(
       expect(await store().pruneRawText(LATER)).toBe(0);
     });
 
+    it("expires a source's content and raw documents after its retention window", async () => {
+      const official = CONTRACT_SOURCES.official;
+      const raw = await store().insertRawDocument({
+        sourceId: official.id,
+        documentKey: 'notice-1',
+        externalId: 'notice-1',
+        url: 'https://genshin.hoyoverse.com/ko/news',
+        contentHash: 'h1',
+        contentType: 'application/json',
+        rawText: '{}',
+        fetchedAt: NOW,
+        httpStatus: 200,
+        etag: null,
+        lastModified: null,
+        locale: 'ko-KR',
+        ingestionRunId: null,
+        metadata: null,
+      });
+      await store().insertParseResult({
+        rawDocumentId: raw.id,
+        parserId: 'mock',
+        parserVersion: '1',
+        inputHash: 'expiring',
+        status: 'SUCCEEDED',
+        output: { items: [] },
+        error: null,
+        model: null,
+        usage: null,
+        createdAt: NOW,
+      });
+      const stale = await store().publishContent(
+        contractPublishInput(makeCandidate('EVENT', { sourceKey: 'stale-event' }), official),
+      );
+      const fresh = await store().publishContent(
+        contractPublishInput(
+          makeCandidate('EVENT', { sourceKey: 'fresh-event', title: '새 이벤트' }),
+          official,
+          {
+            now: LATER,
+          },
+        ),
+      );
+      const otherSource = await store().publishContent(
+        contractPublishInput(
+          makeCandidate('EVENT', { sourceKey: 'manual-event', title: '수동' }),
+          CONTRACT_SOURCES.manual,
+        ),
+      );
+
+      expect(await store().expireSourceData(official.id, LATER)).toEqual({
+        content: 1,
+        rawDocuments: 1,
+      });
+      expect(await store().getContentBySlug(stale.slug)).toBeNull();
+      expect(await store().getContentBySlug(fresh.slug)).not.toBeNull();
+      expect(await store().getContentBySlug(otherSource.slug)).not.toBeNull();
+      expect(await store().findLatestRawDocument(official.id, 'notice-1')).toBeNull();
+      expect(await store().findParseResult('expiring', 'mock', '1')).toBeNull();
+      expect(await store().expireSourceData(official.id, LATER)).toEqual({
+        content: 0,
+        rawDocuments: 0,
+      });
+    });
+
     it('caches parse results by input hash, parser and version', async () => {
       const result = {
         rawDocumentId: null,

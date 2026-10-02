@@ -197,6 +197,15 @@ export interface IngestionStore {
   touchRawDocument(id: string, checkedAt: string): Promise<void>;
   /** Deletes stored raw text older than the cutoff, keeping hashes and metadata. */
   pruneRawText(olderThan: string): Promise<number>;
+  /**
+   * Enforces a source's data-retention limit (terms-imposed TTL): deletes the content it owns
+   * that no run has confirmed since the cutoff, and its raw documents (with derived parse
+   * results) not re-checked since the cutoff.
+   */
+  expireSourceData(
+    sourceId: string,
+    notSeenSince: string,
+  ): Promise<{ content: number; rawDocuments: number }>;
 
   findParseResult(
     inputHash: string,

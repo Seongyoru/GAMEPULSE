@@ -11,7 +11,7 @@
  *       with the configured parser (AI_PARSER)
  *   pnpm health:sources [--adapter <id>] [--mode live] source health checks
  *   pnpm runs [--limit 20]                            recent ingestion runs
- *   pnpm cli prune [--days 30]                         drop stored raw text older than N days
+ *   pnpm cli prune [--days 30]                         drop old raw text and enforce source TTLs
  */
 import { parseArgs } from 'node:util';
 import {
@@ -32,6 +32,7 @@ import {
   type IngestionReport,
 } from '@gamepulse/ingestion';
 import { AdapterSelectionError, resolveAdapter, runAdapter } from './jobs';
+import { runMaintenance } from './maintenance';
 import { createRuntime, type Runtime } from './runtime';
 
 const { positionals, values } = parseArgs({
@@ -229,9 +230,17 @@ async function runs(runtime: Runtime): Promise<boolean> {
 
 async function prune(runtime: Runtime): Promise<boolean> {
   const days = Number(values.days ?? runtime.env.RAW_TEXT_RETENTION_DAYS);
-  const cutoff = new Date(Date.now() - days * 86_400_000).toISOString();
-  const pruned = await runtime.store.pruneRawText(cutoff);
-  console.log(`pruned raw text of ${pruned} documents fetched before ${cutoff}`);
+  const report = await runMaintenance(runtime.store, { rawTextRetentionDays: days });
+  if (values.json) {
+    console.log(JSON.stringify(report, null, 2));
+    return true;
+  }
+  console.log(`pruned raw text of ${report.prunedRawText} documents older than ${days} days`);
+  for (const entry of report.expired) {
+    console.log(
+      `retention ${entry.sourceId} (${entry.retentionDays} d): deleted ${entry.content} items, ${entry.rawDocuments} raw documents`,
+    );
+  }
   return true;
 }
 

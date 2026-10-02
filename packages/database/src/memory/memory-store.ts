@@ -240,6 +240,39 @@ export class InMemoryContentStore implements ContentStore {
     return Promise.resolve(pruned);
   }
 
+  expireSourceData(
+    sourceId: string,
+    notSeenSince: string,
+  ): Promise<{ content: number; rawDocuments: number }> {
+    const cutoff = Date.parse(notSeenSince);
+    let content = 0;
+    for (const [id, item] of [...this.items]) {
+      if (item.sourceId !== sourceId || Date.parse(item.lastSeenAt) >= cutoff) continue;
+      this.items.delete(id);
+      this.provenance.delete(id);
+      for (const [indexKey, value] of [...this.sourceKeyIndex]) {
+        if (value === id) this.sourceKeyIndex.delete(indexKey);
+      }
+      for (const [slug, value] of [...this.slugIndex])
+        if (value === id) this.slugIndex.delete(slug);
+      content += 1;
+    }
+    const expired = new Set(
+      this.rawDocuments
+        .filter((doc) => doc.sourceId === sourceId && Date.parse(doc.lastCheckedAt) < cutoff)
+        .map((doc) => doc.id),
+    );
+    for (const [resultKey, result] of [...this.parseResults]) {
+      if (result.rawDocumentId !== null && expired.has(result.rawDocumentId)) {
+        this.parseResults.delete(resultKey);
+      }
+    }
+    for (let index = this.rawDocuments.length - 1; index >= 0; index -= 1) {
+      if (expired.has(this.rawDocuments[index]?.id ?? '')) this.rawDocuments.splice(index, 1);
+    }
+    return Promise.resolve({ content, rawDocuments: expired.size });
+  }
+
   findParseResult(
     inputHash: string,
     parserId: string,

@@ -196,3 +196,18 @@ as `UNVERIFIED`, and only when its evidence is found in that text (otherwise `RE
 Client components import pure domain modules. `sanitizePreferences` (browser) no longer uses Zod; the strict
 `userPreferencesSchema` moved to a server/test-only module. Result: −90 KB gzipped JS on every page. An ESLint rule
 forbids importing Zod from browser-facing paths.
+
+## D-031 · Terms-imposed TTLs are rolling and enforced by deletion (2026-10-02)
+
+A source with `dataRetentionDays` (NEXON Open API: 30) keeps a record only while collection keeps confirming it:
+records whose `lastSeenAt` is older than the window are deleted with their details and provenance (cascade), and the
+source's raw documents and derived parse results not re-checked within the window are deleted too. Records from other
+sources are untouched. Enforcement runs daily in the worker and on demand (`cli prune`). Deletion rather than
+archiving because the terms limit storage, not display. To be confirmed in the NEXON legal review.
+
+## D-032 · Policy pages describe what the code does (2026-10-02)
+
+Privacy, terms and data-sources pages are generated from facts the code enforces (no accounts, MY GAMES only in
+localStorage, analytics off by default, sources and their collection status from the source registry). They are
+drafts until legal review; the sources page renders from `listSourceDefinitions()`, so it cannot drift from the
+registry.

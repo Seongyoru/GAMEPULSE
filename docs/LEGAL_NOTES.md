@@ -74,8 +74,9 @@ written by GAMEPULSE in its own words and kept short. Redeem codes are only publ
 - [ ] Re-review every source's terms and robots policy; update `termsReviewedAt`.
 - [ ] Riot product registration + production key; legal notice in the footer.
 - [ ] Written answers from Smilegate (storage) and NEXON (storage, TTL, commercial use).
-- [ ] NEXON: show "Data based on NEXON Open API" wherever MapleStory API data appears (cards included) and enforce
-      the 30-day `dataRetentionDays` before enabling `maplestory-openapi`.
+- [ ] NEXON: show "Data based on NEXON Open API" wherever MapleStory API data appears (cards included) before
+      enabling `maplestory-openapi`. (The 30-day `dataRetentionDays` is enforced by the maintenance job.)
+- [ ] Legal review of `/privacy`, `/terms` and `/sources` (drafts describing current behaviour).
 - [ ] Permission requests to HoYoverse/Kuro if automated collection is desired.
 - [ ] Privacy policy and terms of service pages; cookie/analytics consent where required.
 - [ ] Advertising policy review per publisher before enabling any ad slot.

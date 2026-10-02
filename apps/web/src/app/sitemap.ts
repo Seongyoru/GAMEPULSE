@@ -9,13 +9,18 @@ export const revalidate = 3600;
 /** Indexable URLs only: synthetic content and sample-data deployments are excluded. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (isSampleDataMode()) return [];
-  const staticEntries: MetadataRoute.Sitemap = ['/', '/today', '/games', '/calendar'].map(
-    (path) => ({
+  const staticEntries: MetadataRoute.Sitemap = [
+    ...['/', '/today', '/games', '/calendar'].map((path) => ({
       url: absoluteUrl(path),
-      changeFrequency: 'hourly',
+      changeFrequency: 'hourly' as const,
       priority: path === '/' ? 1 : 0.8,
-    }),
-  );
+    })),
+    ...['/sources', '/terms', '/privacy'].map((path) => ({
+      url: absoluteUrl(path),
+      changeFrequency: 'monthly' as const,
+      priority: 0.2,
+    })),
+  ];
   const gameEntries: MetadataRoute.Sitemap = listGames()
     .filter((game) => game.status !== 'INACTIVE')
     .flatMap((game) =>

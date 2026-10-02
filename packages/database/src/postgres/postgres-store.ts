@@ -419,6 +419,37 @@ export class PostgresContentStore implements ContentStore {
     return rows.length;
   }
 
+  async expireSourceData(
+    sourceId: string,
+    notSeenSince: string,
+  ): Promise<{ content: number; rawDocuments: number }> {
+    const cutoff = new Date(notSeenSince);
+    return this.db.transaction(async (tx) => {
+      // Details, patch changes and provenance rows cascade with the content item.
+      const content = await tx
+        .delete(contentItems)
+        .where(and(eq(contentItems.sourceId, sourceId), lt(contentItems.lastSeenAt, cutoff)))
+        .returning({ id: contentItems.id });
+      const expiredRaw = and(
+        eq(rawDocuments.sourceId, sourceId),
+        lt(rawDocuments.lastCheckedAt, cutoff),
+      );
+      await tx
+        .delete(parseResults)
+        .where(
+          inArray(
+            parseResults.rawDocumentId,
+            tx.select({ id: rawDocuments.id }).from(rawDocuments).where(expiredRaw),
+          ),
+        );
+      const raw = await tx
+        .delete(rawDocuments)
+        .where(expiredRaw)
+        .returning({ id: rawDocuments.id });
+      return { content: content.length, rawDocuments: raw.length };
+    });
+  }
+
   async findParseResult(
     inputHash: string,
     parserId: string,

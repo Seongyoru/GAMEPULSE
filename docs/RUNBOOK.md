@@ -2,13 +2,16 @@
 
 ## Daily operations
 
-| Task                  | Command                                                                                      |
-| --------------------- | -------------------------------------------------------------------------------------------- |
-| Recent ingestion runs | `pnpm runs --limit 50`                                                                       |
-| Source health         | `pnpm health:sources` (fixture/mock) · `pnpm health:sources --mode live`                     |
-| Re-run one adapter    | `pnpm ingest --adapter <id> --mode live` (`--force` re-parses unchanged documents)           |
-| Manual fallback       | `pnpm ingest:manual <file.json>`                                                             |
-| Prune raw text        | `pnpm cli prune --days 30` (from `apps/worker`: `pnpm --filter @gamepulse/worker cli prune`) |
+Health: `GET /api/health` → `{ status, dataSource, lastUpdatedAt, checkedAt }` (HTTP 503 when the store is
+unreachable). Alert when it fails or when `lastUpdatedAt` stops moving for longer than the slowest schedule.
+
+| Task                  | Command                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| Recent ingestion runs | `pnpm runs --limit 50`                                                                                 |
+| Source health         | `pnpm health:sources` (fixture/mock) · `pnpm health:sources --mode live`                               |
+| Re-run one adapter    | `pnpm ingest --adapter <id> --mode live` (`--force` re-parses unchanged documents)                     |
+| Manual fallback       | `pnpm ingest:manual <file.json>`                                                                       |
+| Retention maintenance | `pnpm --filter @gamepulse/worker cli prune [--days 30]` — raw text + source TTLs (daily in the worker) |
 
 ## A collector is failing
 

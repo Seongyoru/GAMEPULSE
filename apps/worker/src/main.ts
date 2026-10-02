@@ -7,6 +7,7 @@
 import { syncRegistry } from '@gamepulse/ingestion';
 import { Queue, Worker } from 'bullmq';
 import { INGEST_QUEUE, ingestJobId, ingestJobSchema, runAdapter, type IngestJobData } from './jobs';
+import { MAINTENANCE_QUEUE, runMaintenance } from './maintenance';
 import { createRuntime } from './runtime';
 import { planSchedule } from './scheduler';
 
@@ -41,6 +42,24 @@ const worker = new Worker<IngestJobData>(
   { connection, concurrency: 2 },
 );
 
+// Daily data-retention maintenance (raw text pruning, source TTLs) on its own queue.
+const maintenanceQueue = new Queue(MAINTENANCE_QUEUE, { connection });
+const maintenanceWorker = new Worker(
+  MAINTENANCE_QUEUE,
+  async () => {
+    const report = await runMaintenance(runtime.store, {
+      rawTextRetentionDays: env.RAW_TEXT_RETENTION_DAYS,
+    });
+    logger.info('maintenance finished', { ...report });
+    return report;
+  },
+  { connection, concurrency: 1 },
+);
+maintenanceWorker.on('failed', (job, error) => {
+  logger.error('maintenance failed', { jobId: job?.id, error });
+  runtime.errorReporter.captureException(error, { tags: { queue: MAINTENANCE_QUEUE } });
+});
+
 worker.on('completed', (job, result: unknown) =>
   logger.info('job completed', { jobId: job.id, result }),
 );
@@ -54,6 +73,11 @@ worker.on('failed', (job, error) => {
 await syncRegistry(runtime.store);
 
 if (env.INGEST_SCHEDULE_ENABLED) {
+  await maintenanceQueue.upsertJobScheduler(
+    'daily-maintenance',
+    { every: 24 * 60 * 60_000, immediately: true },
+    { name: 'maintenance', data: {} },
+  );
   const { scheduled, skipped } = planSchedule(env);
   for (const entry of skipped)
     logger.info('adapter not scheduled', { adapter: entry.adapterId, reason: entry.reason });
@@ -79,7 +103,9 @@ logger.info('worker started', {
 const shutdown = async (signal: string) => {
   logger.info('worker shutting down', { signal });
   await worker.close();
+  await maintenanceWorker.close();
   await queue.close();
+  await maintenanceQueue.close();
   await runtime.close();
   process.exit(0);
 };

@@ -82,7 +82,16 @@ deduplicate · monitor. Research and terms findings: [research log](research/), 
   an ESLint rule
 - ⏳ Lighthouse/field data (CrUX, INP) on the first real deployment; ISR tuning with real data volumes
 
-## Phase 6 — Production readiness ⏳
+## Phase 6 — Production readiness 🚧
 
-Source terms re-review · production API credentials · error monitoring · backups · rate limiting · privacy policy ·
-terms page · copyright/source attribution · analytics · advertising policy review · human verification of reset rules.
+- ✅ Synthetic data refused in production everywhere (web, worker, seed); `pnpm seed --registry-only`
+- ✅ Retention: raw text pruned after `RAW_TEXT_RETENTION_DAYS`; terms-imposed source TTLs (`dataRetentionDays`, e.g.
+  NEXON 30 days) enforced daily by the worker's maintenance job and by `pnpm cli prune`
+- ✅ Monitoring: structured JSON logs (worker and web `onRequestError`), Sentry-compatible error reporter,
+  `/api/health` (data source + last update, never cached)
+- ✅ Security headers (HSTS, nosniff, frame denial, referrer and permissions policies); secrets server-side only
+- ✅ Privacy policy, terms and data-sources pages (drafts: legal review pending), footer links, required Riot notice
+- ⏳ Legal review of the policy pages; written answers from Smilegate and NEXON; Riot product registration and
+  production key; HoYoverse/Kuro permission requests (see [LEGAL_NOTES.md](LEGAL_NOTES.md))
+- ⏳ Production credentials, managed PostgreSQL backups/PITR, CDN, error-monitoring DSN, analytics decision
+- ⏳ Human verification of reset rules (all `UNVERIFIED` today) and advertising policy review per publisher

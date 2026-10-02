@@ -64,8 +64,11 @@ pnpm build                      # web (.next) + bundled worker (apps/worker/dist
 2. Start the web app: `pnpm --filter @gamepulse/web start` (or `next start` from `apps/web`) behind the CDN.
 3. Start the worker: `node apps/worker/dist/main.js` (long-running BullMQ worker + schedulers), or schedule
    `node apps/worker/dist/cli.js ingest --all --mode live` with cron.
-4. Smoke test: `/`, `/today`, `/games/<slug>`, `/sitemap.xml`, `/robots.txt`; `pnpm runs` shows recent runs;
-   `pnpm health:sources --mode live` passes for enabled sources.
+4. Smoke test: `/api/health` returns `ok`; `/`, `/today`, `/games/<slug>`, `/sitemap.xml`, `/robots.txt`;
+   `pnpm runs` shows recent runs; `pnpm health:sources --mode live` passes for enabled sources.
+5. Point the uptime monitor at `/api/health`. The worker schedules a daily maintenance job (raw-text pruning and
+   source TTLs) next to the ingestion schedules; with `INGEST_SCHEDULE_ENABLED=false`, run
+   `node apps/worker/dist/cli.js prune` from cron instead.
 
 Rollback: redeploy the previous build. Migrations are additive; destructive schema changes ship in two releases
 (expand, then contract).

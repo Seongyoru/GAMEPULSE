@@ -11,12 +11,21 @@ export function SiteFooter() {
         <p>{ko.footer.sources}</p>
         <p>{ko.footer.disclaimer}</p>
         <p lang="en">{ko.footer.riot}</p>
-        <nav className="flex gap-3 pt-1" aria-label="footer">
+        <nav className="flex flex-wrap gap-x-3 gap-y-1 pt-1" aria-label="footer">
           <Link href="/games" className="hover:text-text">
             {ko.nav.games}
           </Link>
           <Link href="/calendar" className="hover:text-text">
             {ko.nav.calendar}
+          </Link>
+          <Link href="/sources" className="hover:text-text">
+            데이터 출처
+          </Link>
+          <Link href="/terms" className="hover:text-text">
+            이용약관
+          </Link>
+          <Link href="/privacy" className="hover:text-text">
+            개인정보 처리방침
           </Link>
         </nav>
       </div>
