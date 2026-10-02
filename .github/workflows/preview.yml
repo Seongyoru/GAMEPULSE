@@ -1,0 +1,71 @@
+name: Sample preview
+
+# Publishes the fixtures site (synthetic, clearly labelled sample data; noindex) to GitHub Pages so
+# the product can be viewed without a server or database. See docs/DEPLOYMENT.md › Sample preview.
+# One-time setup: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Fixture times are relative to the build: rebuild daily (06:10 KST) to keep the sample current.
+    - cron: '10 21 * * *'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+  PNPM_VERSION: '12.8.1'
+  NEXT_TELEMETRY_DISABLED: '1'
+
+jobs:
+  build:
+    name: Export the sample site
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install pnpm
+        run: npm install -g pnpm@${{ env.PNPM_VERSION }}
+      - run: pnpm install --frozen-lockfile
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v6
+      - name: Static export (fixtures)
+        env:
+          GAMEPULSE_STATIC_EXPORT: 'true'
+          GAMEPULSE_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          GAMEPULSE_SITE_URL: ${{ steps.pages.outputs.base_url }}
+          GAMEPULSE_DATA_SOURCE: fixtures
+          GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION: 'true'
+          NEXT_PUBLIC_ANALYTICS_PROVIDER: none
+          NEXT_PUBLIC_ADS_MODE: 'off'
+        run: |
+          # Static hosting has no server: drop the server-only health endpoint from this checkout.
+          rm -r apps/web/src/app/api
+          pnpm --filter @gamepulse/web build
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/web/out
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

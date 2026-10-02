@@ -3,6 +3,7 @@ import { ImageResponse } from 'next/og';
 export const alt = 'GAMEPULSE — All Your Games. One Pulse.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
+export const dynamic = 'force-static';
 
 /** Default social card (Latin text only: the bundled OG font has no Hangul glyphs). */
 export default function OpenGraphImage() {

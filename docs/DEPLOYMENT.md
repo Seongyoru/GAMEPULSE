@@ -84,6 +84,21 @@ GAMEPULSE_DATA_SOURCE=fixtures GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION=true pnpm 
 
 CI uses the same configuration for the build check and the Playwright suite.
 
+### Sample preview on GitHub Pages
+
+`.github/workflows/preview.yml` publishes the fixtures site as static files to GitHub Pages
+(`https://<owner>.github.io/<repo>/`) on every push to `main`, on demand (Actions › Sample preview › Run workflow)
+and daily, so the relative fixture dates stay current. One-time setup: **Settings → Pages → Build and deployment →
+Source: GitHub Actions**.
+
+- `GAMEPULSE_STATIC_EXPORT=true` switches `next build` to a static export (`apps/web/out`) under
+  `GAMEPULSE_BASE_PATH`; regular builds are unaffected. Static hosting has no server, so the export has no
+  `/api/health`, no response headers and no ISR — fine for looking at the product, not for production.
+- Everything else behaves as in the app: client-side navigation, MY GAMES, live countdowns, filters. Every page is
+  `noindex` and labelled as sample data.
+- Locally: move `apps/web/src/app/api` aside, run the build with the workflow's environment, restore the folder and
+  serve `apps/web/out` under the base path.
+
 ## Containers
 
 `docker-compose.yml` provides PostgreSQL and Redis for development. For production images, build once and run two

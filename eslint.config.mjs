@@ -25,6 +25,8 @@ export default defineConfig([
     '**/node_modules/**',
     '**/.next/**',
     '**/dist/**',
+    // Static preview export (GAMEPULSE_STATIC_EXPORT, docs/DEPLOYMENT.md).
+    'apps/web/out/**',
     '**/coverage/**',
     '**/playwright-report/**',
     '**/test-results/**',

@@ -18,7 +18,18 @@ const securityHeaders = [
   },
 ];
 
+// Static sample preview (GitHub Pages, docs/DEPLOYMENT.md): plain files under an optional base
+// path, no server — so no response headers, ISR or route handlers. Regular builds are unaffected.
+const staticExport = process.env.GAMEPULSE_STATIC_EXPORT === 'true';
+
 const nextConfig: NextConfig = {
+  ...(staticExport
+    ? { output: 'export', trailingSlash: true, basePath: process.env.GAMEPULSE_BASE_PATH ?? '' }
+    : {
+        headers() {
+          return Promise.resolve([{ source: '/:path*', headers: securityHeaders }]);
+        },
+      }),
   reactStrictMode: true,
   poweredByHeader: false,
   // Internal packages ship TypeScript sources (docs/DECISIONS.md D-004).
@@ -37,9 +48,6 @@ const nextConfig: NextConfig = {
   // Fixture mode (development/previews) reads ../../fixtures at runtime.
   outputFileTracingRoot: resolve(process.cwd(), '../..'),
   outputFileTracingIncludes: { '/**': ['../../fixtures/**/*.json'] },
-  headers() {
-    return Promise.resolve([{ source: '/:path*', headers: securityHeaders }]);
-  },
 };
 
 export default nextConfig;
