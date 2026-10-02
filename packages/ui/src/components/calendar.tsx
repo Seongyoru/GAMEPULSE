@@ -71,7 +71,7 @@ export function Calendar({
                   <div
                     className={cx(
                       'mb-0.5 text-xs font-semibold tabular-nums',
-                      day.inMonth ? 'text-text' : 'text-muted/60',
+                      day.inMonth ? 'text-text' : 'text-muted',
                       day.isToday && 'text-sky-700 dark:text-sky-300',
                     )}
                   >
@@ -81,14 +81,14 @@ export function Calendar({
                       day.day
                     )}
                   </div>
-                  <ul className="space-y-0.5">
+                  <ul>
                     {entries.slice(0, maxPerDay).map((entry) => {
                       const body = (
                         <>
                           <span
                             aria-hidden
                             className={cx(
-                              'mt-1 size-1.5 shrink-0 rounded-full',
+                              'size-1.5 shrink-0 rounded-full',
                               ACCENT_CLASSES[entry.accent].dot,
                             )}
                           />
@@ -106,12 +106,12 @@ export function Calendar({
                           {entry.href ? (
                             <Link
                               href={entry.href}
-                              className="flex gap-1 text-[11px] leading-tight text-text hover:underline"
+                              className="flex min-h-6 items-center gap-1 text-[11px] leading-tight text-text hover:underline"
                             >
                               {body}
                             </Link>
                           ) : (
-                            <span className="flex gap-1 text-[11px] leading-tight text-text">
+                            <span className="flex min-h-6 items-center gap-1 text-[11px] leading-tight text-text">
                               {body}
                             </span>
                           )}

@@ -333,22 +333,25 @@ export function ContentDetail({
         <h2 id="trust" className="mb-3 text-sm font-bold uppercase tracking-wider text-muted">
           {d.trustTitle}
         </h2>
-        <dl className="space-y-2 text-sm">
-          <div>
-            <dt className="mb-1 text-xs text-muted">{d.officialSource}</dt>
-            <dd>
-              <SourceBadge
-                sourceName={record.source.name}
-                url={record.source.url}
-                isOfficial={record.source.isOfficial}
-                sourceTypeLabel={ko.sourceType[record.source.type]}
-                sample={record.isSynthetic}
-              />
-              {record.source.attribution ? (
-                <p className="mt-1 text-xs text-muted">{record.source.attribution}</p>
-              ) : null}
-            </dd>
-          </div>
+        <div className="space-y-2 text-sm">
+          {/* A <dl> may only hold dt/dd groups: the facts row and the note sit between two lists. */}
+          <dl>
+            <div>
+              <dt className="mb-1 text-xs text-muted">{d.officialSource}</dt>
+              <dd>
+                <SourceBadge
+                  sourceName={record.source.name}
+                  url={record.source.url}
+                  isOfficial={record.source.isOfficial}
+                  sourceTypeLabel={ko.sourceType[record.source.type]}
+                  sample={record.isSynthetic}
+                />
+                {record.source.attribution ? (
+                  <p className="mt-1 text-xs text-muted">{record.source.attribution}</p>
+                ) : null}
+              </dd>
+            </div>
+          </dl>
           <div className="flex flex-wrap gap-x-6 gap-y-1">
             <p>
               <span className="text-muted">{d.lastUpdated} </span>
@@ -369,19 +372,23 @@ export function ContentDetail({
           </div>
           <p className="text-xs text-muted">{d.structured}</p>
           {record.provenance.length > 1 ? (
-            <div>
-              <dt className="mb-1 text-xs text-muted">{d.provenance}</dt>
-              <ul className="space-y-0.5 text-xs">
-                {record.provenance.map((entry) => (
-                  <li key={`${entry.sourceId}-${entry.firstSeenAt}`}>
-                    {ko.sourceType[entry.sourceType]} · {entry.sourceName} (
-                    {entry.role === 'PRIMARY' ? '주 출처' : '보조'})
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <dl>
+              <div>
+                <dt className="mb-1 text-xs text-muted">{d.provenance}</dt>
+                <dd>
+                  <ul className="space-y-0.5 text-xs">
+                    {record.provenance.map((entry) => (
+                      <li key={`${entry.sourceId}-${entry.firstSeenAt}`}>
+                        {ko.sourceType[entry.sourceType]} · {entry.sourceName} (
+                        {entry.role === 'PRIMARY' ? '주 출처' : '보조'})
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            </dl>
           ) : null}
-        </dl>
+        </div>
       </section>
     </article>
   );

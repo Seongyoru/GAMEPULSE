@@ -90,4 +90,19 @@ Measured on the production build serving fixtures (local, 2026-10-02; lab number
 | `/calendar`             | 136 / 128 ms         | 0.000 / 0.000        | 189 KB    |
 | `/patches/<slug>`       | 104 / 96 ms          | 0.000 / 0.000        | 207 KB    |
 
-Lighthouse and field data (CrUX, INP) are collected on the first real deployment (ROADMAP Phase 5).
+Lighthouse 12.8 lab run (mobile emulation with simulated slow 4G and 4× CPU throttling, production build serving
+fixtures, 2026-10-02):
+
+| Page                    | Performance | Accessibility | Best practices | SEO\* | LCP   | TBT    | CLS   |
+| ----------------------- | ----------- | ------------- | -------------- | ----- | ----- | ------ | ----- |
+| `/`                     | 93          | 100           | 100            | 66    | 2.5 s | 220 ms | 0.003 |
+| `/today`                | 96          | 100           | 100            | 66    | 2.5 s | 120 ms | 0.003 |
+| `/games/genshin-impact` | 99          | 100           | 100            | 66    | 2.2 s | 40 ms  | 0.01  |
+| `/calendar`             | 97          | 100           | 100            | 66    | 2.5 s | 100 ms | 0     |
+| `/patches/<slug>`       | 98          | 100           | 100            | 66    | 2.3 s | 70 ms  | 0     |
+| `/my-games`             | 98          | 100           | 100            | 66    | 2.3 s | 90 ms  | 0     |
+
+\* The only failing SEO audit is "page is blocked from indexing": sample-data deployments are `noindex` by design
+(see Indexing policy). Fixed from the first run: brand label contrast (rose-700 in light mode), calendar
+out-of-month day numbers, 24 px calendar entry targets (WCAG 2.5.8) and the detail page's definition list.
+TBT varies between runs (120–600 ms on `/today`); field data (CrUX, INP) comes with the first real deployment.

@@ -14,7 +14,8 @@
   --gp-border: #e2e5ea;
   --gp-text: #0e1320;
   --gp-muted: #5b6475;
-  --gp-brand: #e11d48;
+  /* rose-700: ≥ 4.5:1 on --gp-bg for the 11px eyebrow labels (WCAG AA). */
+  --gp-brand: #be123c;
   color-scheme: light;
 }
 
