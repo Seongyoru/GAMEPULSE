@@ -25,6 +25,35 @@ describe('planSchedule', () => {
   });
 });
 
+describe('production safety', () => {
+  it('refuses fixture and mock collection in production', () => {
+    for (const mode of ['fixture', 'mock'] as const) {
+      const { scheduled, skipped } = planSchedule(
+        parseServerEnv({
+          NODE_ENV: 'production',
+          COLLECTOR_MODE: mode,
+          DATABASE_URL: 'postgres://x',
+        }),
+      );
+      expect(scheduled).toEqual([]);
+      expect(
+        skipped.every((entry) => entry.reason === `${mode} mode is refused in production`),
+      ).toBe(true);
+    }
+  });
+
+  it('allows fixtures in production only when explicitly enabled for previews', () => {
+    const { scheduled } = planSchedule(
+      parseServerEnv({
+        NODE_ENV: 'production',
+        COLLECTOR_MODE: 'fixture',
+        GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION: 'true',
+      }),
+    );
+    expect(scheduled).toHaveLength(5);
+  });
+});
+
 describe('resolveAdapter', () => {
   it('rejects unknown adapters and unsupported modes', () => {
     expect(() => resolveAdapter('nope', 'fixture')).toThrow(/Unknown adapter/);

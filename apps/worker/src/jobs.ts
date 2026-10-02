@@ -8,6 +8,7 @@ import {
   listAdapterDefinitions,
   type AdapterDefinition,
 } from '@gamepulse/collectors';
+import { fixturesAllowed } from '@gamepulse/config';
 import { COLLECTOR_MODES, type CollectorMode } from '@gamepulse/domain';
 import { runIngestion, type IngestionReport } from '@gamepulse/ingestion';
 import { z } from 'zod';
@@ -50,6 +51,11 @@ export function resolveAdapter(adapterId: string, mode: CollectorMode): AdapterD
 
 export async function runAdapter(runtime: Runtime, job: IngestJobData): Promise<IngestionReport> {
   const definition = resolveAdapter(job.adapterId, job.mode);
+  if (job.mode !== 'live' && !fixturesAllowed(runtime.env)) {
+    throw new AdapterSelectionError(
+      `Refusing ${job.mode}-mode ingestion in production: it writes synthetic data (GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION=true only for previews)`,
+    );
+  }
   if (job.mode === 'live') {
     const missing = definition.credentials.filter((name) => !runtime.env[name]);
     if (missing.length > 0)

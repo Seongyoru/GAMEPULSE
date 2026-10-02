@@ -10,7 +10,8 @@
 import { randomUUID } from 'node:crypto';
 import { sql } from 'drizzle-orm';
 import postgres from 'postgres';
-import { connectPostgres, migratePostgres, MIGRATIONS_FOLDER, type Database } from '../client';
+import { connectPostgres, type Database } from '../client';
+import { migratePostgres, MIGRATIONS_FOLDER } from '../migrations';
 import * as schema from '../schema';
 
 export interface TestDatabase {

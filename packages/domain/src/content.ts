@@ -166,6 +166,8 @@ export interface PulseItem {
   summary: string | null;
   startAt: string | null;
   endAt: string | null;
+  /** DATE when the source only states calendar dates (no time of day may be displayed). */
+  timePrecision: 'DATETIME' | 'DATE';
   publishedAt: string;
   sourcePublishedAt: string | null;
   updatedAt: string;
@@ -221,6 +223,7 @@ export function toPulseItem(record: ContentRecord): PulseItem {
     summary: record.summary,
     startAt: record.startAt,
     endAt: record.endAt,
+    timePrecision: record.timing?.precision ?? 'DATETIME',
     publishedAt: record.publishedAt,
     sourcePublishedAt: record.sourcePublishedAt,
     updatedAt: record.updatedAt,

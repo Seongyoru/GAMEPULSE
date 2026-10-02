@@ -46,11 +46,6 @@ export const serverEnvSchema = z.object({
   GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION: booleanFlag(false),
   /** Fixed anchor for relative fixture dates (ISO). Defaults to the current hour. */
   FIXTURE_ANCHOR: z.preprocess(emptyToUndefined, z.iso.datetime({ offset: true }).optional()),
-  /** Seconds between ISR regenerations of public pages. */
-  REVALIDATE_SECONDS: z.preprocess(
-    emptyToUndefined,
-    z.coerce.number().int().min(10).max(86_400).default(300),
-  ),
 
   COLLECTOR_MODE: z.preprocess(
     emptyToUndefined,
@@ -104,17 +99,21 @@ export function parseServerEnv(
 
 export type DataSourceKind = 'fixtures' | 'database';
 
+/**
+ * Synthetic fixtures (and mock-mode recordings) may be served or ingested outside production,
+ * or in a production build that explicitly opts in (staging previews, CI builds).
+ */
+export function fixturesAllowed(env: ServerEnv): boolean {
+  return env.NODE_ENV !== 'production' || env.GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION;
+}
+
 /** Resolves which content backend the web app should use. */
 export function resolveDataSource(env: ServerEnv): DataSourceKind {
   const kind = env.GAMEPULSE_DATA_SOURCE ?? (env.DATABASE_URL ? 'database' : 'fixtures');
   if (kind === 'database' && !env.DATABASE_URL) {
     throw new EnvError('GAMEPULSE_DATA_SOURCE=database requires DATABASE_URL');
   }
-  if (
-    kind === 'fixtures' &&
-    env.NODE_ENV === 'production' &&
-    !env.GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION
-  ) {
+  if (kind === 'fixtures' && !fixturesAllowed(env)) {
     throw new EnvError(
       'Refusing to serve synthetic fixtures in production. Set DATABASE_URL, or GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION=true for previews.',
     );

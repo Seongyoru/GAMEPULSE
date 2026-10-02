@@ -19,16 +19,19 @@ Status legend: ✅ done · 🚧 in progress · ⏳ planned · ⛔ blocked (exter
 
 **DoD:** `pnpm install` ✅ · services start ✅ · `pnpm db:migrate` ✅ · fixtures ingest ✅ · tests pass ✅ · CI defined ✅
 
-## Phase 2 — Product shell ⏳
+## Phase 2 — Product shell ✅
 
-- ⏳ Design system (`@gamepulse/ui`): GameBadge, PulseCard, StatusChip, Countdown, RewardBadge, PatchChange,
-  EventCard, ResetTimer, SourceBadge, GameFilter, Timeline, Calendar, EmptyState, Skeleton, AdSlot
-- ⏳ Homepage, `/today`, MY GAMES (localStorage), games index/detail (+ patches, events, rewards, resets, calendar),
-  content detail pages, `/calendar`
-- ⏳ Analytics abstraction (no-op default), AdSlot placeholder mode
-- ⏳ Playwright E2E suite on fixtures (no external websites)
+- ✅ Design system (`@gamepulse/ui`): GameBadge, PulseCard (event/item card), StatusChip, Countdown, RewardBadge,
+  PatchChange, ResetTimer, SourceBadge, GameFilter, Timeline, Calendar, EmptyState, Skeleton, AdSlot
+- ✅ Homepage, `/today`, MY GAMES (`/my-games`, localStorage behind `PreferencesStore`, pre-paint boot script),
+  games index, game overview + patches/events/rewards/resets/calendar tabs (feature-aware), content detail pages
+  (`/patches|events|rewards|notices/[slug]`, canonical-family redirects), unified `/calendar`, 404/error pages
+- ✅ Static generation + ISR (5 min) on every public page; live statuses/countdowns recomputed on the client
+- ✅ Analytics abstraction (no-op default, console, GA4) with one delegated listener; AdSlot off/placeholder
+- ✅ Component tests (jsdom) and Playwright E2E on fixtures, desktop + mobile (no external websites): homepage,
+  MY GAMES selection/persistence, TODAY filtering and dismissals, game detail tabs, content detail, calendar filters
 
-**DoD:** a user can interact with all five games without any external API.
+**DoD:** a user can interact with all five games without any external API ✅ (`pnpm test:e2e`: 26 passing)
 
 ## Phase 3 — First live adapters ⏳
 
@@ -51,10 +54,12 @@ deduplicate · monitor. Research and terms findings: [research log](research/), 
 - ⏳ ClaudeParser with strict structured output, evidence requirements, parse caching, cost controls
 - ⏳ Apply to sources where it helps: event/maintenance notices, reward descriptions, patch notes
 
-## Phase 5 — SEO / performance ⏳
+## Phase 5 — SEO / performance 🚧
 
-- ⏳ Metadata, canonical URLs, sitemap, robots.txt, OpenGraph, JSON-LD, breadcrumbs, internal links
-- ⏳ Static generation + ISR tuning, Core Web Vitals (LCP < 2.5 s, CLS < 0.1, INP < 200 ms), Lighthouse report
+- ✅ Metadata, canonical URLs, sitemap, robots.txt, OpenGraph/Twitter cards, JSON-LD, breadcrumbs, internal links
+  (built with Phase 2; see [SEO.md](SEO.md))
+- ✅ Indexing policy: synthetic content `noindex` + excluded from the sitemap; sample-data deployments disallow crawling
+- ⏳ ISR tuning with real data volumes, Core Web Vitals (LCP < 2.5 s, CLS < 0.1, INP < 200 ms), Lighthouse report
 
 ## Phase 6 — Production readiness ⏳
 

@@ -6,7 +6,8 @@
   "description": "GAMEPULSE design system: data-dense, game-neutral React components styled with Tailwind CSS.",
   "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p ."
@@ -16,6 +17,7 @@
     "clsx": "^2.1.1"
   },
   "peerDependencies": {
+    "next": ">=16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -23,6 +25,7 @@
     "@testing-library/react": "^16.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "next": "16.3.8",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   }

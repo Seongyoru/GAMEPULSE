@@ -101,6 +101,7 @@ export function makePulseItem(
     summary: null,
     startAt: null,
     endAt: null,
+    timePrecision: 'DATETIME',
     publishedAt: record.publishedAt,
     sourcePublishedAt: null,
     updatedAt: record.updatedAt,

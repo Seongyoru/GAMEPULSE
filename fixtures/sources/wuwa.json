@@ -204,6 +204,7 @@
       "items": [
         {
           "key": "code",
+          "slugHint": "test-redeem-code",
           "kind": "REDEEM_CODE",
           "title": "테스트용 리딤코드 (사용 불가)",
           "summary": "개발 환경 확인용 가짜 코드입니다. 실제 게임에서 사용할 수 없습니다.",

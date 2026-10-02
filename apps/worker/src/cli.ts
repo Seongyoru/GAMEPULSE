@@ -2,6 +2,7 @@
  * GAMEPULSE operator CLI (run from the repository root):
  *
  *   pnpm seed [--games lol,genshin] [--dry-run]       sync registry + ingest fixture feeds
+ *   pnpm seed --registry-only                         sync games/sources/reset rules only (production)
  *   pnpm ingest --adapter <id> [--mode live] [--force] [--dry-run]
  *   pnpm ingest --all [--mode fixture]
  *   pnpm ingest:manual <file.json> [--dry-run]         administrator fallback ingestion
@@ -17,6 +18,7 @@ import {
   readManualFileGame,
   type AdapterHealth,
 } from '@gamepulse/collectors';
+import { fixturesAllowed } from '@gamepulse/config';
 import { COLLECTOR_MODES, type CollectorMode } from '@gamepulse/domain';
 import {
   ingestFixtures,
@@ -39,6 +41,7 @@ const { positionals, values } = parseArgs({
     json: { type: 'boolean', default: false },
     limit: { type: 'string' },
     days: { type: 'string' },
+    'registry-only': { type: 'boolean', default: false },
   },
 });
 
@@ -72,11 +75,19 @@ function printReports(reports: IngestionReport[]): boolean {
 }
 
 async function seed(runtime: Runtime): Promise<boolean> {
+  const registryOnly = values['registry-only'];
+  if (!registryOnly && !fixturesAllowed(runtime.env)) {
+    console.error(
+      'Refusing to ingest synthetic fixtures in production. Use `pnpm seed --registry-only` to sync the registry.',
+    );
+    return false;
+  }
   const sync = await syncRegistry(runtime.store);
   console.log(
     `registry: games +${sync.games.created}/~${sync.games.updated}, sources +${sync.sources.created}/~${sync.sources.updated}, ` +
       `reset rules +${sync.resetRules.created}/~${sync.resetRules.updated}`,
   );
+  if (registryOnly) return true;
   const gameIds = values.games
     ?.split(',')
     .map((id) => id.trim())

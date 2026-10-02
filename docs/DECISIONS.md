@@ -114,3 +114,35 @@ Based on the [2026-10-02 research](research/):
 Korean Genshin/Wuthering Waves notices usually state KST (sometimes unlabeled, sometimes mislabeled "server time")
 while English notices state UTC+8 server time. Parsers must map explicit labels only and never guess an unlabeled zone
 unless the source's policy declares a default; original strings are always preserved for audit.
+
+## D-019 · Personalization on the client over static pages (2026-10-02)
+
+TODAY, the homepage and the calendar are static/ISR pages carrying the dataset for every game; MY GAMES filtering,
+dismissals and live countdowns run on the client. An inline boot script copies the stored selection onto
+`<html data-mg>` before first paint and generated CSS hides other games inside `[data-mg-scope]`, so personalized
+pages neither flash nor shift. Rejected: cookies read on the server (makes every page dynamic) and client-side data
+fetching (slower, uncacheable).
+
+## D-020 · One URL family per content type (2026-10-02)
+
+`/patches` (PATCH, UPDATE), `/events` (EVENT, BANNER), `/rewards` (REWARD, REDEEM_CODE), `/notices` (MAINTENANCE,
+ANNOUNCEMENT). A slug requested under another family answers 308 to the canonical URL. Slugs are ASCII and immutable
+once published; malformed slugs 404 before touching the store.
+
+## D-021 · Time on the server is the hydration snapshot (2026-10-02)
+
+Server components pass the data's generation time (`generatedAt`) to client components; clocks use it as the
+`useSyncExternalStore` server snapshot, and countdowns render the absolute time until hydrated. Markup is identical on
+server and client; the live value takes over after hydration. Components never read the clock during render.
+
+## D-022 · Game tabs follow `GameConfig.features` (2026-10-02)
+
+Tabs for unsupported features are hidden; their URLs still render (static params are uniform) with an explanatory
+empty state and `noindex`. No game-specific conditionals in pages — capabilities come from the registry.
+
+## D-023 · Synthetic data is refused in production everywhere (2026-10-02)
+
+Web (fixture store), worker (fixture/mock collection) and `pnpm seed` (fixture ingestion) all refuse to run when
+`NODE_ENV=production` unless `GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION=true` (previews/CI). Production registry syncs use
+`pnpm seed --registry-only`. `REVALIDATE_SECONDS` was removed: Next.js requires a literal `revalidate`, so the ISR
+interval (300 s) is set in each route.

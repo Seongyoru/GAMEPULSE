@@ -31,13 +31,13 @@ in-memory store at startup (development only; refused in production).
 | Command                                                             | What it does                                                         |
 | ------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | `pnpm dev` / `pnpm dev:worker`                                      | Web app / ingestion worker (BullMQ, needs Redis)                     |
-| `pnpm seed [--games lol,genshin]`                                   | Registry sync + fixture ingestion (idempotent)                       |
+| `pnpm seed [--games lol,genshin]` · `pnpm seed --registry-only`     | Registry sync + fixture ingestion (idempotent) · registry only       |
 | `pnpm ingest --adapter <id> [--mode fixture\|mock\|live] [--force]` | Run one adapter through the pipeline                                 |
 | `pnpm ingest:manual <file.json>`                                    | Administrator fallback ingestion (see `fixtures/manual/`)            |
 | `pnpm health:sources [--mode live]`                                 | Source health checks                                                 |
 | `pnpm runs`                                                         | Recent ingestion runs                                                |
 | `pnpm lint` · `pnpm typecheck` · `pnpm format:check`                | Static checks                                                        |
-| `pnpm test:unit` · `pnpm test:integration` · `pnpm test:e2e`        | Tests (integration uses `TEST_DATABASE_URL` or embedded PGlite)      |
+| `pnpm test:unit` · `pnpm test:integration` · `pnpm test:e2e`        | Unit + component · integration (PostgreSQL or PGlite) · Playwright   |
 | `pnpm build`                                                        | Production builds (web + bundled worker)                             |
 | `pnpm db:generate`                                                  | Generate a migration after editing `packages/database/src/schema.ts` |
 

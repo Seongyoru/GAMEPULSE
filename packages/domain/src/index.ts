@@ -27,5 +27,6 @@ export * from './urgency/urgency';
 
 export * from './today/today';
 export * from './today/snapshot';
+export * from './today/groups';
 export * from './today/pulse';
 export * from './calendar/calendar';

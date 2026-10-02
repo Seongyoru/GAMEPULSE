@@ -99,7 +99,8 @@ Slugs are ASCII, assigned once, and never change.
 
 ## Web rendering strategy
 
-- Public pages are Server Components rendered statically with ISR (`REVALIDATE_SECONDS`, default 300 s) and
+- Public pages are Server Components rendered statically with ISR (`export const revalidate = 300` per route —
+  Next.js requires a literal, so the interval is changed in code) and
   `generateStaticParams`; data access goes through the `ContentReadStore` port (PostgreSQL in production, in-memory
   fixtures in development when no `DATABASE_URL` exists — refused in production).
 - MY GAMES lives in `localStorage` behind the `PreferencesStore` port. Personalization (filtering, ordering, dismissals)

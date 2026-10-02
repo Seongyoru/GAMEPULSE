@@ -146,6 +146,7 @@
       "items": [
         {
           "key": "coupon",
+          "slugHint": "test-coupon-code",
           "kind": "REDEEM_CODE",
           "title": "테스트용 쿠폰 코드 (사용 불가)",
           "summary": "개발 환경 확인용 가짜 코드입니다. 실제 게임에서 사용할 수 없습니다.",

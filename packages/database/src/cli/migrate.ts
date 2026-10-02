@@ -2,7 +2,7 @@
  * Applies pending SQL migrations: `pnpm db:migrate` (reads DATABASE_URL, loading .env if present).
  */
 import { loadDotEnv } from '@gamepulse/config';
-import { migratePostgres } from '../client';
+import { migratePostgres } from '../migrations';
 
 loadDotEnv();
 const url = process.env.DATABASE_URL;

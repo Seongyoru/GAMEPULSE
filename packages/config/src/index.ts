@@ -3,6 +3,7 @@ import { dirname, join } from 'node:path';
 
 export {
   EnvError,
+  fixturesAllowed,
   parseServerEnv,
   resolveDataSource,
   serverEnvSchema,

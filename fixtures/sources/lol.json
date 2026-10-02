@@ -97,6 +97,7 @@
         },
         {
           "key": "maintenance",
+          "slugHint": "patch-26-20-maintenance",
           "kind": "MAINTENANCE",
           "title": "26.20 패치 적용 점검",
           "summary": "점검 중에는 게임 접속이 제한됩니다.",
@@ -118,6 +119,7 @@
       "items": [
         {
           "key": "notice",
+          "slugHint": "ranked-season-schedule",
           "kind": "ANNOUNCEMENT",
           "title": "랭크 게임 시즌 일정 안내",
           "summary": "이번 시즌 종료와 보상 지급 일정이 공지되었습니다. (샘플 데이터)",
