@@ -5,12 +5,14 @@
 import { loadDotEnv, parseServerEnv, type ServerEnv } from '@gamepulse/config';
 import { connectPostgres, InMemoryContentStore, PostgresContentStore } from '@gamepulse/database';
 import type { ContentStore } from '@gamepulse/domain';
+import type { AIParser } from '@gamepulse/parsers';
 import {
   createLogger,
   createLoggingErrorReporter,
   type ErrorReporter,
   type Logger,
 } from '@gamepulse/observability';
+import { createParser } from './parser';
 
 export interface Runtime {
   env: ServerEnv;
@@ -18,6 +20,8 @@ export interface Runtime {
   errorReporter: ErrorReporter;
   store: ContentStore;
   storeKind: 'postgres' | 'memory';
+  /** Parser for adapters that read unstructured text (AI_PARSER), with a store-backed cache. */
+  parser: () => AIParser;
   close: () => Promise<void>;
 }
 
@@ -44,14 +48,22 @@ export function createRuntime(options: RuntimeOptions = {}): Runtime {
   // Sentry-compatible: wire @sentry/node here when SENTRY_DSN is configured (docs/RUNBOOK.md).
   const errorReporter = createLoggingErrorReporter(logger);
 
+  // Created on first use: commands that never parse text work without AI configuration.
+  const lazyParser = (store: ContentStore) => {
+    let parser: AIParser | null = null;
+    return () => (parser ??= createParser(env, store));
+  };
+
   if (options.dryRun) {
     logger.warn('dry run: using an in-memory store, nothing will be persisted');
+    const store = new InMemoryContentStore();
     return {
       env,
       logger,
       errorReporter,
-      store: new InMemoryContentStore(),
+      store,
       storeKind: 'memory',
+      parser: lazyParser(store),
       close: () => Promise.resolve(),
     };
   }
@@ -61,12 +73,14 @@ export function createRuntime(options: RuntimeOptions = {}): Runtime {
     );
   }
   const connection = connectPostgres(env.DATABASE_URL, { max: 5 });
+  const store = new PostgresContentStore(connection.db);
   return {
     env,
     logger,
     errorReporter,
-    store: new PostgresContentStore(connection.db),
+    store,
     storeKind: 'postgres',
+    parser: lazyParser(store),
     close: () => connection.close(),
   };
 }

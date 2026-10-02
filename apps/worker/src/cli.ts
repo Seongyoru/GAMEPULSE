@@ -6,6 +6,9 @@
  *   pnpm ingest --adapter <id> [--mode live] [--force] [--dry-run]
  *   pnpm ingest --all [--mode fixture]
  *   pnpm ingest:manual <file.json> [--dry-run]         administrator fallback ingestion
+ *   pnpm ingest:text <file> --game <id> --url <official URL> [--task EVENT] [--title ..]
+ *       [--published <ISO>] [--default-zone Asia/Seoul]  structure an official notice's text
+ *       with the configured parser (AI_PARSER)
  *   pnpm health:sources [--adapter <id>] [--mode live] source health checks
  *   pnpm runs [--limit 20]                            recent ingestion runs
  *   pnpm cli prune [--days 30]                         drop stored raw text older than N days
@@ -15,11 +18,13 @@ import {
   createAdapterContext,
   listAdapterDefinitions,
   ManualFileAdapter,
+  ManualTextAdapter,
   readManualFileGame,
   type AdapterHealth,
 } from '@gamepulse/collectors';
 import { fixturesAllowed } from '@gamepulse/config';
-import { COLLECTOR_MODES, type CollectorMode } from '@gamepulse/domain';
+import { COLLECTOR_MODES, isValidTimeZone, type CollectorMode } from '@gamepulse/domain';
+import { PARSE_TASKS, type ParseTask } from '@gamepulse/parsers';
 import {
   ingestFixtures,
   runIngestion,
@@ -42,6 +47,12 @@ const { positionals, values } = parseArgs({
     limit: { type: 'string' },
     days: { type: 'string' },
     'registry-only': { type: 'boolean', default: false },
+    game: { type: 'string' },
+    url: { type: 'string' },
+    task: { type: 'string' },
+    title: { type: 'string' },
+    published: { type: 'string' },
+    'default-zone': { type: 'string' },
   },
 });
 
@@ -142,6 +153,42 @@ async function ingestManual(runtime: Runtime): Promise<boolean> {
   return printReports([report]);
 }
 
+async function ingestText(runtime: Runtime): Promise<boolean> {
+  const file = rest[0];
+  if (!file || !values.game || !values.url) {
+    throw new AdapterSelectionError(
+      'Usage: pnpm ingest:text <file.txt|file.html> --game <id> --url <official notice URL> [--task EVENT|PATCH|MAINTENANCE|REWARD|CLASSIFY] [--title ..] [--published <ISO>] [--default-zone <zone>]',
+    );
+  }
+  const task = values.task ?? 'CLASSIFY';
+  if (!(PARSE_TASKS as readonly string[]).includes(task)) {
+    throw new AdapterSelectionError(`--task must be one of ${PARSE_TASKS.join(', ')}`);
+  }
+  if (values['default-zone'] && !isValidTimeZone(values['default-zone'])) {
+    throw new AdapterSelectionError(
+      `--default-zone ${values['default-zone']} is not a valid time zone`,
+    );
+  }
+  await syncRegistry(runtime.store);
+  const adapter = new ManualTextAdapter({
+    gameId: values.game,
+    filePath: file,
+    url: values.url,
+    task: task as ParseTask,
+    title: values.title ?? null,
+    publishedAt: values.published ? new Date(values.published).toISOString() : null,
+    defaultTimezone: values['default-zone'] ?? null,
+    parser: runtime.parser(),
+    clock: () => new Date(),
+  });
+  const report = await runIngestion(
+    adapter,
+    { store: runtime.store, logger: runtime.logger, errorReporter: runtime.errorReporter },
+    { trigger: 'MANUAL', force: values.force },
+  );
+  return printReports([report]);
+}
+
 async function health(runtime: Runtime): Promise<boolean> {
   const mode = parseMode(values.mode, runtime.env.COLLECTOR_MODE);
   const definitions = values.adapter
@@ -192,6 +239,7 @@ const COMMANDS: Record<string, (runtime: Runtime) => Promise<boolean>> = {
   seed,
   ingest,
   'ingest-manual': ingestManual,
+  'ingest-text': ingestText,
   health,
   runs,
   prune,

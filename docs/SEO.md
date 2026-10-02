@@ -75,5 +75,19 @@ between notices and rewards, and footer links to games and the calendar.
   live values after hydration (stable markup).
 - System font stacks (no web-font download), no client-side data fetching, no third-party scripts by default
   (analytics provider `none`, ads `off`). Ad slots reserve fixed height when enabled.
-- Targets: LCP < 2.5 s, CLS < 0.1, INP < 200 ms on mobile. Lighthouse runs against `pnpm build && pnpm start` are
-  tracked in [ROADMAP.md](ROADMAP.md) (Phase 5).
+- Targets: LCP < 2.5 s, CLS < 0.1, INP < 200 ms on mobile. LCP and CLS are asserted by `apps/web/e2e/performance.spec.ts`
+  on every CI run (production build, desktop and Pixel 7 emulation, plus TODAY with a stored MY GAMES selection).
+- Browser bundle budget: no Zod in client code (ESLint `gamepulse/browser-bundle-budget`); strict schemas live in
+  server-only modules.
+
+Measured on the production build serving fixtures (local, 2026-10-02; lab numbers, not field data):
+
+| Page                    | LCP desktop / mobile | CLS desktop / mobile | JS (gzip) |
+| ----------------------- | -------------------- | -------------------- | --------- |
+| `/`                     | 164 / 116 ms         | 0.001 / 0.000        | 189 KB    |
+| `/today`                | 184 / 200 ms         | 0.002 / 0.000        | 202 KB    |
+| `/games/genshin-impact` | 132 / 116 ms         | 0.004 / 0.000        | 230 KB    |
+| `/calendar`             | 136 / 128 ms         | 0.000 / 0.000        | 189 KB    |
+| `/patches/<slug>`       | 104 / 96 ms          | 0.000 / 0.000        | 207 KB    |
+
+Lighthouse and field data (CrUX, INP) are collected on the first real deployment (ROADMAP Phase 5).

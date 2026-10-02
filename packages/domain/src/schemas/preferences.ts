@@ -1,27 +1,35 @@
 /**
  * MY GAMES preferences. Stored locally (no account) behind the PreferencesStore port so
  * cloud synchronization can be added later without touching UI code.
+ *
+ * This module runs in the browser: it is deliberately free of Zod (which would add ~90 KB
+ * to every page). The strict schema for server-side/test use is in ./preferences-schema.
  */
-import { z } from 'zod';
 import { DEFAULT_LOCALE, DEFAULT_TIMEZONE, isSupportedLocale } from '../constants';
 import { isGameId } from '../games/registry';
 import { isValidTimeZone } from '../time/zone';
 
 export const PREFERENCES_VERSION = 1;
-const MAX_DISMISSED = 500;
+export const MAX_SELECTED_GAMES = 50;
+export const MAX_DISMISSED = 500;
 
-export const userPreferencesSchema = z.object({
-  version: z.literal(PREFERENCES_VERSION),
+export interface UserPreferences {
+  version: typeof PREFERENCES_VERSION;
   /** Ordered: the user's ordering is respected on the dashboard. */
-  selectedGameIds: z.array(z.string()).max(50),
-  timezone: z.string(),
-  locale: z.string(),
-  dismissedPulseIds: z.array(z.string()).max(MAX_DISMISSED),
+  selectedGameIds: string[];
+  timezone: string;
+  locale: string;
+  dismissedPulseIds: string[];
   /** ISO timestamp of the first MY GAMES configuration; null for anonymous defaults. */
-  configuredAt: z.iso.datetime({ offset: true }).nullable(),
-});
+  configuredAt: string | null;
+}
 
-export type UserPreferences = z.infer<typeof userPreferencesSchema>;
+const ISO_DATE_TIME =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,9})?)?(?:Z|[+-]\d{2}:?\d{2})$/;
+
+function isIsoDateTime(value: unknown): value is string {
+  return typeof value === 'string' && ISO_DATE_TIME.test(value) && !Number.isNaN(Date.parse(value));
+}
 
 export function defaultPreferences(): UserPreferences {
   return {
@@ -44,9 +52,9 @@ export function sanitizePreferences(input: unknown): UserPreferences {
   const raw = input as Record<string, unknown>;
 
   const selected = Array.isArray(raw.selectedGameIds)
-    ? [...new Set(raw.selectedGameIds.filter((id): id is string => typeof id === 'string'))].filter(
-        isGameId,
-      )
+    ? [...new Set(raw.selectedGameIds.filter((id): id is string => typeof id === 'string'))]
+        .filter(isGameId)
+        .slice(0, MAX_SELECTED_GAMES)
     : [];
   const timezone =
     typeof raw.timezone === 'string' && isValidTimeZone(raw.timezone)
@@ -59,7 +67,6 @@ export function sanitizePreferences(input: unknown): UserPreferences {
         .filter((id): id is string => typeof id === 'string')
         .slice(-MAX_DISMISSED)
     : [];
-  const configuredAtParse = z.iso.datetime({ offset: true }).safeParse(raw.configuredAt);
 
   return {
     version: PREFERENCES_VERSION,
@@ -67,7 +74,7 @@ export function sanitizePreferences(input: unknown): UserPreferences {
     timezone,
     locale,
     dismissedPulseIds: dismissed,
-    configuredAt: configuredAtParse.success ? configuredAtParse.data : null,
+    configuredAt: isIsoDateTime(raw.configuredAt) ? raw.configuredAt : null,
   };
 }
 

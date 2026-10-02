@@ -20,3 +20,16 @@ export { MockParser, type MockResponder } from './mock';
 export { extractDateRange, resolveZoneLabel, RuleBasedParser } from './rule-based';
 export { CachedParser, parserInputHash, sha256Hex, type ParseCacheStore } from './cache';
 export { htmlToText } from './html';
+export {
+  buildUserPrompt,
+  CLAUDE_PROMPT_VERSION,
+  CLAUDE_SYSTEM_PROMPT,
+  ClaudeParser,
+  claudeOutputSchema,
+  claudeOutputToExtraction,
+  DEFAULT_CLAUDE_MODEL,
+  DEFAULT_MAX_INPUT_CHARS,
+  type ClaudeEffort,
+  type ClaudeOutput,
+  type ClaudeParserOptions,
+} from './claude';

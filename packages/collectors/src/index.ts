@@ -58,6 +58,7 @@ export {
   ManualInputError,
   readManualFileGame,
 } from './manual/manual-adapter';
+export { ManualTextAdapter, type ManualTextOptions } from './manual/manual-text-adapter';
 export { fixtureSourceFor, manualSourceFor, mockSourceFor, REFERENCE_SOURCES } from './sources';
 export {
   LOSTARK_API_BASE,

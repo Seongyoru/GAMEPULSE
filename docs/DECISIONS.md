@@ -174,3 +174,25 @@ Several official APIs list maintenance notices without their window (Lost Ark, N
 MAINTENANCE with null times (never guessed) and shown in TODAY's maintenance section while the notice is fresh
 (≤ 48 h), with the publication time and a link to the official notice. Windows can be added later by manual input or
 evidence-checked parsing of the notice text.
+
+## D-028 · Claude transcribes, code computes (2026-10-02)
+
+`ClaudeParser` asks the model for verbatim time expressions, their zone labels and the wall time as written, plus
+verbatim evidence for every fact; zone resolution (same rules as `RuleBasedParser`) and UTC conversion run in code.
+This keeps arithmetic and time-zone guesses out of the model and lets the validator cross-check source text, zone
+and instants. Defaults follow current API guidance: `claude-opus-5-5`, effort `medium` (extraction), structured
+outputs via the SDK's Zod helper, server-side refusal fallback (`fallbacks: "default"`), streaming for long
+outputs, frozen cached system prompt. `stop_reason` is checked before parsing; refused or truncated output is never
+stored. All of it is configurable through `AI_*` variables.
+
+## D-029 · AI facts from operator-supplied text are UNVERIFIED (2026-10-02)
+
+`pnpm ingest:text` lets operators structure official notices GAMEPULSE may not collect. A MANUAL source normally
+yields `MANUAL_VERIFIED`, but an operator only vouches for what they type — AI output from pasted text is published
+as `UNVERIFIED`, and only when its evidence is found in that text (otherwise `REVIEW`).
+
+## D-030 · Browser bundle budget: no Zod on the client (2026-10-02)
+
+Client components import pure domain modules. `sanitizePreferences` (browser) no longer uses Zod; the strict
+`userPreferencesSchema` moved to a server/test-only module. Result: −90 KB gzipped JS on every page. An ESLint rule
+forbids importing Zod from browser-facing paths.

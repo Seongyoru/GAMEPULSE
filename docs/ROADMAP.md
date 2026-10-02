@@ -57,17 +57,30 @@ deduplicate · monitor. Research and terms findings: [research log](research/), 
 - ⏳ Before enabling a held source: verify the first live responses against the mock fixtures, enforce
   `dataRetentionDays` for TTL-bound sources, show source attribution on every card that displays its data.
 
-## Phase 4 — AI parsing ⏳
+## Phase 4 — AI parsing ✅
 
-- ⏳ ClaudeParser with strict structured output, evidence requirements, parse caching, cost controls
-- ⏳ Apply to sources where it helps: event/maintenance notices, reward descriptions, patch notes
+- ✅ `ClaudeParser` (official Anthropic SDK, structured outputs from a Zod schema, default model `claude-opus-5-5`,
+  effort `medium`, server-side refusal fallback): the model transcribes verbatim facts with evidence; zone
+  resolution and UTC conversion are deterministic; `stop_reason` is checked before anything is parsed
+- ✅ Store-backed parse cache (`parse_results`, keyed by input hash + parser version), input-size limit (no silent
+  truncation), lazy parser construction so non-AI commands need no AI configuration
+- ✅ `pnpm ingest:text` — operators structure the text of an official notice (Genshin Impact, Wuthering Waves and any
+  other source without automated collection); AI facts are published only with evidence found in the text and as
+  `UNVERIFIED`
+- ✅ Tests: pipeline tests use `MockParser`; `ClaudeParser` unit tests drive the real SDK against a stub `fetch`
+  (no network, no credentials, no paid requests)
+- ⏳ Collector use once a source is enabled: e.g. NEXON notice detail bodies → maintenance windows (`usesParser`)
 
-## Phase 5 — SEO / performance 🚧
+## Phase 5 — SEO / performance ✅
 
 - ✅ Metadata, canonical URLs, sitemap, robots.txt, OpenGraph/Twitter cards, JSON-LD, breadcrumbs, internal links
   (built with Phase 2; see [SEO.md](SEO.md))
 - ✅ Indexing policy: synthetic content `noindex` + excluded from the sitemap; sample-data deployments disallow crawling
-- ⏳ ISR tuning with real data volumes, Core Web Vitals (LCP < 2.5 s, CLS < 0.1, INP < 200 ms), Lighthouse report
+- ✅ Core Web Vitals budgets in the Playwright suite (LCP < 2.5 s, CLS < 0.1 on five page types, desktop and mobile,
+  plus personalized TODAY); measured LCP 0.1–0.2 s and CLS ≤ 0.004 on the production build (local)
+- ✅ Browser bundle budget: Zod removed from client bundles (−90 KB gzipped per page; 189–230 KB JS) and guarded by
+  an ESLint rule
+- ⏳ Lighthouse/field data (CrUX, INP) on the first real deployment; ISR tuning with real data volumes
 
 ## Phase 6 — Production readiness ⏳
 

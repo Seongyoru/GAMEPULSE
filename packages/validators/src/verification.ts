@@ -28,8 +28,14 @@ export function decidePublication(
   if (validation === 'REVIEW')
     return { store: true, status: 'PENDING_REVIEW', verification: 'UNVERIFIED' };
 
-  if (source.type === 'MANUAL')
-    return { store: true, status: 'PUBLISHED', verification: 'MANUAL_VERIFIED' };
+  if (source.type === 'MANUAL') {
+    // An operator vouches for facts they typed, not for facts an AI extracted from pasted text.
+    return {
+      store: true,
+      status: 'PUBLISHED',
+      verification: parserKind === 'ai' ? 'UNVERIFIED' : 'MANUAL_VERIFIED',
+    };
+  }
   if (
     isOfficialSourceType(source.type) &&
     (parserKind === 'deterministic' || parserKind === 'ai')

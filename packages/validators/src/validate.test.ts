@@ -262,6 +262,12 @@ describe('decidePublication', () => {
     expect(decidePublication('VALID', makeSource({ type: 'MANUAL' }), 'manual').verification).toBe(
       'MANUAL_VERIFIED',
     );
+    // AI-extracted facts from operator-pasted text are published only as unverified.
+    expect(decidePublication('VALID', makeSource({ type: 'MANUAL' }), 'ai')).toEqual({
+      store: true,
+      status: 'PUBLISHED',
+      verification: 'UNVERIFIED',
+    });
     expect(
       decidePublication('VALID', makeSource({ type: 'TRUSTED_FALLBACK' }), 'deterministic')
         .verification,

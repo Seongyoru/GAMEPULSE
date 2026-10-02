@@ -72,7 +72,19 @@ export const serverEnvSchema = z.object({
     z.enum(['mock', 'rule-based', 'claude']).default('rule-based'),
   ),
   ANTHROPIC_API_KEY: optionalString,
-  AI_MODEL: z.preprocess(emptyToUndefined, z.string().default('claude-sonnet-5-5')),
+  AI_MODEL: z.preprocess(emptyToUndefined, z.string().default('claude-opus-5-5')),
+  /** Effort for AI parsing; "none" omits the parameter (models without effort control). */
+  AI_EFFORT: z.preprocess(
+    emptyToUndefined,
+    z.enum(['low', 'medium', 'high', 'none']).default('medium'),
+  ),
+  /** Documents longer than this are rejected by the AI parser (never silently truncated). */
+  AI_MAX_INPUT_CHARS: z.preprocess(
+    emptyToUndefined,
+    z.coerce.number().int().min(1000).max(500_000).default(40_000),
+  ),
+  /** Server-side refusal fallback on the Claude API ("fallbacks": "default"). */
+  AI_SERVER_FALLBACK: booleanFlag(true),
 
   SENTRY_DSN: optionalString,
 });

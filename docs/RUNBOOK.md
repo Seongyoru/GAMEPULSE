@@ -34,6 +34,20 @@
 - Urgent manual correction → manual ingestion; note that official sources outrank manual input, so fix the parser too.
 - Pending review items: `validation_results` with status `REVIEW` and `content_items.status = 'PENDING_REVIEW'`.
 
+## AI parsing
+
+- Enable with `AI_PARSER=claude` and `ANTHROPIC_API_KEY` (worker/CLI only). Without them everything runs on the
+  deterministic parser.
+- Structure an official notice that cannot be collected automatically:
+  `pnpm ingest:text notice.txt --game genshin --url <official notice URL> --task EVENT --default-zone Asia/Seoul`
+  (`--default-zone` only when the source prints unlabeled times in that zone). Check the report: facts whose
+  evidence is missing are held as `PENDING_REVIEW`; AI facts are published as `UNVERIFIED`.
+- `ParserError: … declined the document` — the request was refused by the model and its fallback; enter the facts
+  with `pnpm ingest:manual` instead. `… above the …-character AI limit` — raise `AI_MAX_INPUT_CHARS` or split the
+  notice; the parser never truncates.
+- Re-parsing after a prompt change: bump `CLAUDE_PROMPT_VERSION` (new cache key) and re-run with `--force`.
+- Usage per call (input/output/cache tokens) is stored with each parse result (`parse_results.usage`).
+
 ## Verifying reset rules
 
 Reset rules (`packages/domain/src/games/reset-rules.ts`) are researched but `UNVERIFIED`. To verify one:

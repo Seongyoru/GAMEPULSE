@@ -86,6 +86,31 @@ export default defineConfig([
   },
 
   {
+    // Code that ships to the browser must stay free of Zod (~90 KB gzipped). Strict schemas
+    // live in modules only the server imports (e.g. schemas/preferences-schema.ts).
+    name: 'gamepulse/browser-bundle-budget',
+    files: [
+      'apps/web/src/components/**/*.{ts,tsx}',
+      'apps/web/src/lib/**/*.{ts,tsx}',
+      'packages/ui/src/**/*.{ts,tsx}',
+      'packages/domain/src/{calendar,games,reset,status,time,today,urgency}/**/*.ts',
+      'packages/domain/src/{constants,content,enums,identity,query,text}.ts',
+      'packages/domain/src/schemas/preferences.ts',
+    ],
+    ignores: ['**/*.test.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            { name: 'zod', message: 'Browser-facing code must not import Zod (bundle budget).' },
+          ],
+        },
+      ],
+    },
+  },
+
+  {
     name: 'gamepulse/tests',
     files: ['**/*.test.{ts,tsx}', '**/*.int.test.ts', 'apps/web/e2e/**/*.ts', '**/testing/**/*.ts'],
     rules: {

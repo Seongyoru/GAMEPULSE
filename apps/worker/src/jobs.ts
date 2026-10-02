@@ -72,6 +72,8 @@ export async function runAdapter(runtime: Runtime, job: IngestJobData): Promise<
     mode: job.mode,
     env: runtime.env,
     logger: runtime.logger,
+    // Only adapters that read unstructured text use it; created lazily on first use.
+    parser: definition.usesParser ? runtime.parser() : null,
   });
   return runIngestion(
     definition.create(context),

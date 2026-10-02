@@ -61,6 +61,14 @@
 Manual entries record facts (titles, dates, reward quantities) with a link to the official notice. Summaries are
 written by GAMEPULSE in its own words and kept short. Redeem codes are only published with official evidence.
 
+## AI processing
+
+- Only official, public announcement text is sent to the Anthropic API (server-side key; no user data, no MY GAMES
+  data). AI output is structured facts plus at most two-sentence summaries; evidence excerpts are short and used for
+  verification only.
+- `ingest:text` input is text an operator read on an official page; it is stored as a raw document for at most
+  `RAW_TEXT_RETENTION_DAYS` and never rendered.
+
 ## Before production (checklist)
 
 - [ ] Re-review every source's terms and robots policy; update `termsReviewedAt`.

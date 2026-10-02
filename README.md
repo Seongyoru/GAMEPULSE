@@ -34,6 +34,7 @@ in-memory store at startup (development only; refused in production).
 | `pnpm seed [--games lol,genshin]` · `pnpm seed --registry-only`     | Registry sync + fixture ingestion (idempotent) · registry only       |
 | `pnpm ingest --adapter <id> [--mode fixture\|mock\|live] [--force]` | Run one adapter through the pipeline                                 |
 | `pnpm ingest:manual <file.json>`                                    | Administrator fallback ingestion (see `fixtures/manual/`)            |
+| `pnpm ingest:text <file> --game <id> --url <official URL>`          | Structure an official notice's text with the parser (`AI_PARSER`)    |
 | `pnpm health:sources [--mode live]`                                 | Source health checks                                                 |
 | `pnpm runs`                                                         | Recent ingestion runs                                                |
 | `pnpm lint` · `pnpm typecheck` · `pnpm format:check`                | Static checks                                                        |

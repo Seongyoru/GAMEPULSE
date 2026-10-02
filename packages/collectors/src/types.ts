@@ -107,6 +107,8 @@ export interface AdapterDefinition {
   credentials: readonly CredentialName[];
   /** Suggested live polling interval for the worker scheduler; null = not scheduled. */
   scheduleEveryMinutes: number | null;
+  /** True when normalize() needs context.parser (unstructured text). */
+  usesParser?: boolean;
   create(context: AdapterContext): SourceAdapter;
 }
 

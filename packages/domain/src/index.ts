@@ -10,6 +10,7 @@ export * from './schemas/candidate';
 export * from './schemas/source';
 export * from './schemas/reset';
 export * from './schemas/preferences';
+export * from './schemas/preferences-schema';
 export * from './schemas/manual';
 
 export * from './games/types';

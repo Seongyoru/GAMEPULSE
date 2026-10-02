@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "@gamepulse/collectors": "workspace:*",
     "@gamepulse/config": "workspace:*",
     "@gamepulse/database": "workspace:*",
