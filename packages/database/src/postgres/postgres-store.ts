@@ -61,7 +61,8 @@ type ContentRow = typeof contentItems.$inferSelect;
 type RunRow = typeof ingestionRuns.$inferSelect;
 
 const dateOrNull = (value: string | null): Date | null => (value === null ? null : new Date(value));
-const isoOrNull = (value: Date | null): string | null => (value === null ? null : value.toISOString());
+const isoOrNull = (value: Date | null): string | null =>
+  value === null ? null : value.toISOString();
 const pairKey = (a: string, b: string) => `${a}\u0000${b}`;
 
 function outcomeCounts(outcomes: Array<'created' | 'updated' | 'unchanged'>): SyncCounts {
@@ -103,14 +104,26 @@ export class PostgresContentStore implements ContentStore {
 
   private async upsertLocalization(
     db: Database,
-    entry: { entityKind: string; entityId: string; locale: string; field: string; value: string; origin: 'SOURCE' | 'HUMAN' | 'MACHINE' },
+    entry: {
+      entityKind: string;
+      entityId: string;
+      locale: string;
+      field: string;
+      value: string;
+      origin: 'SOURCE' | 'HUMAN' | 'MACHINE';
+    },
     now: Date,
   ): Promise<void> {
     await db
       .insert(localizations)
       .values({ ...entry, createdAt: now, updatedAt: now })
       .onConflictDoUpdate({
-        target: [localizations.entityKind, localizations.entityId, localizations.locale, localizations.field],
+        target: [
+          localizations.entityKind,
+          localizations.entityId,
+          localizations.locale,
+          localizations.field,
+        ],
         set: { value: entry.value, origin: entry.origin, updatedAt: now },
       });
   }
@@ -121,7 +134,11 @@ export class PostgresContentStore implements ContentStore {
     const outcomes: Array<'created' | 'updated' | 'unchanged'> = [];
     for (const game of input) {
       const config: GameConfigSnapshot = {
-        regions: game.regions.map((region) => ({ id: region.id, timezone: region.timezone, isDefault: region.isDefault })),
+        regions: game.regions.map((region) => ({
+          id: region.id,
+          timezone: region.timezone,
+          isDefault: region.isDefault,
+        })),
         features: { ...game.features },
         adapters: [...game.adapters],
         accent: game.accent,
@@ -147,7 +164,10 @@ export class PostgresContentStore implements ContentStore {
         if (stableStringify(comparable) === stableStringify(values)) {
           outcomes.push('unchanged');
         } else {
-          await this.db.update(games).set({ ...values, updatedAt: now }).where(eq(games.id, game.gameId));
+          await this.db
+            .update(games)
+            .set({ ...values, updatedAt: now })
+            .where(eq(games.id, game.gameId));
           outcomes.push('updated');
         }
       }
@@ -155,7 +175,14 @@ export class PostgresContentStore implements ContentStore {
         if (name) {
           await this.upsertLocalization(
             this.db,
-            { entityKind: 'game', entityId: game.gameId, locale, field: 'name', value: name, origin: 'HUMAN' },
+            {
+              entityKind: 'game',
+              entityId: game.gameId,
+              locale,
+              field: 'name',
+              value: name,
+              origin: 'HUMAN',
+            },
             now,
           );
         }
@@ -198,7 +225,10 @@ export class PostgresContentStore implements ContentStore {
       if (stableStringify(comparable) === stableStringify(values)) {
         outcomes.push('unchanged');
       } else {
-        await this.db.update(sources).set({ ...values, updatedAt: now }).where(eq(sources.id, source.id));
+        await this.db
+          .update(sources)
+          .set({ ...values, updatedAt: now })
+          .where(eq(sources.id, source.id));
         outcomes.push('updated');
       }
     }
@@ -240,7 +270,10 @@ export class PostgresContentStore implements ContentStore {
       if (stableStringify(comparable) === stableStringify(values)) {
         outcomes.push('unchanged');
       } else {
-        await this.db.update(resetRules).set({ ...values, updatedAt: now }).where(eq(resetRules.id, rule.id));
+        await this.db
+          .update(resetRules)
+          .set({ ...values, updatedAt: now })
+          .where(eq(resetRules.id, rule.id));
         outcomes.push('updated');
       }
     }
@@ -297,13 +330,20 @@ export class PostgresContentStore implements ContentStore {
   }
 
   async listRuns(limit: number): Promise<IngestionRunRecord[]> {
-    const rows = await this.db.select().from(ingestionRuns).orderBy(desc(ingestionRuns.startedAt)).limit(limit);
+    const rows = await this.db
+      .select()
+      .from(ingestionRuns)
+      .orderBy(desc(ingestionRuns.startedAt))
+      .limit(limit);
     return rows.map(toRun);
   }
 
   // ── raw documents & parse cache ────────────────────────────────────────────
 
-  async findLatestRawDocument(sourceId: string, documentKey: string): Promise<StoredRawDocument | null> {
+  async findLatestRawDocument(
+    sourceId: string,
+    documentKey: string,
+  ): Promise<StoredRawDocument | null> {
     const [row] = await this.db
       .select({
         id: rawDocuments.id,
@@ -359,19 +399,62 @@ export class PostgresContentStore implements ContentStore {
   }
 
   async touchRawDocument(id: string, checkedAt: string): Promise<void> {
-    await this.db.update(rawDocuments).set({ lastCheckedAt: new Date(checkedAt) }).where(eq(rawDocuments.id, id));
+    await this.db
+      .update(rawDocuments)
+      .set({ lastCheckedAt: new Date(checkedAt) })
+      .where(eq(rawDocuments.id, id));
   }
 
   async pruneRawText(olderThan: string): Promise<number> {
     const rows = await this.db
       .update(rawDocuments)
       .set({ rawText: null })
-      .where(and(sql`${rawDocuments.rawText} IS NOT NULL`, lt(rawDocuments.fetchedAt, new Date(olderThan))))
+      .where(
+        and(
+          sql`${rawDocuments.rawText} IS NOT NULL`,
+          lt(rawDocuments.fetchedAt, new Date(olderThan)),
+        ),
+      )
       .returning({ id: rawDocuments.id });
     return rows.length;
   }
 
-  async findParseResult(inputHash: string, parserId: string, parserVersion: string): Promise<{ output: JsonValue | null } | null> {
+  async expireSourceData(
+    sourceId: string,
+    notSeenSince: string,
+  ): Promise<{ content: number; rawDocuments: number }> {
+    const cutoff = new Date(notSeenSince);
+    return this.db.transaction(async (tx) => {
+      // Details, patch changes and provenance rows cascade with the content item.
+      const content = await tx
+        .delete(contentItems)
+        .where(and(eq(contentItems.sourceId, sourceId), lt(contentItems.lastSeenAt, cutoff)))
+        .returning({ id: contentItems.id });
+      const expiredRaw = and(
+        eq(rawDocuments.sourceId, sourceId),
+        lt(rawDocuments.lastCheckedAt, cutoff),
+      );
+      await tx
+        .delete(parseResults)
+        .where(
+          inArray(
+            parseResults.rawDocumentId,
+            tx.select({ id: rawDocuments.id }).from(rawDocuments).where(expiredRaw),
+          ),
+        );
+      const raw = await tx
+        .delete(rawDocuments)
+        .where(expiredRaw)
+        .returning({ id: rawDocuments.id });
+      return { content: content.length, rawDocuments: raw.length };
+    });
+  }
+
+  async findParseResult(
+    inputHash: string,
+    parserId: string,
+    parserVersion: string,
+  ): Promise<{ output: JsonValue | null } | null> {
     const [row] = await this.db
       .select({ output: parseResults.output })
       .from(parseResults)
@@ -447,7 +530,10 @@ export class PostgresContentStore implements ContentStore {
       .innerJoin(sources, eq(sources.id, contentItems.sourceId));
   }
 
-  async findContentBySourceKey(sourceId: string, sourceKey: string): Promise<ExistingContentRef | null> {
+  async findContentBySourceKey(
+    sourceId: string,
+    sourceKey: string,
+  ): Promise<ExistingContentRef | null> {
     const [direct] = await this.refQuery(this.db)
       .where(and(eq(contentItems.sourceId, sourceId), eq(contentItems.sourceKey, sourceKey)))
       .limit(1);
@@ -459,11 +545,21 @@ export class PostgresContentStore implements ContentStore {
     return viaProvenance ?? null;
   }
 
-  async findContentBySemanticKey(gameId: string, semanticKey: string): Promise<ExistingContentRef[]> {
-    return this.refQuery(this.db).where(and(eq(contentItems.gameId, gameId), eq(contentItems.semanticKey, semanticKey)));
+  async findContentBySemanticKey(
+    gameId: string,
+    semanticKey: string,
+  ): Promise<ExistingContentRef[]> {
+    return this.refQuery(this.db).where(
+      and(eq(contentItems.gameId, gameId), eq(contentItems.semanticKey, semanticKey)),
+    );
   }
 
-  private async uniqueSlug(db: Database, preferred: string, contentId: string, seed: string): Promise<string> {
+  private async uniqueSlug(
+    db: Database,
+    preferred: string,
+    contentId: string,
+    seed: string,
+  ): Promise<string> {
     const [owner] = await db
       .select({ id: contentItems.id })
       .from(contentItems)
@@ -472,7 +568,11 @@ export class PostgresContentStore implements ContentStore {
     return owner ? slugWithSuffix(preferred, seed) : preferred;
   }
 
-  private async upsertProvenance(db: Database, contentId: string, input: ProvenanceInput): Promise<void> {
+  private async upsertProvenance(
+    db: Database,
+    contentId: string,
+    input: ProvenanceInput,
+  ): Promise<void> {
     const seenAt = new Date(input.seenAt);
     await db
       .insert(contentSources)
@@ -529,20 +629,34 @@ export class PostgresContentStore implements ContentStore {
       ids.set(pairKey(entry.type, entry.key), row.id);
       await this.upsertLocalization(
         db,
-        { entityKind: 'game_entity', entityId: row.id, locale, field: 'name', value: entry.name, origin: 'SOURCE' },
+        {
+          entityKind: 'game_entity',
+          entityId: row.id,
+          locale,
+          field: 'name',
+          value: entry.name,
+          origin: 'SOURCE',
+        },
         now,
       );
     }
     return ids;
   }
 
-  private async writeDetail(db: Database, contentId: string, candidate: NormalizedCandidate, now: Date): Promise<void> {
+  private async writeDetail(
+    db: Database,
+    contentId: string,
+    candidate: NormalizedCandidate,
+    now: Date,
+  ): Promise<void> {
     for (const table of [patches, events, rewards, redeemCodes, maintenances, banners]) {
       await db.delete(table).where(eq(table.contentItemId, contentId));
     }
     await db.delete(rewardItems).where(eq(rewardItems.contentItemId, contentId));
 
-    const insertRewardItems = async (items: ReadonlyArray<{ name: string; quantity: number | null; unit: string | null }>) => {
+    const insertRewardItems = async (
+      items: ReadonlyArray<{ name: string; quantity: number | null; unit: string | null }>,
+    ) => {
       if (items.length === 0) return;
       await db.insert(rewardItems).values(
         items.map((item, index) => ({
@@ -569,7 +683,11 @@ export class PostgresContentStore implements ContentStore {
           candidate.sourceLocale,
           candidate.patch.changes
             .filter((change) => change.targetKey !== null)
-            .map((change) => ({ type: change.targetType, key: change.targetKey ?? '', name: change.targetName })),
+            .map((change) => ({
+              type: change.targetType,
+              key: change.targetKey ?? '',
+              name: change.targetName,
+            })),
           now,
         );
         if (candidate.patch.changes.length > 0) {
@@ -578,7 +696,10 @@ export class PostgresContentStore implements ContentStore {
               id: randomUUID(),
               patchId: contentId,
               targetType: change.targetType,
-              targetId: change.targetKey === null ? null : (entityIds.get(pairKey(change.targetType, change.targetKey)) ?? null),
+              targetId:
+                change.targetKey === null
+                  ? null
+                  : (entityIds.get(pairKey(change.targetType, change.targetKey)) ?? null),
               targetKey: change.targetKey,
               targetName: change.targetName,
               changeType: change.changeType,
@@ -640,7 +761,11 @@ export class PostgresContentStore implements ContentStore {
           candidate.sourceLocale,
           candidate.banner.featured
             .filter((featured) => featured.entityKey !== null)
-            .map((featured) => ({ type: entityType, key: featured.entityKey ?? '', name: featured.name })),
+            .map((featured) => ({
+              type: entityType,
+              key: featured.entityKey ?? '',
+              name: featured.name,
+            })),
           now,
         );
         if (candidate.banner.featured.length > 0) {
@@ -648,7 +773,10 @@ export class PostgresContentStore implements ContentStore {
             candidate.banner.featured.map((featured, index) => ({
               id: randomUUID(),
               bannerId: contentId,
-              entityId: featured.entityKey === null ? null : (entityIds.get(pairKey(entityType, featured.entityKey)) ?? null),
+              entityId:
+                featured.entityKey === null
+                  ? null
+                  : (entityIds.get(pairKey(entityType, featured.entityKey)) ?? null),
               entityKey: featured.entityKey,
               name: featured.name,
               rarity: featured.rarity,
@@ -728,23 +856,40 @@ export class PostgresContentStore implements ContentStore {
         .from(contentItems)
         .where(
           input.supersedeId === null
-            ? and(eq(contentItems.sourceId, source.id), eq(contentItems.sourceKey, candidate.sourceKey))
+            ? and(
+                eq(contentItems.sourceId, source.id),
+                eq(contentItems.sourceKey, candidate.sourceKey),
+              )
             : eq(contentItems.id, input.supersedeId),
         )
         .limit(1)
         .for('update');
 
       if (existing) {
-        const sameSource = existing.sourceId === source.id && existing.sourceKey === candidate.sourceKey;
-        if (sameSource && existing.contentHash === input.contentHash && existing.status === input.status) {
-          await tx.update(contentItems).set({ lastSeenAt: now }).where(eq(contentItems.id, existing.id));
+        const sameSource =
+          existing.sourceId === source.id && existing.sourceKey === candidate.sourceKey;
+        if (
+          sameSource &&
+          existing.contentHash === input.contentHash &&
+          existing.status === input.status
+        ) {
+          await tx
+            .update(contentItems)
+            .set({ lastSeenAt: now })
+            .where(eq(contentItems.id, existing.id));
           await this.upsertProvenance(tx, existing.id, primary);
           return { id: existing.id, slug: existing.slug, outcome: 'unchanged' as const };
         }
         if (!sameSource) {
-          await tx.update(contentSources).set({ role: 'SUPPORTING' }).where(eq(contentSources.contentItemId, existing.id));
+          await tx
+            .update(contentSources)
+            .set({ role: 'SUPPORTING' })
+            .where(eq(contentSources.contentItemId, existing.id));
         }
-        await tx.update(contentItems).set(this.contentValues(input, now)).where(eq(contentItems.id, existing.id));
+        await tx
+          .update(contentItems)
+          .set(this.contentValues(input, now))
+          .where(eq(contentItems.id, existing.id));
         await this.writeDetail(tx, existing.id, candidate, now);
         await this.upsertProvenance(tx, existing.id, primary);
         return { id: existing.id, slug: existing.slug, outcome: 'updated' as const };
@@ -788,9 +933,17 @@ export class PostgresContentStore implements ContentStore {
   }
 
   async listContent(query: ContentQuery): Promise<ContentRecord[]> {
-    const conditions: SQL[] = [inArray(contentItems.status, [...(query.statuses ?? ['PUBLISHED'])])];
-    if (query.gameIds) conditions.push(query.gameIds.length === 0 ? sql`false` : inArray(contentItems.gameId, [...query.gameIds]));
-    if (query.types) conditions.push(query.types.length === 0 ? sql`false` : inArray(contentItems.type, [...query.types]));
+    const conditions: SQL[] = [
+      inArray(contentItems.status, [...(query.statuses ?? ['PUBLISHED'])]),
+    ];
+    if (query.gameIds)
+      conditions.push(
+        query.gameIds.length === 0 ? sql`false` : inArray(contentItems.gameId, [...query.gameIds]),
+      );
+    if (query.types)
+      conditions.push(
+        query.types.length === 0 ? sql`false` : inArray(contentItems.type, [...query.types]),
+      );
     if (query.includeSynthetic === false) conditions.push(eq(contentItems.isSynthetic, false));
     if (query.window) conditions.push(this.windowCondition(query.window));
 
@@ -816,7 +969,8 @@ export class PostgresContentStore implements ContentStore {
 
   async listResetRules(gameIds?: readonly string[]): Promise<ResetRuleDefinition[]> {
     const conditions: SQL[] = [eq(resetRules.isActive, true)];
-    if (gameIds) conditions.push(gameIds.length === 0 ? sql`false` : inArray(resetRules.gameId, [...gameIds]));
+    if (gameIds)
+      conditions.push(gameIds.length === 0 ? sql`false` : inArray(resetRules.gameId, [...gameIds]));
     const rows = await this.db
       .select()
       .from(resetRules)
@@ -888,14 +1042,26 @@ export class PostgresContentStore implements ContentStore {
     ] = await Promise.all([
       this.db.select().from(sources).where(inArray(sources.id, sourceIds)),
       this.db.select().from(patches).where(inArray(patches.contentItemId, ids)),
-      this.db.select().from(patchChanges).where(inArray(patchChanges.patchId, ids)).orderBy(asc(patchChanges.sortOrder)),
+      this.db
+        .select()
+        .from(patchChanges)
+        .where(inArray(patchChanges.patchId, ids))
+        .orderBy(asc(patchChanges.sortOrder)),
       this.db.select().from(events).where(inArray(events.contentItemId, ids)),
       this.db.select().from(rewards).where(inArray(rewards.contentItemId, ids)),
-      this.db.select().from(rewardItems).where(inArray(rewardItems.contentItemId, ids)).orderBy(asc(rewardItems.sortOrder)),
+      this.db
+        .select()
+        .from(rewardItems)
+        .where(inArray(rewardItems.contentItemId, ids))
+        .orderBy(asc(rewardItems.sortOrder)),
       this.db.select().from(redeemCodes).where(inArray(redeemCodes.contentItemId, ids)),
       this.db.select().from(maintenances).where(inArray(maintenances.contentItemId, ids)),
       this.db.select().from(banners).where(inArray(banners.contentItemId, ids)),
-      this.db.select().from(bannerFeatured).where(inArray(bannerFeatured.bannerId, ids)).orderBy(asc(bannerFeatured.sortOrder)),
+      this.db
+        .select()
+        .from(bannerFeatured)
+        .where(inArray(bannerFeatured.bannerId, ids))
+        .orderBy(asc(bannerFeatured.sortOrder)),
       this.db
         .select({
           contentItemId: contentSources.contentItemId,
@@ -920,19 +1086,26 @@ export class PostgresContentStore implements ContentStore {
     const linkedSlugs = new Map<string, string>();
     if (relatedKeys.length > 0) {
       const linked = await this.db
-        .select({ sourceId: contentItems.sourceId, sourceKey: contentItems.sourceKey, slug: contentItems.slug })
+        .select({
+          sourceId: contentItems.sourceId,
+          sourceKey: contentItems.sourceKey,
+          slug: contentItems.slug,
+        })
         .from(contentItems)
         .where(inArray(contentItems.sourceKey, [...new Set(relatedKeys)]));
       for (const row of linked) linkedSlugs.set(pairKey(row.sourceId, row.sourceKey), row.slug);
     }
     const slugFor = (contentId: string, sourceKey: string | null) => {
       const owner = rowById.get(contentId);
-      return sourceKey === null || !owner ? null : (linkedSlugs.get(pairKey(owner.sourceId, sourceKey)) ?? null);
+      return sourceKey === null || !owner
+        ? null
+        : (linkedSlugs.get(pairKey(owner.sourceId, sourceKey)) ?? null);
     };
 
     const group = <T extends { contentItemId: string }>(list: T[]) => {
       const map = new Map<string, T[]>();
-      for (const entry of list) map.set(entry.contentItemId, [...(map.get(entry.contentItemId) ?? []), entry]);
+      for (const entry of list)
+        map.set(entry.contentItemId, [...(map.get(entry.contentItemId) ?? []), entry]);
       return map;
     };
     const sourceById = new Map(sourceRows.map((row) => [row.id, row]));
@@ -944,11 +1117,17 @@ export class PostgresContentStore implements ContentStore {
     const codeById = new Map(codeRows.map((row) => [row.contentItemId, row]));
     const maintenanceById = new Map(maintenanceRows.map((row) => [row.contentItemId, row]));
     const bannerById = new Map(bannerRows.map((row) => [row.contentItemId, row]));
-    const featuredById = group(featuredRows.map((row) => ({ ...row, contentItemId: row.bannerId })));
+    const featuredById = group(
+      featuredRows.map((row) => ({ ...row, contentItemId: row.bannerId })),
+    );
     const provenanceById = group(provenanceRows);
 
     const rewardLines = (id: string) =>
-      (itemsById.get(id) ?? []).map((item) => ({ name: item.name, quantity: item.quantity, unit: item.unit }));
+      (itemsById.get(id) ?? []).map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+        unit: item.unit,
+      }));
 
     const detailFor = (row: ContentRow): ContentDetail => {
       switch (row.type) {
@@ -993,7 +1172,12 @@ export class PostgresContentStore implements ContentStore {
         }
         case 'REDEEM_CODE': {
           const code = codeById.get(row.id);
-          return { type: 'REDEEM_CODE', code: code?.code ?? '', region: code?.region ?? null, items: rewardLines(row.id) };
+          return {
+            type: 'REDEEM_CODE',
+            code: code?.code ?? '',
+            region: code?.region ?? null,
+            items: rewardLines(row.id),
+          };
         }
         case 'MAINTENANCE': {
           const maintenance = maintenanceById.get(row.id);
@@ -1070,7 +1254,11 @@ export class PostgresContentStore implements ContentStore {
             lastSeenAt: entry.lastSeenAt.toISOString(),
           }))
           .sort((a, b) =>
-            a.role === b.role ? a.firstSeenAt.localeCompare(b.firstSeenAt) : a.role === 'PRIMARY' ? -1 : 1,
+            a.role === b.role
+              ? a.firstSeenAt.localeCompare(b.firstSeenAt)
+              : a.role === 'PRIMARY'
+                ? -1
+                : 1,
           ),
         detail: detailFor(row),
       };

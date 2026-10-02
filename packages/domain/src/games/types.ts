@@ -15,10 +15,21 @@ export type GameFeature = (typeof GAME_FEATURES)[number];
 export type GameFeatures = Readonly<Record<GameFeature, FeatureSupport>>;
 
 /** Neutral accent palette keys; mapped to static Tailwind classes in the UI package. */
-export const GAME_ACCENTS = ['sky', 'amber', 'orange', 'teal', 'violet', 'rose', 'lime', 'indigo'] as const;
+export const GAME_ACCENTS = [
+  'sky',
+  'amber',
+  'orange',
+  'teal',
+  'violet',
+  'rose',
+  'lime',
+  'indigo',
+] as const;
 export type GameAccent = (typeof GAME_ACCENTS)[number];
 
-export type LocalizedText = Readonly<Partial<Record<Locale, string>>> & { readonly 'en-US': string };
+export type LocalizedText = Readonly<Partial<Record<Locale, string>>> & {
+  readonly 'en-US': string;
+};
 
 export interface GameRegion {
   /** Stable region id, e.g. "kr", "asia". */
@@ -44,12 +55,14 @@ export interface GameConfig {
   publisher: string;
   developer: string;
   officialUrl: string;
+  /** Publisher-operated domains; item source URLs must belong to one of them (subdomains allowed). */
+  officialHosts: readonly string[];
   status: GameStatus;
   /** Default display/server time zone for the primary market region. */
   timezone: string;
   regions: readonly GameRegion[];
   features: GameFeatures;
-  /** Source adapter ids able to collect content for this game. */
+  /** Automated source adapter ids (fixture/live). Manual ingestion is always available separately. */
   adapters: readonly string[];
   accent: GameAccent;
   /** Game-specific words for generic concepts, e.g. Genshin calls banners "기원". */

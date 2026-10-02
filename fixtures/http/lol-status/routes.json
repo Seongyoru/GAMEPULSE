@@ -1,0 +1,10 @@
+{
+  "description": "Synthetic response shaped like the Riot lol-status-v4 PlatformDataDto (developer.riotgames.com/apis#lol-status-v4, checked 2026-10-02). Development data for mock mode: fictional status ids and texts.",
+  "routes": [
+    {
+      "url": "https://kr.api.riotgames.com/lol/status/v4/platform-data",
+      "headers": { "content-type": "application/json;charset=utf-8" },
+      "bodyFile": "platform-data.json"
+    }
+  ]
+}

@@ -13,6 +13,11 @@ const scopedNext = nextVitals.map((config) => ({
   ...config,
   files: REACT_FILES,
   settings: { ...config.settings, next: { rootDir: 'apps/web/' } },
+  rules: {
+    ...config.rules,
+    // App Router only: this rule targets the Pages Router.
+    '@next/next/no-html-link-for-pages': 'off',
+  },
 }));
 
 export default defineConfig([
@@ -78,6 +83,31 @@ export default defineConfig([
       'apps/worker/build.mjs',
     ],
     rules: { 'no-console': 'off' },
+  },
+
+  {
+    // Code that ships to the browser must stay free of Zod (~90 KB gzipped). Strict schemas
+    // live in modules only the server imports (e.g. schemas/preferences-schema.ts).
+    name: 'gamepulse/browser-bundle-budget',
+    files: [
+      'apps/web/src/components/**/*.{ts,tsx}',
+      'apps/web/src/lib/**/*.{ts,tsx}',
+      'packages/ui/src/**/*.{ts,tsx}',
+      'packages/domain/src/{calendar,games,reset,status,time,today,urgency}/**/*.ts',
+      'packages/domain/src/{constants,content,enums,identity,query,text}.ts',
+      'packages/domain/src/schemas/preferences.ts',
+    ],
+    ignores: ['**/*.test.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            { name: 'zod', message: 'Browser-facing code must not import Zod (bundle budget).' },
+          ],
+        },
+      ],
+    },
   },
 
   {

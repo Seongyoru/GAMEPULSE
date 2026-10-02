@@ -1,0 +1,40 @@
+{
+  "gameId": "lol",
+  "note": "Riot's official 2026 patch schedule (support article, checked 2026-10-02). Riot publishes dates in Pacific Time only; the Korean deployment time is not announced, so precision is DATE.",
+  "items": [
+    {
+      "kind": "PATCH",
+      "sourceKey": "riot-patch-schedule-26-20",
+      "slugHint": "patch-26-20",
+      "title": "26.20 패치 예정",
+      "summary": "Riot 공식 패치 일정 기준 날짜입니다(미국 태평양 시간). 한국 적용 시각은 별도로 공지됩니다.",
+      "startAt": "2026-10-07T07:00:00Z",
+      "timing": {
+        "sourceTimezone": "America/Los_Angeles",
+        "startAtSource": "Oct 7, 2026 (PT)",
+        "endAtSource": null,
+        "region": "kr",
+        "precision": "DATE"
+      },
+      "sourceUrl": "https://support.riotgames.com/en-us/league-of-legends/gameplay/patch-schedule-league-of-legends",
+      "patch": { "version": "26.20", "releaseAt": "2026-10-07T07:00:00Z", "changes": [] }
+    },
+    {
+      "kind": "PATCH",
+      "sourceKey": "riot-patch-schedule-26-21",
+      "slugHint": "patch-26-21",
+      "title": "26.21 패치 예정",
+      "summary": "Riot 공식 패치 일정 기준 날짜입니다(미국 태평양 시간). 한국 적용 시각은 별도로 공지됩니다.",
+      "startAt": "2026-10-21T07:00:00Z",
+      "timing": {
+        "sourceTimezone": "America/Los_Angeles",
+        "startAtSource": "Oct 21, 2026 (PT)",
+        "endAtSource": null,
+        "region": "kr",
+        "precision": "DATE"
+      },
+      "sourceUrl": "https://support.riotgames.com/en-us/league-of-legends/gameplay/patch-schedule-league-of-legends",
+      "patch": { "version": "26.21", "releaseAt": "2026-10-21T07:00:00Z", "changes": [] }
+    }
+  ]
+}

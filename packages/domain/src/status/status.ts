@@ -3,12 +3,7 @@
  * they are never stored or updated by a cron job.
  */
 import { DAY_MS, HOUR_MS } from '../constants';
-import type {
-  ContentType,
-  MaintenanceState,
-  RewardState,
-  TimeStatus,
-} from '../enums';
+import type { ContentType, MaintenanceState, RewardState, TimeStatus } from '../enums';
 import { toEpochMs } from '../time/zone';
 
 export interface TimeWindow {
@@ -96,7 +91,8 @@ export function computeMaintenanceState(window: TimeWindow, now: Date | number):
     case 'ENDING_SOON': {
       const start = toEpochMs(window.startAt);
       const end = toEpochMs(window.endAt);
-      if (end === null && start !== null && nowMs - start > OPEN_MAINTENANCE_MAX_MS) return 'UNKNOWN';
+      if (end === null && start !== null && nowMs - start > OPEN_MAINTENANCE_MAX_MS)
+        return 'UNKNOWN';
       return 'IN_PROGRESS';
     }
   }

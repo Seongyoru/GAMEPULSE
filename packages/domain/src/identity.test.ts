@@ -19,7 +19,9 @@ describe('stableStringify', () => {
   });
 
   it('serializes dates by value', () => {
-    expect(stableStringify({ at: new Date('2026-10-02T00:00:00Z') })).toBe('{"at":"2026-10-02T00:00:00.000Z"}');
+    expect(stableStringify({ at: new Date('2026-10-02T00:00:00Z') })).toBe(
+      '{"at":"2026-10-02T00:00:00.000Z"}',
+    );
     expect(stableStringify(new Date(0))).not.toBe(stableStringify(new Date(1)));
   });
 });
@@ -41,41 +43,75 @@ describe('slugs', () => {
 
   it('builds patch slugs from the version and others from hints or keys', () => {
     expect(
-      buildContentSlug({ gameSlug: 'league-of-legends', candidate: makeCandidate('PATCH', { patch: { version: '26.19', releaseAt: null, changes: [] } }) }),
+      buildContentSlug({
+        gameSlug: 'league-of-legends',
+        candidate: makeCandidate('PATCH', {
+          patch: { version: '26.19', releaseAt: null, changes: [] },
+        }),
+      }),
     ).toBe('league-of-legends-patch-26-19');
     expect(
-      buildContentSlug({ gameSlug: 'genshin-impact', candidate: makeCandidate('EVENT', { slugHint: 'lantern-rite' }) }),
+      buildContentSlug({
+        gameSlug: 'genshin-impact',
+        candidate: makeCandidate('EVENT', { slugHint: 'lantern-rite' }),
+      }),
     ).toBe('genshin-impact-event-lantern-rite');
     expect(
-      buildContentSlug({ gameSlug: 'lost-ark', candidate: makeCandidate('EVENT', { sourceKey: '이벤트-12345' }) }),
+      buildContentSlug({
+        gameSlug: 'lost-ark',
+        candidate: makeCandidate('EVENT', { sourceKey: '이벤트-12345' }),
+      }),
     ).toBe('lost-ark-event-12345');
-    expect(buildContentSlug({ gameSlug: 'lost-ark', candidate: makeCandidate('EVENT', { sourceKey: '이벤트' }) })).toMatch(
-      /^lost-ark-event-[0-9a-f]{8}$/,
-    );
+    expect(
+      buildContentSlug({
+        gameSlug: 'lost-ark',
+        candidate: makeCandidate('EVENT', { sourceKey: '이벤트' }),
+      }),
+    ).toMatch(/^lost-ark-event-[0-9a-f]{8}$/);
   });
 
   it('adds a deterministic suffix on collision', () => {
-    expect(slugWithSuffix('genshin-impact-event-x', 'seed')).toBe(`genshin-impact-event-x-${fnv1a32('seed')}`);
+    expect(slugWithSuffix('genshin-impact-event-x', 'seed')).toBe(
+      `genshin-impact-event-x-${fnv1a32('seed')}`,
+    );
   });
 });
 
 describe('semantic identity', () => {
   it('ignores bracket tags, punctuation and case', () => {
-    expect(normalizeTitleForIdentity('[이벤트] 해등절 축제!')).toBe(normalizeTitleForIdentity('해등절 축제 (수정)'));
+    expect(normalizeTitleForIdentity('[이벤트] 해등절 축제!')).toBe(
+      normalizeTitleForIdentity('해등절 축제 (수정)'),
+    );
   });
 
   it('keys patches by version and codes by code', () => {
-    expect(semanticKey(makeCandidate('PATCH', { gameId: 'lol', patch: { version: '26.19 ', releaseAt: null, changes: [] } }))).toBe(
-      'lol:PATCH:26.19',
-    );
     expect(
-      semanticKey(makeCandidate('REDEEM_CODE', { redeemCode: { code: 'gptest-abc1', region: null, items: [] } })),
+      semanticKey(
+        makeCandidate('PATCH', {
+          gameId: 'lol',
+          patch: { version: '26.19 ', releaseAt: null, changes: [] },
+        }),
+      ),
+    ).toBe('lol:PATCH:26.19');
+    expect(
+      semanticKey(
+        makeCandidate('REDEEM_CODE', {
+          redeemCode: { code: 'gptest-abc1', region: null, items: [] },
+        }),
+      ),
     ).toBe('genshin:REDEEM_CODE:GPTEST-ABC1');
   });
 
   it('keys other content by title and UTC start day', () => {
-    const a = makeCandidate('EVENT', { title: '[이벤트] 해등절', startAt: '2026-10-08T10:00:00+08:00' });
-    const b = makeCandidate('EVENT', { title: '해등절', startAt: '2026-10-08T02:00:00Z', sourceKey: 'other' });
+    const a = makeCandidate('EVENT', {
+      title: '[이벤트] 해등절',
+      startAt: '2026-10-08T10:00:00+08:00',
+    });
+    const b = makeCandidate('EVENT', {
+      title: '해등절',
+      startAt: '2026-10-08T02:00:00Z',
+      sourceKey: 'other',
+    });
     expect(semanticKey(a)).toBe(semanticKey(b));
     expect(semanticKey(a)).toBe('genshin:EVENT:해등절:2026-10-08');
   });

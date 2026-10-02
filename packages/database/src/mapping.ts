@@ -35,7 +35,8 @@ export function relatedSourceKeys(candidate: NormalizedCandidate): {
 } {
   return {
     related: candidate.kind === 'REWARD' ? candidate.reward.relatedSourceKey : null,
-    compensation: candidate.kind === 'MAINTENANCE' ? candidate.maintenance.compensationSourceKey : null,
+    compensation:
+      candidate.kind === 'MAINTENANCE' ? candidate.maintenance.compensationSourceKey : null,
   };
 }
 

@@ -1,0 +1,26 @@
+[
+  {
+    "Title": "[샘플] 가을 수확 출석 이벤트",
+    "Thumbnail": "",
+    "Link": "https://lostark.game.onstove.com/News/Event/Now",
+    "StartDate": "2026-09-24T10:00:00",
+    "EndDate": "2026-10-22T06:00:00",
+    "RewardDate": "2026-10-29T06:00:00"
+  },
+  {
+    "Title": "[샘플] 호박 등불 축제",
+    "Thumbnail": "",
+    "Link": "https://lostark.game.onstove.com/News/Event/Now",
+    "StartDate": "2026-10-08T10:00:00",
+    "EndDate": "2026-11-05T06:00:00",
+    "RewardDate": null
+  },
+  {
+    "Title": "[샘플] 상시 성장 지원 프로그램",
+    "Thumbnail": "",
+    "Link": "https://lostark.game.onstove.com/News/Event/Now",
+    "StartDate": "2026-07-01T10:00:00",
+    "EndDate": "9999-12-31T23:59:59",
+    "RewardDate": null
+  }
+]

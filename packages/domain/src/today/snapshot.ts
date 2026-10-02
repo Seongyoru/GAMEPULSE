@@ -26,7 +26,9 @@ export interface GameSnapshot {
   currentEvents: number;
   endingSoonEvent: (SnapshotLink & { endAt: string }) | null;
   currentBanner: (SnapshotLink & { endAt: string | null; featured: string[] }) | null;
-  maintenance: (SnapshotLink & { state: MaintenanceState; startAt: string | null; endAt: string | null }) | null;
+  maintenance:
+    | (SnapshotLink & { state: MaintenanceState; startAt: string | null; endAt: string | null })
+    | null;
   lastUpdatedAt: string | null;
 }
 

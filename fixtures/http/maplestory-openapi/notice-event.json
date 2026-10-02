@@ -1,0 +1,20 @@
+{
+  "event_notice": [
+    {
+      "title": "[샘플] 버닝 월드 이벤트",
+      "url": "https://maplestory.nexon.com/News/Event",
+      "notice_id": 900101,
+      "date": "2026-09-25T10:00+09:00",
+      "date_event_start": "2026-09-25T10:00+09:00",
+      "date_event_end": "2026-10-22T23:59+09:00"
+    },
+    {
+      "title": "[샘플] 주말 출석 체크",
+      "url": "https://maplestory.nexon.com/News/Event",
+      "notice_id": 900102,
+      "date": "2026-10-01T10:00+09:00",
+      "date_event_start": "2026-10-03T00:00+09:00",
+      "date_event_end": "2026-10-05T23:59+09:00"
+    }
+  ]
+}

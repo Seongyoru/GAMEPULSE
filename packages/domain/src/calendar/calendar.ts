@@ -46,7 +46,13 @@ export interface CalendarMonth {
   weeks: CalendarDay[][];
 }
 
-const RANGE_TYPES: readonly ContentType[] = ['EVENT', 'BANNER', 'REWARD', 'REDEEM_CODE', 'MAINTENANCE'];
+const RANGE_TYPES: readonly ContentType[] = [
+  'EVENT',
+  'BANNER',
+  'REWARD',
+  'REDEEM_CODE',
+  'MAINTENANCE',
+];
 
 /** Calendar entries for every item/reset in [from, to). */
 export function collectCalendarEntries(input: {
@@ -102,7 +108,9 @@ export function collectCalendarEntries(input: {
     }
   }
 
-  return entries.sort((a, b) => Date.parse(a.at) - Date.parse(b.at) || a.title.localeCompare(b.title));
+  return entries.sort(
+    (a, b) => Date.parse(a.at) - Date.parse(b.at) || a.title.localeCompare(b.title),
+  );
 }
 
 /**

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { hoursFrom, TEST_NOW } from '../testing/factories';
-import { compareUrgency, computeItemUrgency, computeResetUrgency, type UrgencyInput } from './urgency';
+import {
+  compareUrgency,
+  computeItemUrgency,
+  computeResetUrgency,
+  type UrgencyInput,
+} from './urgency';
 
 const now = TEST_NOW;
 
@@ -19,14 +24,35 @@ function input(overrides: Partial<UrgencyInput>): UrgencyInput {
 describe('computeItemUrgency', () => {
   it('follows the spec ordering', () => {
     const cases: Array<[UrgencyInput, string]> = [
-      [input({ type: 'MAINTENANCE', startAt: hoursFrom(now, -1), endAt: hoursFrom(now, 2) }), 'MAINTENANCE_LIVE'],
-      [input({ type: 'EVENT', startAt: hoursFrom(now, -100), endAt: hoursFrom(now, 5) }), 'EXPIRES_6H'],
-      [input({ type: 'REWARD', startAt: hoursFrom(now, -1), endAt: hoursFrom(now, 72) }), 'CLAIMABLE_REWARD'],
-      [input({ type: 'BANNER', startAt: hoursFrom(now, -100), endAt: hoursFrom(now, 20) }), 'EXPIRES_24H'],
+      [
+        input({ type: 'MAINTENANCE', startAt: hoursFrom(now, -1), endAt: hoursFrom(now, 2) }),
+        'MAINTENANCE_LIVE',
+      ],
+      [
+        input({ type: 'EVENT', startAt: hoursFrom(now, -100), endAt: hoursFrom(now, 5) }),
+        'EXPIRES_6H',
+      ],
+      [
+        input({ type: 'REWARD', startAt: hoursFrom(now, -1), endAt: hoursFrom(now, 72) }),
+        'CLAIMABLE_REWARD',
+      ],
+      [
+        input({ type: 'BANNER', startAt: hoursFrom(now, -100), endAt: hoursFrom(now, 20) }),
+        'EXPIRES_24H',
+      ],
       [input({ type: 'PATCH', startAt: hoursFrom(now, -24) }), 'NEW_PATCH'],
-      [input({ type: 'EVENT', startAt: hoursFrom(now, -24), endAt: hoursFrom(now, 200) }), 'NEW_EVENT'],
-      [input({ type: 'EVENT', startAt: hoursFrom(now, 24), endAt: hoursFrom(now, 200) }), 'UPCOMING'],
-      [input({ type: 'EVENT', startAt: hoursFrom(now, -100), endAt: hoursFrom(now, 200) }), 'ONGOING'],
+      [
+        input({ type: 'EVENT', startAt: hoursFrom(now, -24), endAt: hoursFrom(now, 200) }),
+        'NEW_EVENT',
+      ],
+      [
+        input({ type: 'EVENT', startAt: hoursFrom(now, 24), endAt: hoursFrom(now, 200) }),
+        'UPCOMING',
+      ],
+      [
+        input({ type: 'EVENT', startAt: hoursFrom(now, -100), endAt: hoursFrom(now, 200) }),
+        'ONGOING',
+      ],
       [input({ type: 'EVENT', startAt: hoursFrom(now, -100), endAt: hoursFrom(now, -1) }), 'NONE'],
     ];
     for (const [item, reason] of cases) {
@@ -35,12 +61,17 @@ describe('computeItemUrgency', () => {
   });
 
   it('expiring rewards outrank merely claimable ones', () => {
-    const expiring = computeItemUrgency(input({ type: 'REDEEM_CODE', startAt: hoursFrom(now, -5), endAt: hoursFrom(now, 3) }), now);
+    const expiring = computeItemUrgency(
+      input({ type: 'REDEEM_CODE', startAt: hoursFrom(now, -5), endAt: hoursFrom(now, 3) }),
+      now,
+    );
     expect(expiring.reason).toBe('EXPIRES_6H');
   });
 
   it('old patches are not "new"', () => {
-    expect(computeItemUrgency(input({ type: 'PATCH', startAt: hoursFrom(now, -100) }), now).reason).toBe('ONGOING');
+    expect(
+      computeItemUrgency(input({ type: 'PATCH', startAt: hoursFrom(now, -100) }), now).reason,
+    ).toBe('ONGOING');
   });
 });
 

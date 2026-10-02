@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { contentPath, routeFamilyForType, toPulseItem } from './content';
 import { CONTENT_TYPES } from './enums';
-import { GAMES, getGameBySlug, isGameId, requireGame } from './games/registry';
+import { GAMES, getGameBySlug, isFeatureAvailable, isGameId, requireGame } from './games/registry';
+import { RESET_RULES } from './games/reset-rules';
+import { validateSchedule } from './reset/engine';
+import { resetRuleDefinitionSchema } from './schemas/reset';
 import { applyContentQuery, matchesWindow } from './query';
 import { sanitizePlainText, truncateText } from './text';
 import { hoursFrom, makeContentRecord, TEST_NOW } from './testing/factories';
@@ -25,6 +28,26 @@ describe('game registry', () => {
     expect(getGameBySlug('genshin-impact')?.gameId).toBe('genshin');
     expect(isGameId('wuwa')).toBe(true);
     expect(() => requireGame('nope')).toThrow();
+  });
+});
+
+describe('reset rule registry', () => {
+  it('contains valid, computable rules for games that support resets', () => {
+    expect(new Set(RESET_RULES.map((rule) => rule.id)).size).toBe(RESET_RULES.length);
+    for (const rule of RESET_RULES) {
+      expect(resetRuleDefinitionSchema.safeParse(rule).success, rule.id).toBe(true);
+      expect(validateSchedule(rule, new Date('2026-10-02T00:00:00Z')), rule.id).toEqual([]);
+      expect(isFeatureAvailable(requireGame(rule.gameId), 'resets'), rule.id).toBe(true);
+    }
+  });
+
+  it('marks every researched rule as unverified until a human confirms it', () => {
+    expect(RESET_RULES.every((rule) => rule.verification === 'UNVERIFIED')).toBe(true);
+    expect(
+      RESET_RULES.filter((rule) => rule.isPrimary)
+        .map((rule) => rule.gameId)
+        .sort(),
+    ).toEqual(['genshin', 'lostark', 'maplestory', 'wuwa']);
   });
 });
 
@@ -71,39 +94,86 @@ describe('content query semantics', () => {
   const window = { from: hoursFrom(TEST_NOW, -24), to: hoursFrom(TEST_NOW, 24) };
 
   it('matches point-in-time types by effective time and ranged types by overlap', () => {
-    expect(matchesWindow(makeContentRecord({ type: 'PATCH', startAt: hoursFrom(TEST_NOW, -2) }), window)).toBe(true);
-    expect(matchesWindow(makeContentRecord({ type: 'PATCH', startAt: hoursFrom(TEST_NOW, -48) }), window)).toBe(false);
     expect(
-      matchesWindow(makeContentRecord({ type: 'EVENT', startAt: hoursFrom(TEST_NOW, -500), endAt: hoursFrom(TEST_NOW, 500) }), window),
+      matchesWindow(makeContentRecord({ type: 'PATCH', startAt: hoursFrom(TEST_NOW, -2) }), window),
     ).toBe(true);
     expect(
-      matchesWindow(makeContentRecord({ type: 'EVENT', startAt: hoursFrom(TEST_NOW, -500), endAt: hoursFrom(TEST_NOW, -30) }), window),
+      matchesWindow(
+        makeContentRecord({ type: 'PATCH', startAt: hoursFrom(TEST_NOW, -48) }),
+        window,
+      ),
     ).toBe(false);
-    expect(matchesWindow(makeContentRecord({ type: 'EVENT', startAt: hoursFrom(TEST_NOW, -500), endAt: null }), window)).toBe(true);
+    expect(
+      matchesWindow(
+        makeContentRecord({
+          type: 'EVENT',
+          startAt: hoursFrom(TEST_NOW, -500),
+          endAt: hoursFrom(TEST_NOW, 500),
+        }),
+        window,
+      ),
+    ).toBe(true);
+    expect(
+      matchesWindow(
+        makeContentRecord({
+          type: 'EVENT',
+          startAt: hoursFrom(TEST_NOW, -500),
+          endAt: hoursFrom(TEST_NOW, -30),
+        }),
+        window,
+      ),
+    ).toBe(false);
+    expect(
+      matchesWindow(
+        makeContentRecord({ type: 'EVENT', startAt: hoursFrom(TEST_NOW, -500), endAt: null }),
+        window,
+      ),
+    ).toBe(true);
   });
 
   it('filters, orders and limits', () => {
     const records = [
       makeContentRecord({ id: 'a', type: 'EVENT', startAt: hoursFrom(TEST_NOW, -1) }),
-      makeContentRecord({ id: 'b', type: 'EVENT', startAt: hoursFrom(TEST_NOW, -3), gameId: 'lol' }),
-      makeContentRecord({ id: 'c', type: 'EVENT', startAt: hoursFrom(TEST_NOW, -2), status: 'PENDING_REVIEW' }),
-      makeContentRecord({ id: 'd', type: 'PATCH', startAt: hoursFrom(TEST_NOW, -4), isSynthetic: false }),
+      makeContentRecord({
+        id: 'b',
+        type: 'EVENT',
+        startAt: hoursFrom(TEST_NOW, -3),
+        gameId: 'lol',
+      }),
+      makeContentRecord({
+        id: 'c',
+        type: 'EVENT',
+        startAt: hoursFrom(TEST_NOW, -2),
+        status: 'PENDING_REVIEW',
+      }),
+      makeContentRecord({
+        id: 'd',
+        type: 'PATCH',
+        startAt: hoursFrom(TEST_NOW, -4),
+        isSynthetic: false,
+      }),
     ];
     expect(applyContentQuery(records, {}).map((r) => r.id)).toEqual(['a', 'b', 'd']);
-    expect(applyContentQuery(records, { order: 'start' }).map((r) => r.id)).toEqual(['d', 'b', 'a']);
+    expect(applyContentQuery(records, { order: 'start' }).map((r) => r.id)).toEqual([
+      'd',
+      'b',
+      'a',
+    ]);
     expect(applyContentQuery(records, { gameIds: ['lol'] }).map((r) => r.id)).toEqual(['b']);
     expect(applyContentQuery(records, { types: ['PATCH'] }).map((r) => r.id)).toEqual(['d']);
     expect(applyContentQuery(records, { includeSynthetic: false }).map((r) => r.id)).toEqual(['d']);
-    expect(applyContentQuery(records, { statuses: ['PENDING_REVIEW'] }).map((r) => r.id)).toEqual(['c']);
+    expect(applyContentQuery(records, { statuses: ['PENDING_REVIEW'] }).map((r) => r.id)).toEqual([
+      'c',
+    ]);
     expect(applyContentQuery(records, { limit: 1 }).map((r) => r.id)).toEqual(['a']);
   });
 });
 
 describe('text sanitization', () => {
   it('strips markup, scripts, entities and control characters', () => {
-    expect(sanitizePlainText('<p>Hello&nbsp;<b>world</b></p><script>alert(1)</script>\u0007 &amp; more')).toBe(
-      'Hello world & more',
-    );
+    expect(
+      sanitizePlainText('<p>Hello&nbsp;<b>world</b></p><script>alert(1)</script>\u0007 &amp; more'),
+    ).toBe('Hello world & more');
     expect(sanitizePlainText('line<br>break')).toBe('line\nbreak');
     expect(sanitizePlainText('&#xD55C;&#44544;')).toBe('한글');
   });

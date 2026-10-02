@@ -10,12 +10,7 @@ import type { ContentType } from './enums';
 import type { NormalizedCandidate } from './schemas/candidate';
 
 export type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonValue[]
-  | { [key: string]: JsonValue };
+  string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
 /** Deterministic JSON serialization with sorted object keys (undefined values are dropped). */
 export function stableStringify(value: unknown): string {
@@ -80,7 +75,8 @@ export function buildContentSlug(input: {
     const version = slugify(candidate.patch.version, 40);
     if (version) return `${gameSlug}-${kind}-${version}`;
   }
-  const base = slugify(candidate.slugHint ?? candidate.sourceKey, 72) || fnv1a32(candidate.sourceKey);
+  const base =
+    slugify(candidate.slugHint ?? candidate.sourceKey, 72) || fnv1a32(candidate.sourceKey);
   return `${gameSlug}-${kind}-${base}`.slice(0, 120).replace(/-+$/g, '');
 }
 

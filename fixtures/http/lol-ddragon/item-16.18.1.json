@@ -1,0 +1,85 @@
+{
+  "type": "item",
+  "version": "16.18.1",
+  "data": {
+    "3865": {
+      "name": "세계 지도집",
+      "gold": {
+        "base": 400,
+        "purchasable": true,
+        "total": 400,
+        "sell": 160
+      },
+      "stats": {
+        "FlatHPPoolMod": 30
+      },
+      "maps": {
+        "11": true,
+        "12": false,
+        "22": false,
+        "30": false,
+        "453": true
+      }
+    },
+    "1001": {
+      "name": "장화",
+      "gold": {
+        "base": 300,
+        "purchasable": true,
+        "total": 300,
+        "sell": 210
+      },
+      "stats": {
+        "FlatMovementSpeedMod": 25
+      },
+      "maps": {
+        "11": true,
+        "12": true,
+        "22": false,
+        "30": false,
+        "453": true
+      }
+    },
+    "3031": {
+      "name": "무한의 대검",
+      "gold": {
+        "base": 725,
+        "purchasable": true,
+        "total": 3500,
+        "sell": 2450
+      },
+      "stats": {
+        "FlatCritChanceMod": 0.25,
+        "FlatPhysicalDamageMod": 75
+      },
+      "maps": {
+        "11": true,
+        "12": true,
+        "22": false,
+        "30": false,
+        "453": true
+      }
+    },
+    "3153": {
+      "name": "몰락한 왕의 검",
+      "gold": {
+        "base": 725,
+        "purchasable": true,
+        "total": 3200,
+        "sell": 2240
+      },
+      "stats": {
+        "FlatPhysicalDamageMod": 40,
+        "PercentAttackSpeedMod": 0.25,
+        "PercentLifeStealMod": 0.1
+      },
+      "maps": {
+        "11": true,
+        "12": true,
+        "22": false,
+        "30": false,
+        "453": true
+      }
+    }
+  }
+}

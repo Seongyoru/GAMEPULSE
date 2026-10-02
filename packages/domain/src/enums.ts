@@ -82,7 +82,13 @@ export type ContentStatus = (typeof CONTENT_STATUSES)[number];
 export const TIME_STATUSES = ['UPCOMING', 'LIVE', 'ENDING_SOON', 'ENDED', 'UNKNOWN'] as const;
 export type TimeStatus = (typeof TIME_STATUSES)[number];
 
-export const REWARD_STATES = ['AVAILABLE', 'UPCOMING', 'ENDING_SOON', 'EXPIRED', 'UNKNOWN'] as const;
+export const REWARD_STATES = [
+  'AVAILABLE',
+  'UPCOMING',
+  'ENDING_SOON',
+  'EXPIRED',
+  'UNKNOWN',
+] as const;
 export type RewardState = (typeof REWARD_STATES)[number];
 
 export const MAINTENANCE_STATES = ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'UNKNOWN'] as const;
@@ -161,7 +167,14 @@ export const INGESTION_RUN_STATUSES = [
 ] as const;
 export type IngestionRunStatus = (typeof INGESTION_RUN_STATUSES)[number];
 
-export const INGESTION_TRIGGERS = ['CLI', 'SCHEDULE', 'MANUAL', 'SEED', 'TEST', 'WEB_FIXTURES'] as const;
+export const INGESTION_TRIGGERS = [
+  'CLI',
+  'SCHEDULE',
+  'MANUAL',
+  'SEED',
+  'TEST',
+  'WEB_FIXTURES',
+] as const;
 export type IngestionTrigger = (typeof INGESTION_TRIGGERS)[number];
 
 /**

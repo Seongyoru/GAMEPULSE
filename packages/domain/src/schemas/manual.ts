@@ -21,7 +21,11 @@ export interface ManualItemError {
 }
 
 /** Fills defaults for convenience fields; required facts (kind, title, sourceUrl…) stay required. */
-export function completeManualItem(raw: Record<string, unknown>, gameId: string, locale: string): unknown {
+export function completeManualItem(
+  raw: Record<string, unknown>,
+  gameId: string,
+  locale: string,
+): unknown {
   const draft: Record<string, unknown> = {
     slugHint: null,
     summary: null,
@@ -39,7 +43,11 @@ export function completeManualItem(raw: Record<string, unknown>, gameId: string,
     gameId,
   };
   if (typeof draft.sourceKey !== 'string' || draft.sourceKey === '') {
-    const identity = stableStringify({ kind: draft.kind, title: draft.title, startAt: draft.startAt });
+    const identity = stableStringify({
+      kind: draft.kind,
+      title: draft.title,
+      startAt: draft.startAt,
+    });
     draft.sourceKey = `manual-${fnv1a32(identity)}`;
   }
   return draft;
@@ -52,13 +60,17 @@ export function parseManualItems(
   const candidates: NormalizedCandidate[] = [];
   const errors: ManualItemError[] = [];
   file.items.forEach((raw, index) => {
-    const parsed = normalizedCandidateSchema.safeParse(completeManualItem(raw, file.gameId, locale));
+    const parsed = normalizedCandidateSchema.safeParse(
+      completeManualItem(raw, file.gameId, locale),
+    );
     if (parsed.success) {
       candidates.push(parsed.data);
     } else {
       errors.push({
         index,
-        issues: parsed.error.issues.map((issue) => `${issue.path.join('.') || '(root)'}: ${issue.message}`),
+        issues: parsed.error.issues.map(
+          (issue) => `${issue.path.join('.') || '(root)'}: ${issue.message}`,
+        ),
       });
     }
   });

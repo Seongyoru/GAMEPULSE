@@ -12,16 +12,16 @@
 - Base URL `https://open.api.nexon.com`; all `GET`; header `x-nxopen-api-key`.
 - List endpoints take no parameters and return the 20 most recent posts; detail endpoints need `notice_id` (int64).
 
-| Path | Response fields |
-| --- | --- |
-| `/maplestory/v1/notice` | `notice[]`: `title`, `url`, `notice_id`, `date` |
-| `/maplestory/v1/notice/detail` | `title`, `url`, `contents`, `date` |
-| `/maplestory/v1/notice-update` | `update_notice[]`: `title`, `url`, `notice_id`, `date` |
-| `/maplestory/v1/notice-update/detail` | `title`, `url`, `contents`, `date` |
-| `/maplestory/v1/notice-event` | `event_notice[]`: `title`, `url`, `notice_id`, `date`, `date_event_start`, `date_event_end` |
-| `/maplestory/v1/notice-event/detail` | `title`, `url`, `contents`, `date`, `date_event_start`, `date_event_end` |
-| `/maplestory/v1/notice-cashshop` | `cashshop_notice[]`: `title`, `url`, `notice_id`, `date`, `date_sale_start`, `date_sale_end`, `ongoing_flag` |
-| `/maplestory/v1/notice-cashshop/detail` | `title`, `url`, `contents`, `date`, `date_sale_start`, `date_sale_end`, `ongoing_flag` |
+| Path                                    | Response fields                                                                                              |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `/maplestory/v1/notice`                 | `notice[]`: `title`, `url`, `notice_id`, `date`                                                              |
+| `/maplestory/v1/notice/detail`          | `title`, `url`, `contents`, `date`                                                                           |
+| `/maplestory/v1/notice-update`          | `update_notice[]`: `title`, `url`, `notice_id`, `date`                                                       |
+| `/maplestory/v1/notice-update/detail`   | `title`, `url`, `contents`, `date`                                                                           |
+| `/maplestory/v1/notice-event`           | `event_notice[]`: `title`, `url`, `notice_id`, `date`, `date_event_start`, `date_event_end`                  |
+| `/maplestory/v1/notice-event/detail`    | `title`, `url`, `contents`, `date`, `date_event_start`, `date_event_end`                                     |
+| `/maplestory/v1/notice-cashshop`        | `cashshop_notice[]`: `title`, `url`, `notice_id`, `date`, `date_sale_start`, `date_sale_end`, `ongoing_flag` |
+| `/maplestory/v1/notice-cashshop/detail` | `title`, `url`, `contents`, `date`, `date_sale_start`, `date_sale_end`, `ongoing_flag`                       |
 
 - Dates are KST strings with an offset, e.g. `"2023-12-21T00:00+09:00"`; `notice_id` is a number; `ongoing_flag` is
   a string. The spec recommends real-time lookups or at least a daily batch.

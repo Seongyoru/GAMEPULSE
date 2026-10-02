@@ -18,6 +18,7 @@
     "@gamepulse/domain": "workspace:*",
     "@gamepulse/ingestion": "workspace:*",
     "@gamepulse/observability": "workspace:*",
+    "@gamepulse/parsers": "workspace:*",
     "@gamepulse/ui": "workspace:*",
     "@gamepulse/validators": "workspace:*",
     "next": "16.3.8",

@@ -1,0 +1,183 @@
+{
+  "gameId": "maplestory",
+  "timezone": "Asia/Seoul",
+  "locale": "ko-KR",
+  "region": "kr",
+  "documents": [
+    {
+      "externalId": "maple-fx-update-new-class",
+      "url": "https://maplestory.nexon.com/News/Update",
+      "publishedAt": "@-1d/10:00",
+      "items": [
+        {
+          "key": "update",
+          "kind": "UPDATE",
+          "slugHint": "new-class-update",
+          "title": "신규 직업 출시 업데이트",
+          "summary": "신규 직업과 전용 성장 지원 이벤트가 추가되었습니다. (샘플 데이터)",
+          "startAt": "@-1d/10:00",
+          "priority": 70,
+          "timing": "auto"
+        }
+      ]
+    },
+    {
+      "externalId": "maple-fx-maintenance-weekly",
+      "url": "https://maplestory.nexon.com/News/Notice",
+      "publishedAt": "@-1d/15:00",
+      "items": [
+        {
+          "key": "maintenance",
+          "kind": "MAINTENANCE",
+          "slugHint": "patch-day-maintenance",
+          "title": "정기 점검 안내",
+          "summary": "점검 시간 동안 모든 월드 접속이 불가합니다. (샘플 데이터)",
+          "startAt": "@+6d/07:00",
+          "endAt": "@+6d/13:00",
+          "timing": "auto",
+          "maintenance": {
+            "maintenanceType": "SCHEDULED",
+            "affectedServers": ["전 월드"],
+            "compensationSourceKey": null
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "maple-fx-event-sunday",
+      "url": "https://maplestory.nexon.com/News/Event",
+      "publishedAt": "@-1d/18:00",
+      "items": [
+        {
+          "key": "event",
+          "kind": "EVENT",
+          "slugHint": "sunday-special",
+          "title": "선데이 스페셜",
+          "summary": "하루 동안 경험치와 드롭률 혜택이 적용됩니다. (샘플 데이터)",
+          "startAt": "@+2d/00:00",
+          "endAt": "@+2d/23:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "경험치 혜택",
+            "rewards": []
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "maple-fx-event-burning",
+      "url": "https://maplestory.nexon.com/News/Event",
+      "publishedAt": "@-5d/10:00",
+      "items": [
+        {
+          "key": "event",
+          "kind": "EVENT",
+          "slugHint": "burning-world",
+          "title": "버닝 월드 이벤트",
+          "summary": "신규 캐릭터 성장 속도가 빨라집니다. (샘플 데이터)",
+          "startAt": "@-5d/10:00",
+          "endAt": "@+20d/23:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": "신규 캐릭터",
+            "rewardSummary": "레벨 달성 보상",
+            "rewards": []
+          }
+        },
+        {
+          "key": "box",
+          "kind": "REWARD",
+          "slugHint": "burning-login-box",
+          "title": "접속 보상 상자",
+          "startAt": "@-1d/00:00",
+          "endAt": "@+13d/23:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "LOGIN",
+            "howToClaim": "접속 30분 후 별 아이콘에서 수령",
+            "items": [{ "name": "성장의 비약", "quantity": 1, "unit": "개" }],
+            "relatedSourceKey": "maple-fx-event-burning#event"
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "maple-fx-event-checkin",
+      "url": "https://maplestory.nexon.com/News/Event",
+      "publishedAt": "@-25d/10:00",
+      "items": [
+        {
+          "key": "event",
+          "kind": "EVENT",
+          "slugHint": "daily-check-in",
+          "title": "출석 체크 이벤트",
+          "summary": "마지막 출석 보상을 놓치지 마세요. (샘플 데이터)",
+          "startAt": "@-25d/10:00",
+          "endAt": "@+1d/23:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "LOGIN",
+            "eligibility": null,
+            "rewardSummary": "출석 코인",
+            "rewards": [{ "name": "출석 코인", "quantity": 30, "unit": "개" }]
+          }
+        },
+        {
+          "key": "shop",
+          "kind": "REWARD",
+          "slugHint": "coin-shop-exchange",
+          "title": "출석 코인샵 교환",
+          "summary": "교환 마감이 가까워졌습니다. (샘플 데이터)",
+          "startAt": "@-5d/10:00",
+          "endAt": "@+2d/23:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "EVENT",
+            "howToClaim": "이벤트 코인샵에서 교환",
+            "items": [{ "name": "강화 주문서", "quantity": 5, "unit": "개" }],
+            "relatedSourceKey": "maple-fx-event-checkin#event"
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "maple-fx-coupon",
+      "url": "https://maplestory.nexon.com/News/Notice",
+      "publishedAt": "@-2d",
+      "items": [
+        {
+          "key": "coupon",
+          "slugHint": "test-coupon-code",
+          "kind": "REDEEM_CODE",
+          "title": "테스트용 쿠폰 코드 (사용 불가)",
+          "summary": "개발 환경 확인용 가짜 코드입니다. 실제 게임에서 사용할 수 없습니다.",
+          "startAt": "@-2d",
+          "endAt": "@+20d/23:59",
+          "redeemCode": {
+            "code": "GPTEST-MAPLE-0001",
+            "region": "kr",
+            "items": [{ "name": "메이플 포인트 상자", "quantity": 1, "unit": "개" }]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "maple-fx-notice-policy",
+      "url": "https://maplestory.nexon.com/News/Notice",
+      "publishedAt": "@-3d/14:00",
+      "items": [
+        {
+          "key": "notice",
+          "kind": "ANNOUNCEMENT",
+          "slugHint": "operation-policy-notice",
+          "title": "운영정책 변경 안내",
+          "summary": "다음 달부터 적용되는 운영정책 변경 사항입니다. (샘플 데이터)",
+          "priority": 60
+        }
+      ]
+    }
+  ]
+}

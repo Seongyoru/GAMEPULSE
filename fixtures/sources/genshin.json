@@ -1,0 +1,315 @@
+{
+  "gameId": "genshin",
+  "timezone": "UTC+8",
+  "locale": "ko-KR",
+  "region": "asia",
+  "documents": [
+    {
+      "externalId": "genshin-fx-version-7-1",
+      "url": "https://genshin.hoyoverse.com/ko/news",
+      "publishedAt": "@-10d/11:00",
+      "items": [
+        {
+          "key": "patch",
+          "kind": "PATCH",
+          "title": "7.1 버전 업데이트",
+          "summary": "신규 캐릭터와 지역 이벤트, 편의성 개선이 포함된 버전 업데이트입니다. (샘플 데이터)",
+          "startAt": "@-9d/11:00",
+          "timing": "auto",
+          "patch": {
+            "version": "7.1",
+            "releaseAt": "@-9d/11:00",
+            "changes": [
+              {
+                "targetType": "CHARACTER",
+                "targetKey": "starlight-songstress",
+                "targetName": "별빛의 가희 (가상 캐릭터)",
+                "changeType": "NEW",
+                "field": null,
+                "beforeValue": null,
+                "afterValue": null,
+                "unit": null,
+                "description": "5성 캐릭터 추가"
+              },
+              {
+                "targetType": "SYSTEM",
+                "targetKey": null,
+                "targetName": "파티 편성",
+                "changeType": "SYSTEM",
+                "field": "프리셋 슬롯",
+                "beforeValue": "10",
+                "afterValue": "20",
+                "unit": "개",
+                "description": null
+              },
+              {
+                "targetType": "SYSTEM",
+                "targetKey": null,
+                "targetName": "탐험",
+                "changeType": "FIX",
+                "field": null,
+                "beforeValue": null,
+                "afterValue": null,
+                "unit": null,
+                "description": "일부 퍼즐이 초기화되지 않던 문제 수정"
+              }
+            ]
+          }
+        },
+        {
+          "key": "maintenance",
+          "kind": "MAINTENANCE",
+          "slugHint": "version-7-1-maintenance",
+          "title": "7.1 버전 업데이트 점검",
+          "startAt": "@-9d/06:00",
+          "endAt": "@-9d/11:00",
+          "timing": "auto",
+          "maintenance": {
+            "maintenanceType": "SCHEDULED",
+            "affectedServers": ["아시아", "미국", "유럽", "TW/HK/MO"],
+            "compensationSourceKey": "genshin-fx-version-7-1#compensation"
+          }
+        },
+        {
+          "key": "compensation",
+          "kind": "REWARD",
+          "slugHint": "version-7-1-compensation",
+          "title": "업데이트 점검 보상",
+          "startAt": "@-9d/11:00",
+          "endAt": "@+21d/03:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "COMPENSATION",
+            "howToClaim": "게임 내 우편함에서 수령 (모험 등급 5 이상)",
+            "items": [{ "name": "원석", "quantity": 600, "unit": null }],
+            "relatedSourceKey": "genshin-fx-version-7-1#maintenance"
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "genshin-fx-version-7-2",
+      "url": "https://genshin.hoyoverse.com/ko/news",
+      "publishedAt": "@-1d/11:00",
+      "items": [
+        {
+          "key": "patch",
+          "kind": "PATCH",
+          "title": "7.2 버전 업데이트 예정",
+          "summary": "다음 버전 업데이트 예정일입니다. 상세 내용은 업데이트 전에 공개됩니다. (샘플 데이터)",
+          "startAt": "@+33d/06:00",
+          "timing": "auto",
+          "patch": { "version": "7.2", "releaseAt": "@+33d/06:00", "changes": [] }
+        }
+      ]
+    },
+    {
+      "externalId": "genshin-fx-wish-phase-2",
+      "url": "https://genshin.hoyoverse.com/ko/news",
+      "publishedAt": "@-2d/11:00",
+      "items": [
+        {
+          "key": "character",
+          "kind": "BANNER",
+          "slugHint": "starlight-song-wish",
+          "title": "이벤트 기원 「별빛의 노래」",
+          "summary": "한정 5성 캐릭터 확률 UP 기원입니다. (샘플 데이터, 가상 캐릭터)",
+          "startAt": "@-1d/18:00",
+          "endAt": "@+20d/14:59",
+          "timing": "auto",
+          "banner": {
+            "bannerType": "CHARACTER",
+            "phase": 2,
+            "featured": [
+              { "name": "별빛의 가희", "entityKey": "starlight-songstress", "rarity": 5 },
+              { "name": "바람결 궁수", "entityKey": "breeze-archer", "rarity": 4 },
+              { "name": "강철 방패병", "entityKey": "iron-shieldbearer", "rarity": 4 },
+              { "name": "안개 술사", "entityKey": "mist-caster", "rarity": 4 }
+            ]
+          }
+        },
+        {
+          "key": "weapon",
+          "kind": "BANNER",
+          "slugHint": "starlight-weapon-wish",
+          "title": "신의 주조 「별빛의 현」",
+          "summary": "한정 무기 확률 UP 기원입니다. (샘플 데이터)",
+          "startAt": "@-1d/18:00",
+          "endAt": "@+20d/14:59",
+          "timing": "auto",
+          "banner": {
+            "bannerType": "WEAPON",
+            "phase": 2,
+            "featured": [{ "name": "별빛의 현", "entityKey": "starlight-strings", "rarity": 5 }]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "genshin-fx-chronicled-wish",
+      "url": "https://genshin.hoyoverse.com/ko/news",
+      "publishedAt": "@-1d/11:00",
+      "items": [
+        {
+          "key": "banner",
+          "kind": "BANNER",
+          "slugHint": "chronicled-wish-preview",
+          "title": "집록 기원 예고",
+          "summary": "다음 주 시작 예정인 집록 기원입니다. (샘플 데이터)",
+          "startAt": "@+6d/18:00",
+          "endAt": "@+20d/14:59",
+          "timing": "auto",
+          "banner": {
+            "bannerType": "CHRONICLED",
+            "phase": null,
+            "featured": [{ "name": "옛 전설의 기사", "entityKey": "legend-knight", "rarity": 5 }]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "genshin-fx-web-event",
+      "url": "https://genshin.hoyoverse.com/ko/news",
+      "publishedAt": "@-3d/10:00",
+      "items": [
+        {
+          "key": "event",
+          "kind": "EVENT",
+          "slugHint": "starlight-puzzle-web-event",
+          "title": "웹 이벤트 「별빛 퍼즐」",
+          "summary": "퍼즐을 완성하고 원석을 받으세요. (샘플 데이터)",
+          "startAt": "@-3d/10:00",
+          "endAt": "@+1d/23:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "WEB",
+            "eligibility": "모험 등급 10 이상",
+            "rewardSummary": "원석 120",
+            "rewards": [{ "name": "원석", "quantity": 120, "unit": null }]
+          }
+        },
+        {
+          "key": "reward",
+          "kind": "REWARD",
+          "slugHint": "starlight-puzzle-reward",
+          "title": "웹 이벤트 보상",
+          "startAt": "@-3d/10:00",
+          "endAt": "@+1d/23:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "WEB_EVENT",
+            "howToClaim": "웹 이벤트 페이지에서 수령 후 우편 확인",
+            "items": [
+              { "name": "원석", "quantity": 120, "unit": null },
+              { "name": "모라", "quantity": 20000, "unit": null }
+            ],
+            "relatedSourceKey": "genshin-fx-web-event#event"
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "genshin-fx-events",
+      "url": "https://genshin.hoyoverse.com/ko/news",
+      "publishedAt": "@-9d/11:00",
+      "items": [
+        {
+          "key": "wind-festival",
+          "kind": "EVENT",
+          "slugHint": "wind-festival",
+          "title": "이벤트 「바람의 축제」",
+          "startAt": "@-9d/10:00",
+          "endAt": "@+12d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": "모험 등급 20 이상",
+            "rewardSummary": "원석 1,000, 4성 무기",
+            "rewards": [{ "name": "원석", "quantity": 1000, "unit": null }]
+          }
+        },
+        {
+          "key": "riddle",
+          "kind": "EVENT",
+          "slugHint": "riddle-expedition",
+          "title": "이벤트 「수수께끼 탐험」",
+          "startAt": "@-1d/10:00",
+          "endAt": "@+14d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": "모험 등급 20 이상",
+            "rewardSummary": "원석 420",
+            "rewards": [{ "name": "원석", "quantity": 420, "unit": null }]
+          }
+        },
+        {
+          "key": "moon-fishing",
+          "kind": "EVENT",
+          "slugHint": "moonlight-fishing",
+          "title": "이벤트 「달빛 낚시」 예고",
+          "startAt": "@+3d/10:00",
+          "endAt": "@+17d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "낚싯대, 원석",
+            "rewards": []
+          }
+        },
+        {
+          "key": "past-event",
+          "kind": "EVENT",
+          "slugHint": "summer-tide",
+          "title": "이벤트 「여름 물결」",
+          "startAt": "@-30d/10:00",
+          "endAt": "@-2d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "원석",
+            "rewards": []
+          }
+        },
+        {
+          "key": "login",
+          "kind": "REWARD",
+          "slugHint": "starlight-login",
+          "title": "별빛 출석 보상",
+          "startAt": "@-1d/10:00",
+          "endAt": "@+6d/03:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "LOGIN",
+            "howToClaim": "이벤트 화면에서 매일 수령",
+            "items": [{ "name": "뒤엉킨 인연", "quantity": 10, "unit": null }],
+            "relatedSourceKey": null
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "genshin-fx-code",
+      "url": "https://genshin.hoyoverse.com/ko/gift",
+      "publishedAt": "@-1d/20:00",
+      "items": [
+        {
+          "key": "code",
+          "slugHint": "test-redeem-code",
+          "kind": "REDEEM_CODE",
+          "title": "테스트용 리딤코드 (사용 불가)",
+          "summary": "개발 환경 확인용 가짜 코드입니다. 실제 게임에서 사용할 수 없습니다.",
+          "startAt": "@-1d/20:00",
+          "endAt": "@+2d/23:59",
+          "redeemCode": {
+            "code": "GPTEST-GENSHIN-001",
+            "region": "asia",
+            "items": [{ "name": "원석", "quantity": 60, "unit": null }]
+          }
+        }
+      ]
+    }
+  ]
+}

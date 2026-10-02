@@ -123,7 +123,8 @@ function compileRRule(schedule: ResetSchedule, rule: ParsedRRule): CompiledSched
       const anchorMonth = anchorDate ? monthIndex(anchorDate) : null;
       matchesDate = (date) => {
         if (!notBeforeAnchor(date)) return false;
-        if (anchorMonth !== null && (monthIndex(date) - anchorMonth) % rule.interval !== 0) return false;
+        if (anchorMonth !== null && (monthIndex(date) - anchorMonth) % rule.interval !== 0)
+          return false;
         return (
           monthDays.some((day) => monthDayMatches(date, day)) ||
           rule.byDay.some((d) => nthWeekdayMatches(date, d.weekday, d.ordinal))
@@ -211,7 +212,10 @@ export function nextOccurrence(schedule: ResetSchedule, after: Date): Date | nul
     const date = addDays(startDate, offset);
     if (!compiled.matchesDate(date)) continue;
     for (const time of compiled.times) {
-      const instant = zonedTimeToUtc({ ...date, hour: time.hour, minute: time.minute }, compiled.timezone);
+      const instant = zonedTimeToUtc(
+        { ...date, hour: time.hour, minute: time.minute },
+        compiled.timezone,
+      );
       if (instant.getTime() <= afterMs) continue;
       if (compiled.until !== null && instant.getTime() > compiled.until.getTime()) return null;
       return instant;
@@ -229,7 +233,10 @@ export function previousOccurrence(schedule: ResetSchedule, before: Date): Date 
     const date = addDays(startDate, -offset);
     if (!compiled.matchesDate(date)) continue;
     for (const time of [...compiled.times].reverse()) {
-      const instant = zonedTimeToUtc({ ...date, hour: time.hour, minute: time.minute }, compiled.timezone);
+      const instant = zonedTimeToUtc(
+        { ...date, hour: time.hour, minute: time.minute },
+        compiled.timezone,
+      );
       if (instant.getTime() > beforeMs) continue;
       if (compiled.until !== null && instant.getTime() > compiled.until.getTime()) continue;
       return instant;

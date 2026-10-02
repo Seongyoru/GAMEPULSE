@@ -185,12 +185,18 @@ export const rawDocuments = pgTable(
     etag: text('etag'),
     lastModified: text('last_modified'),
     locale: text('locale'),
-    ingestionRunId: uuid('ingestion_run_id').references(() => ingestionRuns.id, { onDelete: 'set null' }),
+    ingestionRunId: uuid('ingestion_run_id').references(() => ingestionRuns.id, {
+      onDelete: 'set null',
+    }),
     metadata: jsonb('metadata').$type<{ [key: string]: JsonValue }>(),
     createdAt: createdAt(),
   },
   (t) => [
-    uniqueIndex('raw_documents_source_document_hash_uq').on(t.sourceId, t.documentKey, t.contentHash),
+    uniqueIndex('raw_documents_source_document_hash_uq').on(
+      t.sourceId,
+      t.documentKey,
+      t.contentHash,
+    ),
     index('raw_documents_source_document_fetched_idx').on(t.sourceId, t.documentKey, t.fetchedAt),
     index('raw_documents_content_hash_idx').on(t.contentHash),
   ],
@@ -200,7 +206,9 @@ export const parseResults = pgTable(
   'parse_results',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    rawDocumentId: uuid('raw_document_id').references(() => rawDocuments.id, { onDelete: 'set null' }),
+    rawDocumentId: uuid('raw_document_id').references(() => rawDocuments.id, {
+      onDelete: 'set null',
+    }),
     parserId: text('parser_id').notNull(),
     parserVersion: text('parser_version').notNull(),
     inputHash: text('input_hash').notNull(),
@@ -264,7 +272,9 @@ export const contentItems = pgTable(
     sourceKey: text('source_key').notNull(),
     sourceUrl: text('source_url').notNull(),
     sourceLocale: text('source_locale').notNull(),
-    rawDocumentId: uuid('raw_document_id').references(() => rawDocuments.id, { onDelete: 'set null' }),
+    rawDocumentId: uuid('raw_document_id').references(() => rawDocuments.id, {
+      onDelete: 'set null',
+    }),
     semanticKey: text('semantic_key').notNull(),
     contentHash: text('content_hash').notNull(),
     confidence: real('confidence').notNull(),
@@ -274,7 +284,10 @@ export const contentItems = pgTable(
     parserId: text('parser_id').notNull(),
     parserVersion: text('parser_version').notNull(),
     isSynthetic: boolean('is_synthetic').notNull().default(false),
-    evidence: jsonb('evidence').$type<Evidence[]>().notNull().default(sql`'[]'::jsonb`),
+    evidence: jsonb('evidence')
+      .$type<Evidence[]>()
+      .notNull()
+      .default(sql`'[]'::jsonb`),
     metadata: jsonb('metadata').$type<{ [key: string]: JsonValue }>(),
     lastSeenAt: timestamptz('last_seen_at').notNull(),
     createdAt: createdAt(),
@@ -290,7 +303,10 @@ export const contentItems = pgTable(
     index('content_items_published_at_idx').on(t.publishedAt),
     index('content_items_semantic_key_idx').on(t.gameId, t.semanticKey),
     index('content_items_content_hash_idx').on(t.contentHash),
-    check('content_items_chronology', sql`${t.endAt} IS NULL OR ${t.startAt} IS NULL OR ${t.endAt} >= ${t.startAt}`),
+    check(
+      'content_items_chronology',
+      sql`${t.endAt} IS NULL OR ${t.startAt} IS NULL OR ${t.endAt} >= ${t.startAt}`,
+    ),
     check('content_items_priority_range', sql`${t.priority} BETWEEN 0 AND 100`),
     check('content_items_confidence_range', sql`${t.confidence} >= 0 AND ${t.confidence} <= 1`),
   ],
@@ -309,7 +325,9 @@ export const contentSources = pgTable(
       .references(() => sources.id),
     sourceKey: text('source_key').notNull(),
     sourceUrl: text('source_url').notNull(),
-    rawDocumentId: uuid('raw_document_id').references(() => rawDocuments.id, { onDelete: 'set null' }),
+    rawDocumentId: uuid('raw_document_id').references(() => rawDocuments.id, {
+      onDelete: 'set null',
+    }),
     role: provenanceRoleEnum('role').notNull(),
     firstSeenAt: timestamptz('first_seen_at').notNull(),
     lastSeenAt: timestamptz('last_seen_at').notNull(),
@@ -347,7 +365,10 @@ export const patchChanges = pgTable(
     description: text('description'),
     sortOrder: integer('sort_order').notNull(),
   },
-  (t) => [index('patch_changes_patch_idx').on(t.patchId, t.sortOrder), index('patch_changes_target_idx').on(t.targetId)],
+  (t) => [
+    index('patch_changes_patch_idx').on(t.patchId, t.sortOrder),
+    index('patch_changes_target_idx').on(t.targetId),
+  ],
 );
 
 export const events = pgTable('events', {
@@ -405,7 +426,10 @@ export const maintenances = pgTable('maintenances', {
     .primaryKey()
     .references(() => contentItems.id, { onDelete: 'cascade' }),
   maintenanceType: maintenanceTypeEnum('maintenance_type').notNull(),
-  affectedServers: text('affected_servers').array().notNull().default(sql`'{}'::text[]`),
+  affectedServers: text('affected_servers')
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
   compensationSourceKey: text('compensation_source_key'),
 });
 
@@ -463,7 +487,10 @@ export const resetRules = pgTable(
     index('reset_rules_game_idx').on(t.gameId),
     check('reset_rules_hour_range', sql`${t.hour} BETWEEN 0 AND 23`),
     check('reset_rules_minute_range', sql`${t.minute} BETWEEN 0 AND 59`),
-    check('reset_rules_day_of_week_range', sql`${t.dayOfWeek} IS NULL OR ${t.dayOfWeek} BETWEEN 1 AND 7`),
+    check(
+      'reset_rules_day_of_week_range',
+      sql`${t.dayOfWeek} IS NULL OR ${t.dayOfWeek} BETWEEN 1 AND 7`,
+    ),
   ],
 );
 
@@ -481,16 +508,29 @@ export const localizations = pgTable(
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [uniqueIndex('localizations_entity_locale_field_uq').on(t.entityKind, t.entityId, t.locale, t.field)],
+  (t) => [
+    uniqueIndex('localizations_entity_locale_field_uq').on(
+      t.entityKind,
+      t.entityId,
+      t.locale,
+      t.field,
+    ),
+  ],
 );
 
 export const validationResults = pgTable(
   'validation_results',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    ingestionRunId: uuid('ingestion_run_id').references(() => ingestionRuns.id, { onDelete: 'set null' }),
-    rawDocumentId: uuid('raw_document_id').references(() => rawDocuments.id, { onDelete: 'set null' }),
-    contentItemId: uuid('content_item_id').references(() => contentItems.id, { onDelete: 'set null' }),
+    ingestionRunId: uuid('ingestion_run_id').references(() => ingestionRuns.id, {
+      onDelete: 'set null',
+    }),
+    rawDocumentId: uuid('raw_document_id').references(() => rawDocuments.id, {
+      onDelete: 'set null',
+    }),
+    contentItemId: uuid('content_item_id').references(() => contentItems.id, {
+      onDelete: 'set null',
+    }),
     sourceId: text('source_id')
       .notNull()
       .references(() => sources.id),

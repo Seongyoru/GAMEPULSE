@@ -1,0 +1,237 @@
+{
+  "gameId": "wuwa",
+  "timezone": "UTC+8",
+  "locale": "ko-KR",
+  "region": "asia",
+  "documents": [
+    {
+      "externalId": "wuwa-fx-version-3-7",
+      "url": "https://wutheringwaves.kurogames.com/kr/main/news/",
+      "publishedAt": "@-3d/10:00",
+      "items": [
+        {
+          "key": "patch",
+          "kind": "PATCH",
+          "title": "3.7 버전 업데이트",
+          "summary": "신규 공명자, 지역 확장, 탐사 편의성 개선이 포함되었습니다. (샘플 데이터)",
+          "startAt": "@-2d/11:00",
+          "priority": 70,
+          "timing": "auto",
+          "patch": {
+            "version": "3.7",
+            "releaseAt": "@-2d/11:00",
+            "changes": [
+              {
+                "targetType": "CHARACTER",
+                "targetKey": "tidecaller",
+                "targetName": "조류 술사 (가상 공명자)",
+                "changeType": "NEW",
+                "field": null,
+                "beforeValue": null,
+                "afterValue": null,
+                "unit": null,
+                "description": "5성 공명자 추가"
+              },
+              {
+                "targetType": "SYSTEM",
+                "targetKey": null,
+                "targetName": "탐사",
+                "changeType": "SYSTEM",
+                "field": "순간이동 지점",
+                "beforeValue": "12",
+                "afterValue": "18",
+                "unit": "개",
+                "description": null
+              },
+              {
+                "targetType": "WEAPON",
+                "targetKey": "tidal-edge",
+                "targetName": "파도의 칼날",
+                "changeType": "ADJUST",
+                "field": "치명타 피해",
+                "beforeValue": "48.6%",
+                "afterValue": "50.0%",
+                "unit": null,
+                "description": null
+              }
+            ]
+          }
+        },
+        {
+          "key": "maintenance",
+          "kind": "MAINTENANCE",
+          "slugHint": "version-3-7-maintenance",
+          "title": "3.7 버전 업데이트 점검",
+          "startAt": "@-2d/04:00",
+          "endAt": "@-2d/11:00",
+          "timing": "auto",
+          "maintenance": {
+            "maintenanceType": "SCHEDULED",
+            "affectedServers": ["아시아", "미국", "유럽", "SEA", "HMT"],
+            "compensationSourceKey": "wuwa-fx-version-3-7#compensation"
+          }
+        },
+        {
+          "key": "compensation",
+          "kind": "REWARD",
+          "slugHint": "version-3-7-compensation",
+          "title": "업데이트 점검 보상",
+          "startAt": "@-2d/11:00",
+          "endAt": "@+14d/23:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "COMPENSATION",
+            "howToClaim": "게임 내 우편함에서 수령 (유니온 레벨 3 이상)",
+            "items": [{ "name": "성음", "quantity": 300, "unit": null }],
+            "relatedSourceKey": "wuwa-fx-version-3-7#maintenance"
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "wuwa-fx-convene-3-7-p1",
+      "url": "https://wutheringwaves.kurogames.com/kr/main/news/",
+      "publishedAt": "@-3d/10:00",
+      "items": [
+        {
+          "key": "character",
+          "kind": "BANNER",
+          "slugHint": "tidecaller-convene",
+          "title": "공명자 튜닝 「밀물의 노래」",
+          "summary": "한정 5성 공명자 확률 UP 튜닝입니다. (샘플 데이터, 가상 공명자)",
+          "startAt": "@-2d/11:00",
+          "endAt": "@+7d/09:59",
+          "timing": "auto",
+          "banner": {
+            "bannerType": "CHARACTER",
+            "phase": 1,
+            "featured": [
+              { "name": "조류 술사", "entityKey": "tidecaller", "rarity": 5 },
+              { "name": "모래바람 검사", "entityKey": "dune-blade", "rarity": 4 },
+              { "name": "등불 수호자", "entityKey": "lantern-warden", "rarity": 4 }
+            ]
+          }
+        },
+        {
+          "key": "weapon",
+          "kind": "BANNER",
+          "slugHint": "tidal-edge-convene",
+          "title": "무기 튜닝 「파도의 칼날」",
+          "startAt": "@-2d/11:00",
+          "endAt": "@+7d/09:59",
+          "timing": "auto",
+          "banner": {
+            "bannerType": "WEAPON",
+            "phase": 1,
+            "featured": [{ "name": "파도의 칼날", "entityKey": "tidal-edge", "rarity": 5 }]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "wuwa-fx-events",
+      "url": "https://wutheringwaves.kurogames.com/kr/main/news/",
+      "publishedAt": "@-2d/11:00",
+      "items": [
+        {
+          "key": "trial",
+          "kind": "EVENT",
+          "slugHint": "trial-of-tides",
+          "title": "이벤트 「파도의 시련」",
+          "summary": "단계별 전투 도전 이벤트입니다. (샘플 데이터)",
+          "startAt": "@-2d/11:00",
+          "endAt": "@+21d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": "유니온 레벨 30 이상",
+            "rewardSummary": "성음 560",
+            "rewards": [{ "name": "성음", "quantity": 560, "unit": null }]
+          }
+        },
+        {
+          "key": "shards",
+          "kind": "EVENT",
+          "slugHint": "star-shard-collection",
+          "title": "이벤트 「별의 조각 수집」",
+          "summary": "조각 교환 마감이 임박했습니다. (샘플 데이터)",
+          "startAt": "@-10d/10:00",
+          "endAt": "@+1d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "강화 재료",
+            "rewards": []
+          }
+        },
+        {
+          "key": "echo-hunt",
+          "kind": "EVENT",
+          "slugHint": "echo-hunt",
+          "title": "이벤트 「메아리 사냥」 예고",
+          "startAt": "@+5d/10:00",
+          "endAt": "@+19d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "에코 경험치 재료",
+            "rewards": []
+          }
+        },
+        {
+          "key": "login",
+          "kind": "REWARD",
+          "slugHint": "astrite-login",
+          "title": "접속 보상 「성음 수집」",
+          "startAt": "@-2d/11:00",
+          "endAt": "@+12d/03:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "LOGIN",
+            "howToClaim": "이벤트 화면에서 매일 수령",
+            "items": [{ "name": "성음", "quantity": 100, "unit": null }],
+            "relatedSourceKey": null
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "wuwa-fx-code",
+      "url": "https://wutheringwaves.kurogames.com/kr/main/news/",
+      "publishedAt": "@-2d/12:00",
+      "items": [
+        {
+          "key": "code",
+          "slugHint": "test-redeem-code",
+          "kind": "REDEEM_CODE",
+          "title": "테스트용 리딤코드 (사용 불가)",
+          "summary": "개발 환경 확인용 가짜 코드입니다. 실제 게임에서 사용할 수 없습니다.",
+          "startAt": "@-2d/12:00",
+          "endAt": "@+5d/23:59",
+          "redeemCode": {
+            "code": "GPTEST-WUWA-0001",
+            "region": "asia",
+            "items": [{ "name": "성음", "quantity": 50, "unit": null }]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "wuwa-fx-notice-stability",
+      "url": "https://wutheringwaves.kurogames.com/kr/main/news/",
+      "publishedAt": "@-4h",
+      "items": [
+        {
+          "key": "notice",
+          "kind": "ANNOUNCEMENT",
+          "slugHint": "server-stability-notice",
+          "title": "서버 안정화 작업 안내",
+          "summary": "일부 지역에서 접속 지연이 발생해 안정화 작업을 진행합니다. (샘플 데이터)",
+          "priority": 80
+        }
+      ]
+    }
+  ]
+}

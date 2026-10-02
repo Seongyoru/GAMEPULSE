@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+
+/* Design-system components live in a workspace package; let Tailwind scan them. */
+@source '../../../../packages/ui/src';
+
+/*
+ * Semantic tokens. Light by default, dark with the OS preference.
+ * Bloomberg-lite: quiet neutrals, information-first, colour reserved for meaning.
+ */
+:root {
+  --gp-bg: #f5f6f8;
+  --gp-surface: #ffffff;
+  --gp-surface-2: #f0f2f5;
+  --gp-border: #e2e5ea;
+  --gp-text: #0e1320;
+  --gp-muted: #5b6475;
+  --gp-brand: #e11d48;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --gp-bg: #0a0c11;
+    --gp-surface: #11141b;
+    --gp-surface-2: #171b24;
+    --gp-border: #242a36;
+    --gp-text: #e7eaf0;
+    --gp-muted: #8e97a8;
+    --gp-brand: #fb7185;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--gp-bg);
+  --color-surface: var(--gp-surface);
+  --color-surface-2: var(--gp-surface-2);
+  --color-border: var(--gp-border);
+  --color-text: var(--gp-text);
+  --color-muted: var(--gp-muted);
+  --color-brand: var(--gp-brand);
+}
+
+@theme {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', 'Malgun Gothic',
+    'Noto Sans KR', 'Segoe UI', Roboto, sans-serif;
+  --font-mono:
+    ui-monospace, 'SFMono-Regular', 'JetBrains Mono', 'Menlo', 'Consolas', 'Liberation Mono',
+    monospace;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--gp-bg);
+    color: var(--gp-text);
+    font-family: var(--font-sans);
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  :focus-visible {
+    outline: 2px solid #0ea5e9;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

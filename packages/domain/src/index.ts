@@ -10,10 +10,12 @@ export * from './schemas/candidate';
 export * from './schemas/source';
 export * from './schemas/reset';
 export * from './schemas/preferences';
+export * from './schemas/preferences-schema';
 export * from './schemas/manual';
 
 export * from './games/types';
 export * from './games/registry';
+export * from './games/reset-rules';
 
 export * from './time/zone';
 export * from './time/format';
@@ -26,5 +28,6 @@ export * from './urgency/urgency';
 
 export * from './today/today';
 export * from './today/snapshot';
+export * from './today/groups';
 export * from './today/pulse';
 export * from './calendar/calendar';

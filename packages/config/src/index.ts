@@ -1,7 +1,15 @@
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-export { EnvError, parseServerEnv, resolveDataSource, serverEnvSchema, type DataSourceKind, type ServerEnv } from './env';
+export {
+  EnvError,
+  fixturesAllowed,
+  parseServerEnv,
+  resolveDataSource,
+  serverEnvSchema,
+  type DataSourceKind,
+  type ServerEnv,
+} from './env';
 
 /** Walks up from `start` to the directory containing pnpm-workspace.yaml. */
 export function findWorkspaceRoot(start: string = process.cwd()): string | null {

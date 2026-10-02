@@ -65,7 +65,9 @@ function parseIntList(key: string, value: string, min: number, max: number): num
 function parseUntil(value: string): Date {
   const dateOnly = /^(\d{4})(\d{2})(\d{2})$/.exec(value);
   if (dateOnly) {
-    return new Date(Date.UTC(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]), 23, 59, 59));
+    return new Date(
+      Date.UTC(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]), 23, 59, 59),
+    );
   }
   const utc = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/.exec(value);
   if (utc) {
@@ -122,8 +124,10 @@ export function parseRRule(input: string): ParsedRRule {
       if (!match) throw new RRuleError(`BYDAY: invalid token "${token}"`);
       const ordinal = match[1] === undefined ? null : Number(match[1]);
       if (ordinal !== null) {
-        if (freq !== 'MONTHLY') throw new RRuleError('BYDAY ordinals are only supported with FREQ=MONTHLY');
-        if (ordinal === 0 || Math.abs(ordinal) > 5) throw new RRuleError(`BYDAY: ordinal ${ordinal} out of range`);
+        if (freq !== 'MONTHLY')
+          throw new RRuleError('BYDAY ordinals are only supported with FREQ=MONTHLY');
+        if (ordinal === 0 || Math.abs(ordinal) > 5)
+          throw new RRuleError(`BYDAY: ordinal ${ordinal} out of range`);
       }
       byDay.push({ weekday: WEEKDAY_CODES[match[2] as string] ?? 0, ordinal });
     }
@@ -131,7 +135,8 @@ export function parseRRule(input: string): ParsedRRule {
   }
 
   const byMonthDayRaw = parts.get('BYMONTHDAY');
-  const byMonthDay = byMonthDayRaw === undefined ? [] : parseIntList('BYMONTHDAY', byMonthDayRaw, -31, 31);
+  const byMonthDay =
+    byMonthDayRaw === undefined ? [] : parseIntList('BYMONTHDAY', byMonthDayRaw, -31, 31);
   if (byMonthDay.length > 0 && freq !== 'MONTHLY') {
     throw new RRuleError('BYMONTHDAY is only supported with FREQ=MONTHLY');
   }

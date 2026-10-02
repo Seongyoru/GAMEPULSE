@@ -1,0 +1,51 @@
+{
+  "id": "KR",
+  "name": "Korea",
+  "locales": ["ko_KR"],
+  "maintenances": [
+    {
+      "id": 990001,
+      "maintenance_status": "scheduled",
+      "titles": [
+        { "locale": "ko_KR", "content": "[샘플] 정기 서버 점검 예정" },
+        { "locale": "en_US", "content": "[Sample] Scheduled maintenance" }
+      ],
+      "updates": [
+        {
+          "id": 1,
+          "author": "Riot Games",
+          "publish": true,
+          "publish_locations": ["riotclient", "riotstatus", "game"],
+          "translations": [
+            {
+              "locale": "ko_KR",
+              "content": "[샘플] 서버 안정화를 위한 정기 점검이 예정되어 있습니다."
+            }
+          ],
+          "created_at": "2026-10-06T06:00:00.000000+00:00",
+          "updated_at": "2026-10-06T06:00:00.000000+00:00"
+        }
+      ],
+      "created_at": "2026-10-06T06:00:00.000000+00:00",
+      "archive_at": "2026-10-09T06:00:00.000000+00:00",
+      "updated_at": "2026-10-06T06:00:00.000000+00:00",
+      "platforms": ["windows", "macos"]
+    }
+  ],
+  "incidents": [
+    {
+      "id": 990002,
+      "incident_severity": "warning",
+      "titles": [{ "locale": "ko_KR", "content": "[샘플] 일부 지역 접속 지연" }],
+      "updates": [],
+      "created_at": "2026-10-05T12:00:00.000000+00:00",
+      "platforms": ["windows"]
+    },
+    {
+      "id": 990003,
+      "incident_severity": "info",
+      "titles": [{ "locale": "ko_KR", "content": "[샘플] 상점 표시 오류 안내" }],
+      "created_at": "2026-10-05T12:30:00.000000+00:00"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "gameId": "lol",
+  "timezone": "Asia/Seoul",
+  "locale": "ko-KR",
+  "region": "kr",
+  "documents": [
+    {
+      "externalId": "lol-fx-patch-26-19",
+      "url": "https://www.leagueoflegends.com/ko-kr/news/tags/patch-notes/",
+      "publishedAt": "@-1d/06:00",
+      "items": [
+        {
+          "key": "patch",
+          "kind": "PATCH",
+          "title": "26.19 패치",
+          "summary": "챔피언 3명과 아이템 1종의 수치가 조정되고 랭크 게임 이탈 패널티가 개선됩니다. (샘플 데이터)",
+          "startAt": "@-1d/06:00",
+          "priority": 70,
+          "timing": "auto",
+          "patch": {
+            "version": "26.19",
+            "releaseAt": "@-1d/06:00",
+            "changes": [
+              {
+                "targetType": "CHAMPION",
+                "targetKey": "Ahri",
+                "targetName": "아리",
+                "changeType": "BUFF",
+                "field": "Q 기본 피해량",
+                "beforeValue": "80",
+                "afterValue": "90",
+                "unit": null,
+                "description": null
+              },
+              {
+                "targetType": "CHAMPION",
+                "targetKey": "Yone",
+                "targetName": "요네",
+                "changeType": "NERF",
+                "field": "E 보호막",
+                "beforeValue": "100",
+                "afterValue": "90",
+                "unit": null,
+                "description": null
+              },
+              {
+                "targetType": "CHAMPION",
+                "targetKey": "Jinx",
+                "targetName": "징크스",
+                "changeType": "ADJUST",
+                "field": "기본 공격력",
+                "beforeValue": "59",
+                "afterValue": "57",
+                "unit": null,
+                "description": "성장 공격력은 3.4에서 3.6으로 증가"
+              },
+              {
+                "targetType": "ITEM",
+                "targetKey": "3153",
+                "targetName": "몰락한 왕의 검",
+                "changeType": "NERF",
+                "field": "가격",
+                "beforeValue": "3200",
+                "afterValue": "3300",
+                "unit": "골드",
+                "description": null
+              },
+              {
+                "targetType": "SYSTEM",
+                "targetKey": null,
+                "targetName": "랭크 게임",
+                "changeType": "SYSTEM",
+                "field": null,
+                "beforeValue": null,
+                "afterValue": null,
+                "unit": null,
+                "description": "게임 시작 전 이탈 패널티가 단계적으로 적용됩니다."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "lol-fx-patch-26-20",
+      "url": "https://www.leagueoflegends.com/ko-kr/news/tags/patch-notes/",
+      "publishedAt": "@-2h",
+      "items": [
+        {
+          "key": "patch",
+          "kind": "PATCH",
+          "title": "26.20 패치 예정",
+          "summary": "다음 정기 패치입니다. 상세 패치 노트는 적용 전에 공개됩니다. (샘플 데이터)",
+          "startAt": "@+5d/06:00",
+          "timing": "auto",
+          "patch": { "version": "26.20", "releaseAt": "@+5d/06:00", "changes": [] }
+        },
+        {
+          "key": "maintenance",
+          "slugHint": "patch-26-20-maintenance",
+          "kind": "MAINTENANCE",
+          "title": "26.20 패치 적용 점검",
+          "summary": "점검 중에는 게임 접속이 제한됩니다.",
+          "startAt": "@+5d/03:00",
+          "endAt": "@+5d/06:00",
+          "timing": "auto",
+          "maintenance": {
+            "maintenanceType": "SCHEDULED",
+            "affectedServers": ["kr"],
+            "compensationSourceKey": null
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "lol-fx-notice-ranked",
+      "url": "https://www.leagueoflegends.com/ko-kr/news/",
+      "publishedAt": "@-6h",
+      "items": [
+        {
+          "key": "notice",
+          "slugHint": "ranked-season-schedule",
+          "kind": "ANNOUNCEMENT",
+          "title": "랭크 게임 시즌 일정 안내",
+          "summary": "이번 시즌 종료와 보상 지급 일정이 공지되었습니다. (샘플 데이터)",
+          "priority": 85
+        }
+      ]
+    },
+    {
+      "externalId": "lol-fx-event-pass",
+      "url": "https://www.leagueoflegends.com/ko-kr/news/",
+      "publishedAt": "@-10d/06:00",
+      "items": [
+        {
+          "key": "pass",
+          "kind": "EVENT",
+          "slugHint": "starfall-pass",
+          "title": "별무리 이벤트 패스",
+          "summary": "임무를 완료하고 토큰을 모아 상점에서 교환하세요. (샘플 데이터)",
+          "startAt": "@-10d/06:00",
+          "endAt": "@+12d/05:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "이벤트 토큰, 아이콘",
+            "rewards": []
+          }
+        },
+        {
+          "key": "mission",
+          "kind": "EVENT",
+          "slugHint": "starfall-weekend-missions",
+          "title": "별무리 주말 임무",
+          "summary": "주말 한정 임무가 곧 종료됩니다. (샘플 데이터)",
+          "startAt": "@-20d/06:00",
+          "endAt": "@+1d/23:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "LIMITED_MODE",
+            "eligibility": "소환사 레벨 15 이상",
+            "rewardSummary": "이벤트 토큰 200",
+            "rewards": [{ "name": "이벤트 토큰", "quantity": 200, "unit": "개" }]
+          }
+        }
+      ]
+    }
+  ]
+}

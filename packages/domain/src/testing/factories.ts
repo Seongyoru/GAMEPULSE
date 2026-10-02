@@ -2,7 +2,13 @@
  * Test data factories shared across packages (`@gamepulse/domain/testing`).
  * Produces valid, clearly synthetic objects with overridable fields.
  */
-import { contentPath, pulseFactsFor, type ContentDetail, type ContentRecord, type PulseItem } from '../content';
+import {
+  contentPath,
+  pulseFactsFor,
+  type ContentDetail,
+  type ContentRecord,
+  type PulseItem,
+} from '../content';
 import type { ContentType } from '../enums';
 import type { CandidateKind, CandidateOf, NormalizedCandidate } from '../schemas/candidate';
 import type { ResetRuleDefinition } from '../schemas/reset';
@@ -36,7 +42,9 @@ function defaultDetail(type: ContentType): ContentDetail {
 
 let sequence = 0;
 
-export function makeContentRecord(overrides: Partial<ContentRecord> & { type?: ContentType } = {}): ContentRecord {
+export function makeContentRecord(
+  overrides: Partial<ContentRecord> & { type?: ContentType } = {},
+): ContentRecord {
   sequence += 1;
   const type = overrides.type ?? 'EVENT';
   const id = overrides.id ?? `00000000-0000-4000-8000-${String(sequence).padStart(12, '0')}`;
@@ -78,7 +86,9 @@ export function makeContentRecord(overrides: Partial<ContentRecord> & { type?: C
   };
 }
 
-export function makePulseItem(overrides: Partial<PulseItem> & { type?: ContentType } = {}): PulseItem {
+export function makePulseItem(
+  overrides: Partial<PulseItem> & { type?: ContentType } = {},
+): PulseItem {
   const type = overrides.type ?? 'EVENT';
   const record = makeContentRecord({ type });
   return {
@@ -91,6 +101,7 @@ export function makePulseItem(overrides: Partial<PulseItem> & { type?: ContentTy
     summary: null,
     startAt: null,
     endAt: null,
+    timePrecision: 'DATETIME',
     publishedAt: record.publishedAt,
     sourcePublishedAt: null,
     updatedAt: record.updatedAt,
@@ -139,7 +150,16 @@ export function makeSource(overrides: Partial<SourceDefinition> = {}): SourceDef
     allowedHosts: ['genshin.hoyoverse.com'],
     authentication: 'NOT_APPLICABLE',
     rateLimit: null,
-    contentTypes: ['PATCH', 'UPDATE', 'EVENT', 'REWARD', 'REDEEM_CODE', 'MAINTENANCE', 'BANNER', 'ANNOUNCEMENT'],
+    contentTypes: [
+      'PATCH',
+      'UPDATE',
+      'EVENT',
+      'REWARD',
+      'REDEEM_CODE',
+      'MAINTENANCE',
+      'BANNER',
+      'ANNOUNCEMENT',
+    ],
     collectorStatus: 'FIXTURE_ONLY',
     termsUrl: null,
     termsReviewedAt: null,
@@ -196,7 +216,11 @@ function defaultCandidate(kind: CandidateKind, base: CandidateBase): NormalizedC
       return {
         ...base,
         kind,
-        maintenance: { maintenanceType: 'SCHEDULED', affectedServers: [], compensationSourceKey: null },
+        maintenance: {
+          maintenanceType: 'SCHEDULED',
+          affectedServers: [],
+          compensationSourceKey: null,
+        },
       };
     case 'BANNER':
       return { ...base, kind, banner: { bannerType: 'CHARACTER', phase: 1, featured: [] } };

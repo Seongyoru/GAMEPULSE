@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "@gamepulse/collectors": "workspace:*",
     "@gamepulse/config": "workspace:*",
     "@gamepulse/database": "workspace:*",
@@ -21,7 +22,9 @@
     "@gamepulse/parsers": "workspace:*",
     "@gamepulse/validators": "workspace:*",
     "bullmq": "^6.3.11",
+    "drizzle-orm": "^0.45.3",
     "ioredis": "^6.0.0",
+    "postgres": "^3.4.9",
     "zod": "^4.6.5"
   },
   "devDependencies": {

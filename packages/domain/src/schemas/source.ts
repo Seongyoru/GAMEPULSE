@@ -6,7 +6,10 @@ import { z } from 'zod';
 import { COLLECTOR_STATUSES, CONTENT_TYPES, SOURCE_AUTHENTICATION, SOURCE_TYPES } from '../enums';
 
 export const sourceDefinitionSchema = z.object({
-  id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(80),
+  id: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .max(80),
   gameId: z.string().min(1).max(40),
   name: z.string().min(1).max(120),
   type: z.enum(SOURCE_TYPES),

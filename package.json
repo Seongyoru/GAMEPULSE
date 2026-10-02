@@ -29,6 +29,7 @@
     "ingest": "tsx apps/worker/src/cli.ts ingest",
     "ingest:fixtures": "tsx apps/worker/src/cli.ts ingest --mode fixture --all",
     "ingest:manual": "tsx apps/worker/src/cli.ts ingest-manual",
+    "ingest:text": "tsx apps/worker/src/cli.ts ingest-text",
     "health:sources": "tsx apps/worker/src/cli.ts health",
     "runs": "tsx apps/worker/src/cli.ts runs",
     "services:up": "docker compose up -d",
