@@ -26,6 +26,7 @@ export function EventItemCard({
       title={item.title}
       game={{ gameId: game.gameId, name: game.shortName, accent: game.accent }}
       typeLabel={typeLabel(item.type, item.gameId)}
+      type={item.type}
       status={statusPresentation(item, now)}
       period={formatPeriod(item.startAt, item.endAt, item.timePrecision)}
       meta={moment ? <MomentMeta moment={moment} precision={item.timePrecision} /> : null}

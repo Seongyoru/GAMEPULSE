@@ -73,36 +73,30 @@ between notices and rewards, and footer links to games and the calendar.
 - Personalization is client-side over the static payload; an inline script applies MY GAMES before first paint, so
   there is no layout shift (CLS) from personalization. Countdowns render the absolute time on the server and switch to
   live values after hydration (stable markup).
-- System font stacks (no web-font download), no client-side data fetching, no third-party scripts by default
-  (analytics provider `none`, ads `off`). Ad slots reserve fixed height when enabled.
+- Two small self-hosted fonts (D-036): Space Grotesk latin (~22 KB, next/font with metric-matched fallback) and the
+  Black Han Sans title subset (~6 KB); Korean body text uses system fonts. Game art is one inline SVG sprite per page
+  referenced with `<use>`. No client-side data fetching, no third-party scripts by default (analytics provider `none`,
+  ads `off`). Ad slots reserve fixed height when enabled.
 - Targets: LCP < 2.5 s, CLS < 0.1, INP < 200 ms on mobile. LCP and CLS are asserted by `apps/web/e2e/performance.spec.ts`
   on every CI run (production build, desktop and Pixel 7 emulation, plus TODAY with a stored MY GAMES selection).
 - Browser bundle budget: no Zod in client code (ESLint `gamepulse/browser-bundle-budget`); strict schemas live in
   server-only modules.
 
-Measured on the production build serving fixtures (local, 2026-10-02; lab numbers, not field data):
+Lighthouse 12.8 lab run after the visual redesign and the phone tab bar (mobile emulation with simulated slow 4G and 4× CPU throttling,
+production build serving fixtures, 2026-10-02; lab numbers, not field data):
 
-| Page                    | LCP desktop / mobile | CLS desktop / mobile | JS (gzip) |
-| ----------------------- | -------------------- | -------------------- | --------- |
-| `/`                     | 164 / 116 ms         | 0.001 / 0.000        | 189 KB    |
-| `/today`                | 184 / 200 ms         | 0.002 / 0.000        | 202 KB    |
-| `/games/genshin-impact` | 132 / 116 ms         | 0.004 / 0.000        | 230 KB    |
-| `/calendar`             | 136 / 128 ms         | 0.000 / 0.000        | 189 KB    |
-| `/patches/<slug>`       | 104 / 96 ms          | 0.000 / 0.000        | 207 KB    |
-
-Lighthouse 12.8 lab run (mobile emulation with simulated slow 4G and 4× CPU throttling, production build serving
-fixtures, 2026-10-02):
-
-| Page                    | Performance | Accessibility | Best practices | SEO\* | LCP   | TBT    | CLS   |
-| ----------------------- | ----------- | ------------- | -------------- | ----- | ----- | ------ | ----- |
-| `/`                     | 93          | 100           | 100            | 66    | 2.5 s | 220 ms | 0.003 |
-| `/today`                | 96          | 100           | 100            | 66    | 2.5 s | 120 ms | 0.003 |
-| `/games/genshin-impact` | 99          | 100           | 100            | 66    | 2.2 s | 40 ms  | 0.01  |
-| `/calendar`             | 97          | 100           | 100            | 66    | 2.5 s | 100 ms | 0     |
-| `/patches/<slug>`       | 98          | 100           | 100            | 66    | 2.3 s | 70 ms  | 0     |
-| `/my-games`             | 98          | 100           | 100            | 66    | 2.3 s | 90 ms  | 0     |
+| Page                    | Performance | Accessibility | Best practices | SEO\* | LCP   | TBT    | CLS   | JS (transfer) |
+| ----------------------- | ----------- | ------------- | -------------- | ----- | ----- | ------ | ----- | ------------- |
+| `/`                     | 95          | 100           | 100            | 66    | 2.6 s | 160 ms | 0     | 218 KB        |
+| `/today`                | 97          | 100           | 100            | 66    | 2.6 s | 60 ms  | 0.002 | 218 KB        |
+| `/games`                | 97          | 100           | 100            | 66    | 2.4 s | 110 ms | 0     | 210 KB        |
+| `/games/genshin-impact` | 97          | 100           | 100            | 66    | 2.6 s | 60 ms  | 0.028 | 243 KB        |
+| `/calendar`             | 98          | 100           | 100            | 66    | 2.4 s | 30 ms  | 0     | 202 KB        |
+| `/patches/<slug>`       | 95          | 100           | 100            | 66    | 2.7 s | 130 ms | 0     | 225 KB        |
 
 \* The only failing SEO audit is "page is blocked from indexing": sample-data deployments are `noindex` by design
 (see Indexing policy). Fixed from the first run: brand label contrast (rose-700 in light mode), calendar
 out-of-month day numbers, 24 px calendar entry targets (WCAG 2.5.8) and the detail page's definition list.
-TBT varies between runs (120–600 ms on `/today`); field data (CrUX, INP) comes with the first real deployment.
+TBT varies between runs; field data (CrUX, INP) comes with the first real deployment. During the redesign two
+regressions were caught and fixed: the full Korean title font (190 KB) was replaced by the 6 KB subset, and the art
+sprite moved to a client component so pages stopped repeating it in their React payload.

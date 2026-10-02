@@ -2,12 +2,21 @@
  * Content components: patch changes, pulse/event cards, source attribution, timeline, resets.
  * Server-compatible; live parts are delegated to <Countdown/>.
  */
-import type { GameAccent, PatchChangeRecord, PatchChangeType, RewardItem } from '@gamepulse/domain';
+import type {
+  ContentType,
+  GameAccent,
+  PatchChangeRecord,
+  PatchChangeType,
+  RewardItem,
+} from '@gamepulse/domain';
+import { CalendarDays, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { cx } from '../cx';
 import { ACCENT_CLASSES, CHANGE_TYPE_CLASSES, type Tone } from '../tokens';
 import { Countdown } from './countdown';
+import { artCrop, GameCover, GameMark } from './game-art';
+import { TypeIcon } from './icons';
 import { GameBadge, RewardBadge, StatusChip } from './primitives';
 
 export interface PatchChangeProps {
@@ -64,8 +73,11 @@ export function PatchChange({ change, typeLabels, className }: PatchChangeProps)
 export interface PulseCardProps {
   href: string;
   title: string;
+  /** `name` is the short name drawn on the game mark (e.g. "원신"). */
   game: { name: string; accent: GameAccent; gameId: string };
   typeLabel: string;
+  /** Content type, for its icon. */
+  type?: ContentType;
   status?: { tone: Tone; label: string } | null;
   /** Primary time line, e.g. "종료까지" + countdown. */
   meta?: ReactNode;
@@ -82,12 +94,39 @@ export interface PulseCardProps {
   className?: string;
 }
 
+const CARD =
+  'group relative rounded-xl border border-border bg-surface shadow-[0_1px_2px_rgb(15_23_42/0.05)] transition duration-200 hover:-translate-y-px hover:border-zinc-300 hover:shadow-lg hover:shadow-zinc-900/5 dark:hover:border-zinc-600 dark:hover:shadow-black/40';
+
+function CardKind({
+  game,
+  type,
+  typeLabel,
+}: {
+  game: { name: string; accent: GameAccent };
+  type?: ContentType;
+  typeLabel: string;
+}) {
+  return (
+    <span className="inline-flex min-w-0 items-center gap-1.5 text-[11px] font-bold">
+      <span className={cx('truncate', ACCENT_CLASSES[game.accent].text)}>{game.name}</span>
+      <span aria-hidden className="text-muted/60">
+        ·
+      </span>
+      <span className="inline-flex items-center gap-1 text-muted">
+        {type ? <TypeIcon type={type} className="size-3" /> : null}
+        {typeLabel}
+      </span>
+    </span>
+  );
+}
+
 /** Compact card for any pulse item. Carries data-mg-game so MY GAMES CSS can hide it pre-hydration. */
 export function PulseCard({
   href,
   title,
   game,
   typeLabel,
+  type,
   status,
   meta,
   summary,
@@ -100,38 +139,26 @@ export function PulseCard({
   className,
 }: PulseCardProps) {
   return (
-    <article
-      data-mg-game={game.gameId}
-      className={cx(
-        'group relative flex gap-3 rounded-lg border border-border bg-surface p-3 transition-colors hover:border-zinc-400/60',
-        className,
-      )}
-    >
-      <span
-        aria-hidden
-        className={cx('w-1 shrink-0 rounded-full', ACCENT_CLASSES[game.accent].bar)}
-      />
+    <article data-mg-game={game.gameId} className={cx(CARD, 'flex gap-3 p-3', className)}>
+      <GameMark gameId={game.gameId} label={game.name} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <GameBadge name={game.name} accent={game.accent} />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted">
-            {typeLabel}
-          </span>
+          <CardKind game={game} type={type} typeLabel={typeLabel} />
           {status ? <StatusChip tone={status.tone}>{status.label}</StatusChip> : null}
           {sample ? <StatusChip tone="sample">{sampleLabel}</StatusChip> : null}
         </div>
-        <h3 className="mt-1 font-semibold leading-snug text-text">
+        <h3 className="mt-0.5 font-bold leading-snug text-text">
           <Link
             href={href}
             data-track-event={trackEvent}
             data-track-id={href}
-            className="after:absolute after:inset-0 focus:outline-none focus-visible:underline"
+            className="after:absolute after:inset-0 after:rounded-xl focus:outline-none focus-visible:underline"
           >
             {title}
           </Link>
         </h3>
         {summary ? <p className="mt-0.5 line-clamp-2 text-sm text-muted">{summary}</p> : null}
-        {rewards && rewards.length > 0 ? <RewardBadge items={rewards} className="mt-1" /> : null}
+        {rewards && rewards.length > 0 ? <RewardBadge items={rewards} className="mt-1.5" /> : null}
         <SourceAttributionNote attributions={attribution ? [attribution] : []} className="mt-1" />
       </div>
       {meta || actions ? (
@@ -149,6 +176,8 @@ export interface EventCardProps {
   title: string;
   game: { gameId: string; name: string; accent: GameAccent };
   typeLabel: string;
+  /** Content type, for its icon. */
+  type?: ContentType;
   status: { tone: Tone; label: string } | null;
   /** Pre-formatted period in the viewer zone, e.g. "10.01 (목) 10:00 – 10.21 (수) 03:59". */
   period: string | null;
@@ -165,12 +194,16 @@ export interface EventCardProps {
   className?: string;
 }
 
-/** Card for time-bounded content (events, banners): the period is always visible. */
+/**
+ * Media card for time-bounded content (events, banners): an art thumbnail (a different detail of
+ * the game's art per item) next to the facts; the period is always visible.
+ */
 export function EventCard({
   href,
   title,
   game,
   typeLabel,
+  type,
   status,
   period,
   meta,
@@ -186,48 +219,75 @@ export function EventCard({
     <article
       data-mg-game={game.gameId}
       data-testid="event-card"
-      className={cx(
-        'group relative flex gap-3 rounded-lg border border-border bg-surface p-3 transition-colors hover:border-zinc-400/60',
-        className,
-      )}
+      className={cx(CARD, 'flex overflow-hidden', className)}
     >
-      <span
-        aria-hidden
-        className={cx('w-1 shrink-0 rounded-full', ACCENT_CLASSES[game.accent].bar)}
-      />
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <GameBadge name={game.name} accent={game.accent} />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted">
+      <GameCover
+        gameId={game.gameId}
+        crop={artCrop(href)}
+        scrim="none"
+        className="w-24 shrink-0 sm:w-36"
+      >
+        <div className="flex h-full flex-col items-start justify-between p-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-1 text-[11px] font-bold leading-none text-white backdrop-blur-sm">
+            {type ? <TypeIcon type={type} className="size-3" /> : null}
             {typeLabel}
           </span>
+          {sample ? (
+            <span className="rounded-full bg-white/90 px-2 py-1 text-[11px] font-bold leading-none text-fuchsia-800">
+              {sampleLabel}
+            </span>
+          ) : null}
+        </div>
+      </GameCover>
+      <div className="flex min-w-0 flex-1 gap-3 p-3">
+        <div className="min-w-0 flex-1">
           {status ? <StatusChip tone={status.tone}>{status.label}</StatusChip> : null}
-          {sample ? <StatusChip tone="sample">{sampleLabel}</StatusChip> : null}
+          <h3 className="mt-1 font-bold leading-snug text-text">
+            <Link
+              href={href}
+              data-track-event={trackEvent}
+              data-track-id={href}
+              className="after:absolute after:inset-0 after:rounded-xl focus:outline-none focus-visible:underline"
+            >
+              {title}
+            </Link>
+          </h3>
+          {period ? (
+            <p className="mt-1 inline-flex items-center gap-1 font-mono text-xs tabular-nums text-muted">
+              <CalendarDays aria-hidden className="size-3.5 shrink-0" />
+              {period}
+            </p>
+          ) : null}
+          {featured && featured.length > 0 ? (
+            <ul className="mt-2 flex flex-wrap gap-1.5" aria-label={typeLabel}>
+              {featured.map((name) => (
+                <li
+                  key={name}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 py-0.5 pl-0.5 pr-2 text-xs font-semibold text-text"
+                >
+                  <span
+                    aria-hidden
+                    className={cx(
+                      'grid size-5 place-items-center rounded-full text-[10px] font-bold text-white',
+                      ACCENT_CLASSES[game.accent].dot,
+                    )}
+                  >
+                    {name.slice(0, 1)}
+                  </span>
+                  {name}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          {rewards && rewards.length > 0 ? <RewardBadge items={rewards} className="mt-2" /> : null}
+          <SourceAttributionNote attributions={attribution ? [attribution] : []} className="mt-1" />
         </div>
-        <h3 className="mt-1 font-semibold leading-snug text-text">
-          <Link
-            href={href}
-            data-track-event={trackEvent}
-            data-track-id={href}
-            className="after:absolute after:inset-0 focus:outline-none focus-visible:underline"
-          >
-            {title}
-          </Link>
-        </h3>
-        {period ? (
-          <p className="mt-0.5 font-mono text-xs tabular-nums text-muted">{period}</p>
+        {meta ? (
+          <div className="flex shrink-0 flex-col items-end justify-center text-right text-sm">
+            {meta}
+          </div>
         ) : null}
-        {featured && featured.length > 0 ? (
-          <p className="mt-0.5 truncate text-sm text-text">{featured.join(' · ')}</p>
-        ) : null}
-        {rewards && rewards.length > 0 ? <RewardBadge items={rewards} className="mt-1" /> : null}
-        <SourceAttributionNote attributions={attribution ? [attribution] : []} className="mt-1" />
       </div>
-      {meta ? (
-        <div className="flex shrink-0 flex-col items-end justify-center text-right text-sm">
-          {meta}
-        </div>
-      ) : null}
     </article>
   );
 }
@@ -314,21 +374,34 @@ export function ResetTimer({
     <div
       data-mg-game={game?.gameId}
       className={cx(
-        'flex items-center justify-between gap-3 rounded-lg border border-border bg-surface px-3 py-2.5',
+        'flex items-center justify-between gap-3 rounded-xl border border-border bg-surface px-3 py-2.5 shadow-[0_1px_2px_rgb(15_23_42/0.05)]',
         className,
       )}
     >
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          {game ? <GameBadge name={game.name} accent={game.accent} /> : null}
-          <span className="font-semibold text-text">{name}</span>
-          {badge}
+      <div className="flex min-w-0 items-center gap-3">
+        {game ? (
+          <GameMark gameId={game.gameId} label={game.name} size="sm" />
+        ) : (
+          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-surface-2 text-muted">
+            <RotateCcw aria-hidden className="size-4" />
+          </span>
+        )}
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            {game ? <GameBadge name={game.name} accent={game.accent} /> : null}
+            <span className="font-semibold text-text">{name}</span>
+            {badge}
+          </div>
+          <p className="text-xs text-muted">
+            {description} ({zoneLabel})
+          </p>
         </div>
-        <p className="text-xs text-muted">
-          {description} ({zoneLabel})
-        </p>
       </div>
-      <Countdown target={nextAt} timeZone={timeZone} className="text-base font-bold text-text" />
+      <Countdown
+        target={nextAt}
+        timeZone={timeZone}
+        className="font-display text-base font-bold text-text"
+      />
     </div>
   );
 }
@@ -360,7 +433,7 @@ export function Timeline({
           <span
             aria-hidden
             className={cx(
-              'absolute -left-[21px] top-3 size-2.5 rounded-full ring-4 ring-bg',
+              'absolute -left-[21px] top-3.5 size-2.5 rounded-full ring-4 ring-bg',
               entry.accent ? ACCENT_CLASSES[entry.accent].dot : 'bg-zinc-400',
             )}
           />

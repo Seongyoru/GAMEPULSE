@@ -1,8 +1,10 @@
 'use client';
 
 import type { GameAccent } from '@gamepulse/domain';
+import { Check } from 'lucide-react';
 import { cx } from '../cx';
 import { ACCENT_CLASSES } from '../tokens';
+import { GameArt } from './game-art';
 
 export interface GameFilterOption {
   gameId: string;
@@ -32,7 +34,7 @@ export function GameFilter({ games, selected, onToggle, label, className }: Game
             data-game-toggle={game.gameId}
             onClick={() => onToggle(game.gameId)}
             className={cx(
-              'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold transition-colors',
+              'inline-flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 text-sm font-semibold transition-colors',
               'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500',
               active
                 ? cx(
@@ -46,10 +48,15 @@ export function GameFilter({ games, selected, onToggle, label, className }: Game
             <span
               aria-hidden
               className={cx(
-                'size-2 rounded-full',
-                active ? ACCENT_CLASSES[game.accent].dot : 'bg-zinc-400/60',
+                'relative grid size-7 place-items-center overflow-hidden rounded-full ring-1 ring-black/10 transition',
+                !active && 'opacity-45 grayscale',
               )}
-            />
+            >
+              <GameArt gameId={game.gameId} />
+              {active ? (
+                <Check className="relative size-4 text-white drop-shadow" strokeWidth={3} />
+              ) : null}
+            </span>
             {game.name}
           </button>
         );

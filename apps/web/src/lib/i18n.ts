@@ -129,6 +129,7 @@ export const ko = {
     none: '없음',
   },
   home: {
+    heroEyebrow: 'Live game dashboard',
     heroTitle: 'All Your Games.\nOne Pulse.',
     heroSubtitle: '오늘 내 게임에서 바뀐 것, 받을 보상, 초기화와 마감을 10초 만에.',
     chooseGames: '내 게임 선택하기',

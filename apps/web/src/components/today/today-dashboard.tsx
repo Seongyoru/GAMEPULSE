@@ -12,6 +12,7 @@ import {
 } from '@gamepulse/domain';
 import { AdSlot, EmptyState, SectionHeader, type AdSlotMode } from '@gamepulse/ui';
 import { useNow } from '@gamepulse/ui/client';
+import { Flame, Gift, Hourglass, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { ko } from '@/lib/i18n';
@@ -80,24 +81,45 @@ export function TodayDashboard({ items, resets, generatedAt, adsMode }: TodayDas
     items.some((item) => item.id === id),
   ).length;
   const counters = [
-    { key: 'updates', label: t.counters.updates, value: today.summary.updates, icon: '🔥' },
-    { key: 'rewards', label: t.counters.rewards, value: today.summary.rewards, icon: '🎁' },
-    { key: 'resets', label: t.counters.resets, value: today.summary.resets, icon: '⏱' },
+    {
+      key: 'updates',
+      label: t.counters.updates,
+      value: today.summary.updates,
+      icon: Flame,
+      tile: 'bg-rose-500/12 text-rose-600 dark:text-rose-300',
+    },
+    {
+      key: 'rewards',
+      label: t.counters.rewards,
+      value: today.summary.rewards,
+      icon: Gift,
+      tile: 'bg-amber-500/15 text-amber-700 dark:text-amber-300',
+    },
+    {
+      key: 'resets',
+      label: t.counters.resets,
+      value: today.summary.resets,
+      icon: RotateCcw,
+      tile: 'bg-sky-500/12 text-sky-700 dark:text-sky-300',
+    },
     {
       key: 'endingSoon',
       label: t.counters.endingSoon,
       value: today.summary.endingSoon,
-      icon: '📅',
+      icon: Hourglass,
+      tile: 'bg-violet-500/12 text-violet-700 dark:text-violet-300',
     },
   ];
 
   return (
     <div data-mg-scope className="space-y-8">
       <header className="pt-6">
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand">{t.eyebrow}</p>
+        <p className="font-display text-[11px] font-bold uppercase tracking-[0.2em] text-brand">
+          {t.eyebrow}
+        </p>
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-text sm:text-3xl">
+            <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-text sm:text-4xl">
               <time dateTime={new Date(now).toISOString()}>
                 {formatCompactDateHeading(new Date(now))}
               </time>
@@ -110,21 +132,30 @@ export function TodayDashboard({ items, resets, generatedAt, adsMode }: TodayDas
           </div>
           <Link
             href="/my-games"
-            className="rounded-md border border-border bg-surface px-3 py-1.5 text-sm font-semibold text-text hover:border-zinc-400"
+            className="rounded-xl border border-border bg-surface px-4 py-2 text-sm font-bold text-text shadow-sm hover:border-zinc-400"
           >
             {configured ? t.editGames : t.personalizeAction}
           </Link>
         </div>
-        <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4" aria-label="요약">
+        <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4" aria-label="요약">
           {counters.map((counter) => (
-            <li key={counter.key} className="rounded-lg border border-border bg-surface px-3 py-2">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-muted">
-                <span aria-hidden className="mr-1">
-                  {counter.icon}
+            <li
+              key={counter.key}
+              className="flex items-center gap-3 rounded-xl border border-border bg-surface px-3 py-3 shadow-[0_1px_2px_rgb(15_23_42/0.05)]"
+            >
+              <span
+                className={`grid size-10 shrink-0 place-items-center rounded-xl ${counter.tile}`}
+              >
+                <counter.icon aria-hidden className="size-5" />
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-xs font-semibold text-muted">
+                  {counter.label}
                 </span>
-                {counter.label}
-              </p>
-              <p className="font-mono text-2xl font-bold tabular-nums text-text">{counter.value}</p>
+                <span className="block font-display text-2xl font-bold leading-tight tabular-nums text-text">
+                  {counter.value}
+                </span>
+              </span>
             </li>
           ))}
         </ul>

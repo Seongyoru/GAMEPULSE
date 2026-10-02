@@ -41,6 +41,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     },
     adapters: ['lol-fixture', 'lol-ddragon', 'lol-status'],
     accent: 'sky',
+    artMotif: 'hextech',
     terminology: {},
     seoKeywords: { 'ko-KR': ['롤 패치', '롤 패치노트', '리그 오브 레전드 패치', '롤 점검'] },
     defaultForAnonymous: true,
@@ -77,6 +78,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     },
     adapters: ['lostark-fixture', 'lostark-openapi'],
     accent: 'amber',
+    artMotif: 'compass',
     terminology: {},
     seoKeywords: {
       'ko-KR': [
@@ -120,6 +122,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     },
     adapters: ['maplestory-fixture', 'maplestory-openapi'],
     accent: 'orange',
+    artMotif: 'maple',
     terminology: {},
     seoKeywords: {
       'ko-KR': [
@@ -181,6 +184,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     },
     adapters: ['genshin-fixture'],
     accent: 'teal',
+    artMotif: 'stars',
     terminology: { banner: { 'ko-KR': '기원', 'en-US': 'Wish' } },
     seoKeywords: {
       'ko-KR': ['원신 현재 이벤트', '원신 기원 일정', '원신 리딤코드', '원신 업데이트'],
@@ -243,6 +247,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     },
     adapters: ['wuwa-fixture'],
     accent: 'violet',
+    artMotif: 'waves',
     terminology: { banner: { 'ko-KR': '픽업', 'en-US': 'Convene' } },
     seoKeywords: {
       'ko-KR': ['명조 이벤트 일정', '명조 픽업 일정', '명조 업데이트', '명조 리딤코드'],
@@ -301,6 +306,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     },
     adapters: ['zzz-fixture'],
     accent: 'lime',
+    artMotif: 'hazard',
     terminology: { banner: { 'ko-KR': '채널', 'en-US': 'Channel' } },
     seoKeywords: {
       'ko-KR': [

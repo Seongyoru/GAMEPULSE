@@ -234,3 +234,18 @@ selections, TODAY, homepage, calendar filters, sources page, sitemap, game route
 Operators can still ingest it explicitly. One switch therefore covers three cases: preparing a game before launch
 (content can be loaded while hidden), pausing one, and a fast takedown if a publisher objects. All user-facing code
 lists games through `listPublicGames()`; `listGames()` (everything) is for the pipeline and operator tools.
+
+## D-036 · Original key art and title cards instead of publisher artwork (2026-10-02)
+
+Recognising a game at a glance usually means its logo or key art, but those belong to the publishers. GAMEPULSE
+draws its own: each game has an `artMotif` (hextech, compass, maple, stars, waves, hazard) rendered in code in its
+accent palette, seeded by the game id so server and browser draw the same picture. Title cards set the Korean name in
+Black Han Sans (OFL-1.1) subset to the game names (~6 KB, `pnpm fonts:titles`, guarded by a unit test); the wordmark,
+English headlines and numbers use Space Grotesk (OFL-1.1, self-hosted through next/font). The art is drawn once per
+page as an SVG sprite — a client component, so pages do not also carry it in their React payload — and covers, marks
+and filters reference it with `<use>`; repeated cards show different crops. Official logos or art can be added only
+with the publisher's permission; `GameCover`/`GameMark` are the single place that would render them.
+
+On phones the primary links (오늘, 게임, 캘린더, 내 게임) become a bottom tab bar instead of a header row that clipped
+on 360–390 px screens; from `sm` up they sit in the header. It is one set of links restyled per breakpoint, so tests and
+assistive technology see a single navigation, and `aria-current` marks where the visitor is.

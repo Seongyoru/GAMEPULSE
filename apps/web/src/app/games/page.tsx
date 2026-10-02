@@ -1,5 +1,5 @@
 import { GAME_FEATURES, listPublicGames, type GameConfig } from '@gamepulse/domain';
-import { ACCENT_CLASSES, cx } from '@gamepulse/ui';
+import { GameCover } from '@gamepulse/ui';
 import Link from 'next/link';
 import { JsonLdScript } from '@/components/content/json-ld';
 import { MyGamesToggle } from '@/components/my-games/my-games-toggle';
@@ -28,13 +28,15 @@ export default function GamesPage() {
         ])}
       />
       <header>
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-brand">GAMES</p>
-        <h1 className="text-2xl font-extrabold tracking-tight text-text sm:text-3xl">
+        <p className="font-display text-[11px] font-bold uppercase tracking-[0.2em] text-brand">
+          GAMES
+        </p>
+        <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-text sm:text-4xl">
           {ko.games.title}
         </h1>
         <p className="mt-1 text-sm text-muted">{ko.games.description}</p>
       </header>
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {games.map((game) => {
           const view = gameView(game);
           const features = GAME_FEATURES.filter(
@@ -43,31 +45,28 @@ export default function GamesPage() {
           return (
             <li key={game.gameId}>
               <article
-                className="flex h-full flex-col rounded-lg border border-border bg-surface"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_1px_2px_rgb(15_23_42/0.05)] transition duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-zinc-900/10 dark:hover:shadow-black/40"
                 data-testid={`game-card-${game.gameId}`}
               >
+                <Link href={`/games/${game.slug}`} className="block">
+                  <GameCover gameId={game.gameId} className="h-40">
+                    <div className="flex h-full flex-col justify-end p-4">
+                      <h2 className="font-title text-3xl leading-none text-white [text-shadow:0_2px_10px_rgb(0_0_0/0.5)]">
+                        {view.name}
+                      </h2>
+                      <p className="mt-1.5 font-display text-[11px] font-bold uppercase tracking-[0.14em] text-white/80">
+                        {game.name} · {game.publisher}
+                      </p>
+                    </div>
+                  </GameCover>
+                </Link>
                 <div className="flex-1 space-y-2 p-4">
-                  <h2 className="flex items-center gap-2 text-lg font-bold tracking-tight text-text">
-                    <span
-                      aria-hidden
-                      className={cx(
-                        'inline-block size-2.5 rounded-full',
-                        ACCENT_CLASSES[view.accent].dot,
-                      )}
-                    />
-                    <Link href={`/games/${game.slug}`} className="hover:underline">
-                      {view.name}
-                    </Link>
-                  </h2>
-                  <p className="text-xs text-muted">
-                    {game.name} · {game.publisher}
-                  </p>
                   <p className="sr-only">{ko.games.features}</p>
                   <ul className="flex flex-wrap gap-1">
                     {features.map((feature) => (
                       <li
                         key={feature}
-                        className="rounded bg-surface-2 px-1.5 py-0.5 text-[11px] font-semibold text-muted"
+                        className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-semibold text-muted"
                       >
                         {featureLabel(game, feature)}
                         {game.features[feature] === 'limited' ? ` (${ko.game.limited})` : ''}

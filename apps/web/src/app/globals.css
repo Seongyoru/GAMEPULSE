@@ -5,13 +5,14 @@
 
 /*
  * Semantic tokens. Light by default, dark with the OS preference.
- * Bloomberg-lite: quiet neutrals, information-first, colour reserved for meaning.
+ * Quiet neutrals carry the information; each game's original key art (packages/ui game-art)
+ * and colour carry recognition.
  */
 :root {
-  --gp-bg: #f5f6f8;
+  --gp-bg: #f2f3f7;
   --gp-surface: #ffffff;
-  --gp-surface-2: #f0f2f5;
-  --gp-border: #e2e5ea;
+  --gp-surface-2: #eceef3;
+  --gp-border: #dfe2e9;
   --gp-text: #0e1320;
   --gp-muted: #5b6475;
   /* rose-700: ≥ 4.5:1 on --gp-bg for the 11px eyebrow labels (WCAG AA). */
@@ -21,10 +22,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --gp-bg: #0a0c11;
-    --gp-surface: #11141b;
-    --gp-surface-2: #171b24;
-    --gp-border: #242a36;
+    --gp-bg: #06080d;
+    --gp-surface: #0e121a;
+    --gp-surface-2: #151a24;
+    --gp-border: #232b38;
     --gp-text: #e7eaf0;
     --gp-muted: #8e97a8;
     --gp-brand: #fb7185;
@@ -40,6 +41,12 @@
   --color-text: var(--gp-text);
   --color-muted: var(--gp-muted);
   --color-brand: var(--gp-brand);
+  /* Space Grotesk via next/font (app/fonts.ts) for the wordmark, English headlines and numbers. */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  /* Black Han Sans, subset to the game names (app/fonts.ts), for game title cards and marks. */
+  --font-title:
+    var(--font-black-han-sans), var(--font-space-grotesk), 'Apple SD Gothic Neo', 'Malgun Gothic',
+    sans-serif;
 }
 
 @theme {
@@ -59,6 +66,10 @@
 
   body {
     background-color: var(--gp-bg);
+    background-image:
+      radial-gradient(1100px 480px at 8% -8%, rgb(225 29 72 / 0.07), transparent 65%),
+      radial-gradient(900px 420px at 92% -6%, rgb(99 102 241 / 0.08), transparent 65%);
+    background-repeat: no-repeat;
     color: var(--gp-text);
     font-family: var(--font-sans);
     word-break: keep-all;
@@ -70,7 +81,24 @@
     outline-offset: 2px;
   }
 
+  /* A heartbeat travelling along the hero's pulse line (static when motion is reduced). */
+  .gp-pulse-line {
+    stroke-dasharray: 160 1240;
+    animation: gp-pulse 3.6s linear infinite;
+  }
+
+  @keyframes gp-pulse {
+    to {
+      stroke-dashoffset: -1400;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .gp-pulse-line {
+      animation: none;
+      stroke-dasharray: none;
+    }
+
     *,
     *::before,
     *::after {

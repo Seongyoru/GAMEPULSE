@@ -27,6 +27,14 @@ export const GAME_ACCENTS = [
 ] as const;
 export type GameAccent = (typeof GAME_ACCENTS)[number];
 
+/**
+ * Motif of the game's original key art (drawn by the UI package from the accent palette).
+ * GAMEPULSE never ships publishers' artwork or logos; this keeps every game recognisable
+ * at a glance without them (docs/DECISIONS.md D-036).
+ */
+export const GAME_ART_MOTIFS = ['hextech', 'compass', 'maple', 'stars', 'waves', 'hazard'] as const;
+export type GameArtMotif = (typeof GAME_ART_MOTIFS)[number];
+
 export type LocalizedText = Readonly<Partial<Record<Locale, string>>> & {
   readonly 'en-US': string;
 };
@@ -65,6 +73,7 @@ export interface GameConfig {
   /** Automated source adapter ids (fixture/live). Manual ingestion is always available separately. */
   adapters: readonly string[];
   accent: GameAccent;
+  artMotif: GameArtMotif;
   /** Game-specific words for generic concepts, e.g. Genshin calls banners "기원". */
   terminology: Readonly<{ banner?: LocalizedText; patch?: LocalizedText }>;
   seoKeywords: Readonly<Partial<Record<Locale, readonly string[]>>>;

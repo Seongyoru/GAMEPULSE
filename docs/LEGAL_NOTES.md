@@ -12,7 +12,12 @@
   are never republished. Raw document text is kept only as an internal processing copy, never rendered, and pruned
   after `RAW_TEXT_RETENTION_DAYS` (default 30) — sources may require shorter retention (`dataRetentionDays`).
 - **Always link the original source** and show who published it.
-- **No copyrighted artwork** by default: the UI uses neutral, generated visuals (accent colours, initials).
+- **No publisher artwork or logos.** Every game gets original key art drawn in code (an abstract motif in its colour)
+  and a title card set in our own typography (D-036). Official logos, key art or character images may only be added
+  with the publisher's permission (ask together with the data-use requests).
+- **Open-licensed type and icons.** Space Grotesk and Black Han Sans are SIL OFL 1.1 (neither declares a Reserved Font
+  Name, so the subset keeps its name); the committed Black Han Sans subset carries its licence in
+  `apps/web/src/app/fonts/title-subset.OFL.txt`. Icons come from lucide-react (ISC).
 - **Synthetic data is labelled** and synthetic codes start with `GPTEST-`.
 
 ## Per-publisher findings (2026-10-02)

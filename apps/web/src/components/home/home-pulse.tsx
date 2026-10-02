@@ -11,8 +11,9 @@ import {
   type PulseMoment,
   type ResetRuleDefinition,
 } from '@gamepulse/domain';
-import { SectionHeader, SourceAttributionNote, Timeline } from '@gamepulse/ui';
+import { GameMark, SectionHeader, SourceAttributionNote, Timeline } from '@gamepulse/ui';
 import { useNow } from '@gamepulse/ui/client';
+import { Clock3, Flame, Gamepad2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { ko } from '@/lib/i18n';
@@ -80,12 +81,13 @@ export function HomePulse({
   );
 
   return (
-    <div data-mg-scope className="space-y-10">
+    <div data-mg-scope className="mt-12 space-y-12">
       <section aria-labelledby="home-happening">
         <SectionHeader
           id="home-happening"
           eyebrow={ko.home.happeningToday}
           title={ko.home.happeningTodayKo}
+          icon={<Flame />}
           action={
             <Link href="/today" className="text-sm font-semibold text-muted hover:text-text">
               {ko.home.seeAll} →
@@ -102,7 +104,12 @@ export function HomePulse({
       </section>
 
       <section aria-labelledby="home-games">
-        <SectionHeader id="home-games" eyebrow="GAMES" title={ko.home.supportedGames} />
+        <SectionHeader
+          id="home-games"
+          eyebrow="GAMES"
+          title={ko.home.supportedGames}
+          icon={<Gamepad2 />}
+        />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {snapshots.map((snapshot) => (
             <GameSnapshotCard key={snapshot.gameId} snapshot={snapshot} />
@@ -112,7 +119,12 @@ export function HomePulse({
 
       {moments.length > 0 ? (
         <section aria-labelledby="home-upcoming">
-          <SectionHeader id="home-upcoming" eyebrow="NEXT 48H" title={ko.home.comingUp} />
+          <SectionHeader
+            id="home-upcoming"
+            eyebrow="NEXT 48H"
+            title={ko.home.comingUp}
+            icon={<Clock3 />}
+          />
           <Timeline
             entries={moments.map((moment) => {
               const game = gameViewById(moment.gameId);
@@ -122,8 +134,9 @@ export function HomePulse({
                 accent: game.accent,
                 time: formatInstant(moment.at).slice(5),
                 content: (
-                  <span className="text-sm">
-                    <span className="mr-2 font-semibold text-muted">{game.shortName}</span>
+                  <span className="flex items-center gap-2 text-sm">
+                    <GameMark gameId={moment.gameId} label={game.shortName} size="sm" />
+                    <span className="sr-only">{game.shortName}</span>
                     <span className="mr-2 text-[11px] font-bold uppercase tracking-wider text-muted">
                       {MOMENT_LABEL[moment.kind]}
                     </span>

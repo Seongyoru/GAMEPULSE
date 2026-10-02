@@ -152,7 +152,8 @@ describe('EventCard', () => {
       '/events/genshin-impact-banner-starlight-song-wish',
     );
     expect(screen.getByText('10.01 (목) 10:00 – 10.21 (수) 03:59')).toBeTruthy();
-    expect(screen.getByText('가상의 가수 · 가상의 기사')).toBeTruthy();
+    expect(screen.getByText('가상의 가수')).toBeTruthy();
+    expect(screen.getByText('가상의 기사')).toBeTruthy();
     expect(screen.getByText('진행 중')).toBeTruthy();
     expect(screen.getByText('샘플')).toBeTruthy();
     expect(screen.getByTestId('event-card').getAttribute('data-mg-game')).toBe('genshin');

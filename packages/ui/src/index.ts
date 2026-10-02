@@ -1,5 +1,16 @@
 export { cx } from './cx';
 export {
+  artCrop,
+  GameArt,
+  GameCover,
+  GameMark,
+  type ArtCrop,
+  type GameArtSpec,
+  type GameCoverProps,
+  type GameMarkProps,
+} from './components/game-art';
+export { CONTENT_TYPE_ICONS, TypeIcon } from './components/icons';
+export {
   ACCENT_CLASSES,
   CHANGE_TYPE_CLASSES,
   TONE_CLASSES,

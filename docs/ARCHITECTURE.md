@@ -121,7 +121,8 @@ Games are data, not code paths: nothing in the web app, the domain engines or th
    short names, publisher, official URL and hosts (item links must stay on them), status (`INACTIVE` keeps the game
    hidden everywhere until launch, D-035), time zone and regions
    (IANA or fixed offsets such as `UTC+8`), feature support per content type (drives game tabs), an accent from
-   `GAME_ACCENTS`, terminology (e.g. what the game calls a banner), SEO keywords, `defaultForAnonymous`, sort order.
+   `GAME_ACCENTS`, an `artMotif` for its original key art (D-036), terminology (e.g. what the game calls a banner), SEO
+   keywords, `defaultForAnonymous`, sort order. Then run `pnpm fonts:titles` so the title font covers the new name.
 3. **Reset rules** — add researched rules to `packages/domain/src/games/reset-rules.ts` with their `sourceUrl`, as
    `UNVERIFIED` until a person confirms them in game.
 4. **Fixture feed** — `fixtures/sources/<gameId>.json` with synthetic, clearly fictional items for every supported

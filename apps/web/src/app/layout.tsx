@@ -1,3 +1,5 @@
+import { listPublicGames } from '@gamepulse/domain';
+import { GameArtSprite } from '@gamepulse/ui/client';
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import type { ReactNode } from 'react';
@@ -9,7 +11,15 @@ import { ko } from '@/lib/i18n';
 import { MY_GAMES_BOOT_SCRIPT, myGamesCss } from '@/lib/my-games-boot';
 import { isSampleDataMode } from '@/server/content';
 import { ga4MeasurementId, siteUrl } from '@/server/env';
+import { displayFont, titleFont } from './fonts';
 import './globals.css';
+
+/** Every public game's original key art, drawn once per page and referenced by covers and marks. */
+const GAME_ART = listPublicGames().map((game) => ({
+  gameId: game.gameId,
+  accent: game.accent,
+  motif: game.artMotif,
+}));
 
 export function generateMetadata(): Metadata {
   return {
@@ -50,12 +60,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const ga4 = ga4MeasurementId();
   return (
     // data-mg is set by the boot script before React hydrates (see lib/my-games-boot.ts).
-    <html lang="ko" suppressHydrationWarning>
+    <html
+      lang="ko"
+      className={`${displayFont.variable} ${titleFont.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: MY_GAMES_BOOT_SCRIPT }} />
         <style dangerouslySetInnerHTML={{ __html: myGamesCss() }} />
       </head>
       <body className="min-h-dvh antialiased">
+        <GameArtSprite games={GAME_ART} />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-surface focus:px-3 focus:py-2"
@@ -67,7 +82,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <main id="main" className="mx-auto min-h-[60vh] max-w-6xl px-4 pb-16">
           {children}
         </main>
-        <SiteFooter />
+        <SiteFooter games={GAME_ART} />
         <AnalyticsListener />
         {ga4 ? <Ga4 measurementId={ga4} /> : null}
       </body>

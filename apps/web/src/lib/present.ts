@@ -32,6 +32,9 @@ export interface GameView {
   slug: string;
   name: string;
   shortName: string;
+  /** Canonical English name, shown under the Korean title on title cards. */
+  englishName: string;
+  publisher: string;
   accent: GameAccent;
 }
 
@@ -41,6 +44,8 @@ export function gameView(game: GameConfig): GameView {
     slug: game.slug,
     name: localizedText(game.localizedNames, 'ko-KR'),
     shortName: localizedText(game.shortNames, 'ko-KR'),
+    englishName: game.name,
+    publisher: game.publisher,
     accent: game.accent,
   };
 }

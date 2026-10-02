@@ -2,6 +2,7 @@
  * Small presentational primitives (server-compatible).
  */
 import type { GameAccent, RewardItem } from '@gamepulse/domain';
+import { Gift } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { cx } from '../cx';
@@ -78,24 +79,25 @@ export interface RewardBadgeProps {
   className?: string;
 }
 
-/** "원석 ×420 · 영웅의 경험 ×10개" */
+/** Reward pills (gift icon on the first): "원석 ×420", "영웅의 경험 ×10개". */
 export function RewardBadge({ items, max = 3, className }: RewardBadgeProps) {
   if (items.length === 0) return null;
   const shown = items.slice(0, max);
   return (
-    <span
-      className={cx(
-        'inline-flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted',
-        className,
-      )}
-    >
+    <span className={cx('inline-flex flex-wrap items-center gap-1.5', className)}>
       {shown.map((item, index) => (
-        <span key={`${item.name}-${index}`} className="whitespace-nowrap">
-          <span className="font-medium text-text">{item.name}</span>
+        <span
+          key={`${item.name}-${index}`}
+          className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-900 ring-1 ring-inset ring-amber-500/25 dark:text-amber-200"
+        >
+          {index === 0 ? <Gift aria-hidden className="size-3" /> : null}
+          {item.name}
           <span className="tabular-nums">{formatQuantity(item.quantity, item.unit)}</span>
         </span>
       ))}
-      {items.length > max ? <span>+{items.length - max}</span> : null}
+      {items.length > max ? (
+        <span className="text-[11px] font-semibold text-muted">+{items.length - max}</span>
+      ) : null}
     </span>
   );
 }
@@ -106,20 +108,31 @@ export interface SectionHeaderProps {
   count?: number;
   action?: ReactNode;
   id?: string;
+  /** Decorative icon shown before the title. */
+  icon?: ReactNode;
 }
 
-export function SectionHeader({ eyebrow, title, count, action, id }: SectionHeaderProps) {
+export function SectionHeader({ eyebrow, title, count, action, id, icon }: SectionHeaderProps) {
   return (
-    <div className="mb-2 flex items-end justify-between gap-3">
+    <div className="mb-3 flex items-end justify-between gap-3">
       <div className="min-w-0">
-        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{eyebrow}</p>
+        <p className="font-display text-[11px] font-bold uppercase tracking-[0.18em] text-brand">
+          {eyebrow}
+        </p>
         <h2
           id={id}
-          className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-text"
+          className="mt-0.5 flex items-center gap-2 text-xl font-extrabold tracking-tight text-text"
         >
+          {icon ? (
+            <span aria-hidden className="text-muted [&>svg]:size-5">
+              {icon}
+            </span>
+          ) : null}
           {title}
           {count !== undefined ? (
-            <span className="text-sm font-semibold tabular-nums text-muted">{count}</span>
+            <span className="rounded-full bg-surface-2 px-2 py-0.5 font-display text-xs font-bold tabular-nums text-muted">
+              {count}
+            </span>
           ) : null}
         </h2>
       </div>

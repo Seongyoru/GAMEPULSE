@@ -8,11 +8,12 @@ import {
 import {
   AdSlot,
   Card,
-  GameBadge,
+  GameCover,
   PatchChange,
   RewardBadge,
   SourceBadge,
   StatusChip,
+  TypeIcon,
   type AdSlotMode,
 } from '@gamepulse/ui';
 import { Countdown } from '@gamepulse/ui/client';
@@ -128,16 +129,31 @@ export function ContentDetail({
       <JsonLdScript data={[breadcrumbJsonLd(crumbs), contentJsonLd(record)]} />
       <Breadcrumbs items={crumbs} />
 
-      <header className="space-y-2">
+      <header className="space-y-3">
+        <GameCover
+          gameId={record.gameId}
+          className="h-32 rounded-2xl shadow-lg shadow-zinc-900/10 sm:h-40 dark:shadow-black/40"
+        >
+          <div className="flex h-full items-end justify-between gap-3 p-4 sm:p-5">
+            <Link href={`/games/${view.slug}`} className="min-w-0 hover:opacity-90">
+              <span className="font-title block truncate text-3xl leading-none text-white [text-shadow:0_2px_10px_rgb(0_0_0/0.5)] sm:text-4xl">
+                {view.name}
+              </span>
+              <span className="mt-1.5 block truncate font-display text-[10px] font-bold uppercase tracking-[0.16em] text-white/80">
+                {view.englishName}
+              </span>
+            </Link>
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm">
+              <TypeIcon type={record.type} />
+              {typeLabel(record.type, record.gameId)}
+            </span>
+          </div>
+        </GameCover>
         <div className="flex flex-wrap items-center gap-2">
-          <GameBadge name={view.name} accent={view.accent} size="md" href={`/games/${view.slug}`} />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted">
-            {typeLabel(record.type, record.gameId)}
-          </span>
           <LiveStatusChip item={record} serverNow={serverNow} />
           {record.isSynthetic ? <StatusChip tone="sample">{ko.status.sample}</StatusChip> : null}
         </div>
-        <h1 className="text-2xl font-extrabold leading-tight tracking-tight text-text sm:text-3xl">
+        <h1 className="text-2xl font-extrabold leading-tight tracking-tight text-text sm:text-4xl">
           {record.title}
         </h1>
         {record.summary ? <p className="max-w-3xl text-base text-muted">{record.summary}</p> : null}

@@ -37,6 +37,7 @@ in-memory store at startup (development only; refused in production).
 | `pnpm ingest:text <file> --game <id> --url <official URL>`          | Structure an official notice's text with the parser (`AI_PARSER`)    |
 | `pnpm health:sources [--mode live]`                                 | Source health checks                                                 |
 | `pnpm runs`                                                         | Recent ingestion runs                                                |
+| `pnpm fonts:titles`                                                 | Rebuild the title font subset after adding or renaming a game        |
 | `pnpm lint` · `pnpm typecheck` · `pnpm format:check`                | Static checks                                                        |
 | `pnpm test:unit` · `pnpm test:integration` · `pnpm test:e2e`        | Unit + component · integration (PostgreSQL or PGlite) · Playwright   |
 | `pnpm build`                                                        | Production builds (web + bundled worker)                             |

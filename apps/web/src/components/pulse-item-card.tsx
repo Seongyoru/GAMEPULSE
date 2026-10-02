@@ -112,6 +112,7 @@ export function PulseItemCard({ item, serverNow, actions, className }: PulseItem
       title={item.title}
       game={{ gameId: game.gameId, name: game.shortName, accent: game.accent }}
       typeLabel={typeLabel(item.type, item.gameId)}
+      type={item.type}
       status={status}
       meta={meta}
       summary={summary}
