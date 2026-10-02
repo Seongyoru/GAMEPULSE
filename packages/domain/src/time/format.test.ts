@@ -13,12 +13,18 @@ const NOW = new Date('2026-10-02T03:00:00Z'); // 12:00 KST, Friday
 
 describe('formatCompactDateTime', () => {
   it('formats in the viewer time zone with a Korean weekday', () => {
-    expect(formatCompactDateTime('2026-10-07T21:00:00Z', 'Asia/Seoul', 'ko-KR')).toBe('10.08 (목) 06:00');
+    expect(formatCompactDateTime('2026-10-07T21:00:00Z', 'Asia/Seoul', 'ko-KR')).toBe(
+      '10.08 (목) 06:00',
+    );
   });
 
   it('supports English weekdays and omitting the weekday', () => {
-    expect(formatCompactDateTime('2026-10-07T21:00:00Z', 'Asia/Seoul', 'en-US')).toBe('10.08 (Thu) 06:00');
-    expect(formatCompactDateTime('2026-10-07T21:00:00Z', 'UTC', 'ko-KR', { weekday: false })).toBe('10.07 21:00');
+    expect(formatCompactDateTime('2026-10-07T21:00:00Z', 'Asia/Seoul', 'en-US')).toBe(
+      '10.08 (Thu) 06:00',
+    );
+    expect(formatCompactDateTime('2026-10-07T21:00:00Z', 'UTC', 'ko-KR', { weekday: false })).toBe(
+      '10.07 21:00',
+    );
   });
 });
 

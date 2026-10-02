@@ -8,15 +8,36 @@ import { sourceDefinitionSchema } from './source';
 
 describe('normalizedCandidateSchema', () => {
   it('accepts every factory candidate kind', () => {
-    for (const kind of ['PATCH', 'UPDATE', 'EVENT', 'REWARD', 'REDEEM_CODE', 'MAINTENANCE', 'BANNER', 'ANNOUNCEMENT'] as const) {
+    for (const kind of [
+      'PATCH',
+      'UPDATE',
+      'EVENT',
+      'REWARD',
+      'REDEEM_CODE',
+      'MAINTENANCE',
+      'BANNER',
+      'ANNOUNCEMENT',
+    ] as const) {
       expect(normalizedCandidateSchema.safeParse(makeCandidate(kind)).success).toBe(true);
     }
   });
 
   it('rejects non-http source URLs, unknown kinds and malformed dates', () => {
-    expect(normalizedCandidateSchema.safeParse({ ...makeCandidate('EVENT'), sourceUrl: 'javascript:alert(1)' }).success).toBe(false);
-    expect(normalizedCandidateSchema.safeParse({ ...makeCandidate('EVENT'), kind: 'RUMOR' }).success).toBe(false);
-    expect(normalizedCandidateSchema.safeParse({ ...makeCandidate('EVENT'), startAt: '2026-10-08 10:00' }).success).toBe(false);
+    expect(
+      normalizedCandidateSchema.safeParse({
+        ...makeCandidate('EVENT'),
+        sourceUrl: 'javascript:alert(1)',
+      }).success,
+    ).toBe(false);
+    expect(
+      normalizedCandidateSchema.safeParse({ ...makeCandidate('EVENT'), kind: 'RUMOR' }).success,
+    ).toBe(false);
+    expect(
+      normalizedCandidateSchema.safeParse({
+        ...makeCandidate('EVENT'),
+        startAt: '2026-10-08 10:00',
+      }).success,
+    ).toBe(false);
   });
 
   it('accepts offset datetimes and preserved source timing', () => {
@@ -36,7 +57,9 @@ describe('normalizedCandidateSchema', () => {
   });
 
   it('validates redeem code shape', () => {
-    const bad = makeCandidate('REDEEM_CODE', { redeemCode: { code: 'no spaces allowed', region: null, items: [] } });
+    const bad = makeCandidate('REDEEM_CODE', {
+      redeemCode: { code: 'no spaces allowed', region: null, items: [] },
+    });
     expect(normalizedCandidateSchema.safeParse(bad).success).toBe(false);
   });
 });
@@ -51,16 +74,24 @@ describe('sourceDefinitionSchema', () => {
 describe('resetRuleDefinitionSchema', () => {
   it('requires the fields of its frequency', () => {
     expect(resetRuleDefinitionSchema.safeParse(makeResetRule()).success).toBe(true);
-    expect(resetRuleDefinitionSchema.safeParse(makeResetRule({ dayOfWeek: null })).success).toBe(false);
+    expect(resetRuleDefinitionSchema.safeParse(makeResetRule({ dayOfWeek: null })).success).toBe(
+      false,
+    );
     expect(
-      resetRuleDefinitionSchema.safeParse(makeResetRule({ frequency: 'MONTHLY', dayOfWeek: null, dayOfMonth: null }))
-        .success,
+      resetRuleDefinitionSchema.safeParse(
+        makeResetRule({ frequency: 'MONTHLY', dayOfWeek: null, dayOfMonth: null }),
+      ).success,
     ).toBe(false);
-    expect(resetRuleDefinitionSchema.safeParse(makeResetRule({ timezone: 'Nowhere/Zone' })).success).toBe(false);
+    expect(
+      resetRuleDefinitionSchema.safeParse(makeResetRule({ timezone: 'Nowhere/Zone' })).success,
+    ).toBe(false);
   });
 
   it('requires a cited source for verified rules', () => {
-    expect(resetRuleDefinitionSchema.safeParse(makeResetRule({ verification: 'MANUAL_VERIFIED' })).success).toBe(false);
+    expect(
+      resetRuleDefinitionSchema.safeParse(makeResetRule({ verification: 'MANUAL_VERIFIED' }))
+        .success,
+    ).toBe(false);
     expect(
       resetRuleDefinitionSchema.safeParse(
         makeResetRule({ verification: 'MANUAL_VERIFIED', sourceUrl: 'https://example.com/guide' }),
@@ -88,7 +119,9 @@ describe('preferences', () => {
 
   it('falls back to defaults when no game is selected', () => {
     expect(effectiveGameIds(defaultPreferences(), ['lol', 'genshin'])).toEqual(['lol', 'genshin']);
-    expect(effectiveGameIds({ ...defaultPreferences(), selectedGameIds: ['wuwa'] }, ['lol'])).toEqual(['wuwa']);
+    expect(
+      effectiveGameIds({ ...defaultPreferences(), selectedGameIds: ['wuwa'] }, ['lol']),
+    ).toEqual(['wuwa']);
   });
 });
 
@@ -111,7 +144,12 @@ describe('manual ingestion items', () => {
       'ko-KR',
     );
     expect(candidates).toHaveLength(1);
-    expect(candidates[0]).toMatchObject({ gameId: 'genshin', isSynthetic: false, confidence: 1, sourceLocale: 'ko-KR' });
+    expect(candidates[0]).toMatchObject({
+      gameId: 'genshin',
+      isSynthetic: false,
+      confidence: 1,
+      sourceLocale: 'ko-KR',
+    });
     expect(candidates[0]?.sourceKey).toMatch(/^manual-[0-9a-f]{8}$/);
     expect(errors).toHaveLength(1);
     expect(errors[0]?.index).toBe(1);

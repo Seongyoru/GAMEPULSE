@@ -74,7 +74,11 @@ interface StoredRaw extends RawDocumentInput {
 
 const key = (...parts: string[]) => parts.join('\u0000');
 
-function syncInto<T>(map: Map<string, T>, id: string, value: T): 'created' | 'updated' | 'unchanged' {
+function syncInto<T>(
+  map: Map<string, T>,
+  id: string,
+  value: T,
+): 'created' | 'updated' | 'unchanged' {
   const existing = map.get(id);
   map.set(id, value);
   if (existing === undefined) return 'created';
@@ -104,15 +108,17 @@ export class InMemoryContentStore implements ContentStore {
 
   // ── registry sync ──────────────────────────────────────────────────────────
 
-  syncGames(games: readonly GameConfig[]): Promise<SyncCounts> {
+  syncGames(games: readonly GameConfig[], _now?: string): Promise<SyncCounts> {
     return Promise.resolve(count(games.map((game) => syncInto(this.games, game.gameId, game))));
   }
 
-  syncSources(sources: readonly SourceDefinition[]): Promise<SyncCounts> {
-    return Promise.resolve(count(sources.map((source) => syncInto(this.sources, source.id, source))));
+  syncSources(sources: readonly SourceDefinition[], _now?: string): Promise<SyncCounts> {
+    return Promise.resolve(
+      count(sources.map((source) => syncInto(this.sources, source.id, source))),
+    );
   }
 
-  syncResetRules(rules: readonly ResetRuleDefinition[]): Promise<SyncCounts> {
+  syncResetRules(rules: readonly ResetRuleDefinition[], _now?: string): Promise<SyncCounts> {
     return Promise.resolve(count(rules.map((rule) => syncInto(this.resetRules, rule.id, rule))));
   }
 
@@ -123,7 +129,12 @@ export class InMemoryContentStore implements ContentStore {
     for (const run of this.runs.values()) {
       if (run.adapterId !== input.adapterId || run.status !== 'RUNNING') continue;
       if (nowMs - Date.parse(run.startedAt) > input.staleAfterMs) {
-        this.runs.set(run.id, { ...run, status: 'ABANDONED', finishedAt: input.now, error: 'stale run lock released' });
+        this.runs.set(run.id, {
+          ...run,
+          status: 'ABANDONED',
+          finishedAt: input.now,
+          error: 'stale run lock released',
+        });
       } else {
         return Promise.resolve(null);
       }
@@ -138,7 +149,15 @@ export class InMemoryContentStore implements ContentStore {
       status: 'RUNNING',
       startedAt: toIso(input.now),
       finishedAt: null,
-      counters: { discovered: 0, fetched: 0, new: 0, updated: 0, unchanged: 0, failed: 0, skipped: 0 },
+      counters: {
+        discovered: 0,
+        fetched: 0,
+        new: 0,
+        updated: 0,
+        unchanged: 0,
+        failed: 0,
+        skipped: 0,
+      },
       error: null,
     };
     this.runs.set(run.id, run);
@@ -161,7 +180,9 @@ export class InMemoryContentStore implements ContentStore {
 
   listRuns(limit: number): Promise<IngestionRunRecord[]> {
     return Promise.resolve(
-      [...this.runs.values()].sort((a, b) => Date.parse(b.startedAt) - Date.parse(a.startedAt)).slice(0, limit),
+      [...this.runs.values()]
+        .sort((a, b) => Date.parse(b.startedAt) - Date.parse(a.startedAt))
+        .slice(0, limit),
     );
   }
 
@@ -219,7 +240,11 @@ export class InMemoryContentStore implements ContentStore {
     return Promise.resolve(pruned);
   }
 
-  findParseResult(inputHash: string, parserId: string, parserVersion: string): Promise<{ output: JsonValue | null } | null> {
+  findParseResult(
+    inputHash: string,
+    parserId: string,
+    parserVersion: string,
+  ): Promise<{ output: JsonValue | null } | null> {
     const found = this.parseResults.get(key(inputHash, parserId, parserVersion));
     return Promise.resolve(found ? { output: found.output } : null);
   }
@@ -289,7 +314,9 @@ export class InMemoryContentStore implements ContentStore {
 
   private upsertProvenance(contentId: string, input: ProvenanceInput): void {
     const rows = this.provenance.get(contentId) ?? [];
-    const existing = rows.find((row) => row.sourceId === input.sourceId && row.sourceKey === input.sourceKey);
+    const existing = rows.find(
+      (row) => row.sourceId === input.sourceId && row.sourceKey === input.sourceKey,
+    );
     const seenAt = toIso(input.seenAt);
     if (existing) {
       existing.lastSeenAt = seenAt;
@@ -313,12 +340,18 @@ export class InMemoryContentStore implements ContentStore {
   publishContent(input: PublishInput): Promise<PublishOutcome> {
     const { candidate, source } = input;
     const now = toIso(input.now);
-    const existingId = input.supersedeId ?? this.sourceKeyIndex.get(key(source.id, candidate.sourceKey)) ?? null;
+    const existingId =
+      input.supersedeId ?? this.sourceKeyIndex.get(key(source.id, candidate.sourceKey)) ?? null;
     const existing = existingId === null ? undefined : this.items.get(existingId);
 
     if (existing) {
-      const sameSource = existing.sourceId === source.id && existing.candidate.sourceKey === candidate.sourceKey;
-      if (sameSource && existing.contentHash === input.contentHash && existing.status === input.status) {
+      const sameSource =
+        existing.sourceId === source.id && existing.candidate.sourceKey === candidate.sourceKey;
+      if (
+        sameSource &&
+        existing.contentHash === input.contentHash &&
+        existing.status === input.status
+      ) {
         existing.lastSeenAt = now;
         this.upsertProvenance(existing.id, this.primaryProvenance(input, now));
         return Promise.resolve({ id: existing.id, slug: existing.slug, outcome: 'unchanged' });
@@ -415,7 +448,13 @@ export class InMemoryContentStore implements ContentStore {
           lastSeenAt: row.lastSeenAt,
         };
       })
-      .sort((a, b) => (a.role === b.role ? a.firstSeenAt.localeCompare(b.firstSeenAt) : a.role === 'PRIMARY' ? -1 : 1));
+      .sort((a, b) =>
+        a.role === b.role
+          ? a.firstSeenAt.localeCompare(b.firstSeenAt)
+          : a.role === 'PRIMARY'
+            ? -1
+            : 1,
+      );
 
     return {
       id: item.id,
@@ -487,7 +526,9 @@ export class InMemoryContentStore implements ContentStore {
 
   getLastUpdatedAt(gameId?: string): Promise<string | null> {
     const times = [...this.items.values()]
-      .filter((item) => item.status === 'PUBLISHED' && (!gameId || item.candidate.gameId === gameId))
+      .filter(
+        (item) => item.status === 'PUBLISHED' && (!gameId || item.candidate.gameId === gameId),
+      )
       .map((item) => Date.parse(item.updatedAt));
     return Promise.resolve(times.length === 0 ? null : new Date(Math.max(...times)).toISOString());
   }

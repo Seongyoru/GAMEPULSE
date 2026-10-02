@@ -24,7 +24,10 @@ function toDate(value: Date | string): Date {
   return value instanceof Date ? value : new Date(value);
 }
 
-export function weekdayLabel(date: { year: number; month: number; day: number }, locale: string): string {
+export function weekdayLabel(
+  date: { year: number; month: number; day: number },
+  locale: string,
+): string {
   const jsDay = new Date(Date.UTC(date.year, date.month - 1, date.day)).getUTCDay();
   const table = WEEKDAYS[language(locale)] ?? WEEKDAYS.en ?? [];
   return table[jsDay] ?? '';
@@ -112,7 +115,10 @@ export function formatClockDuration(ms: number): string {
  * "D+2" (two days ago).
  */
 export function formatDDay(target: Date | string, now: Date, timeZone: string): string {
-  const diff = calendarDayDiff(toCalendarDate(now, timeZone), toCalendarDate(toDate(target), timeZone));
+  const diff = calendarDayDiff(
+    toCalendarDate(now, timeZone),
+    toCalendarDate(toDate(target), timeZone),
+  );
   if (diff === 0) return 'D-DAY';
   return diff > 0 ? `D-${diff}` : `D+${Math.abs(diff)}`;
 }

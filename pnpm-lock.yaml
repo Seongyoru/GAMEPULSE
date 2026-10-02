@@ -290,9 +290,15 @@ importers:
       bullmq:
         specifier: ^6.3.11
         version: 6.3.11(ioredis@6.0.0(supports-color@7.2.0))
+      drizzle-orm:
+        specifier: ^0.45.3
+        version: 0.45.3(@electric-sql/pglite@0.5.8)(postgres@3.4.9)
       ioredis:
         specifier: ^6.0.0
         version: 6.0.0(supports-color@7.2.0)
+      postgres:
+        specifier: ^3.4.9
+        version: 3.4.9
       zod:
         specifier: ^4.6.5
         version: 4.6.5
@@ -364,6 +370,9 @@ importers:
       '@gamepulse/observability':
         specifier: workspace:*
         version: link:../observability
+      '@gamepulse/parsers':
+        specifier: workspace:*
+        version: link:../parsers
       '@gamepulse/validators':
         specifier: workspace:*
         version: link:../validators

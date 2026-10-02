@@ -1,0 +1,34 @@
+import { parseServerEnv } from '@gamepulse/config';
+import { describe, expect, it } from 'vitest';
+import { resolveAdapter } from './jobs';
+import { planSchedule } from './scheduler';
+
+describe('planSchedule', () => {
+  it('refreshes every fixture adapter hourly in fixture mode', () => {
+    const { scheduled } = planSchedule(parseServerEnv({ COLLECTOR_MODE: 'fixture' }));
+    expect(scheduled.map((entry) => entry.definition.id)).toEqual([
+      'lol-fixture',
+      'lostark-fixture',
+      'maplestory-fixture',
+      'genshin-fixture',
+      'wuwa-fixture',
+    ]);
+    expect(scheduled.every((entry) => entry.everyMinutes === 60)).toBe(true);
+  });
+
+  it('never schedules fixture adapters in live mode', () => {
+    const { scheduled, skipped } = planSchedule(parseServerEnv({ COLLECTOR_MODE: 'live' }));
+    expect(scheduled.filter((entry) => entry.definition.source.type === 'FIXTURE')).toEqual([]);
+    expect(skipped.find((entry) => entry.adapterId === 'lol-fixture')?.reason).toBe(
+      'does not support live mode',
+    );
+  });
+});
+
+describe('resolveAdapter', () => {
+  it('rejects unknown adapters and unsupported modes', () => {
+    expect(() => resolveAdapter('nope', 'fixture')).toThrow(/Unknown adapter/);
+    expect(() => resolveAdapter('genshin-fixture', 'live')).toThrow(/does not support mode "live"/);
+    expect(resolveAdapter('genshin-fixture', 'fixture').gameId).toBe('genshin');
+  });
+});

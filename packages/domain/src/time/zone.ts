@@ -253,7 +253,9 @@ export function formatUtcOffset(offsetMinutes: number): string {
   const abs = Math.abs(offsetMinutes);
   const hours = Math.floor(abs / 60);
   const minutes = abs % 60;
-  return minutes === 0 ? `UTC${sign}${hours}` : `UTC${sign}${hours}:${String(minutes).padStart(2, '0')}`;
+  return minutes === 0
+    ? `UTC${sign}${hours}`
+    : `UTC${sign}${hours}:${String(minutes).padStart(2, '0')}`;
 }
 
 /** Offset label for a zone at an instant, e.g. "UTC+9" for Asia/Seoul. */

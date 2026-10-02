@@ -1,0 +1,186 @@
+{
+  "gameId": "lostark",
+  "timezone": "Asia/Seoul",
+  "locale": "ko-KR",
+  "region": "kr",
+  "documents": [
+    {
+      "externalId": "lostark-fx-update-abyss",
+      "url": "https://lostark.game.onstove.com/News/Notice/List",
+      "publishedAt": "@-2d/10:00",
+      "items": [
+        {
+          "key": "update",
+          "kind": "UPDATE",
+          "slugHint": "abyss-raid-update",
+          "title": "신규 어비스 레이드 업데이트",
+          "summary": "신규 어비스 레이드와 군단장 보상 개편이 적용되었습니다. (샘플 데이터)",
+          "startAt": "@-2d/10:00",
+          "priority": 70,
+          "timing": "auto"
+        }
+      ]
+    },
+    {
+      "externalId": "lostark-fx-maintenance-emergency",
+      "url": "https://lostark.game.onstove.com/News/Notice/List",
+      "publishedAt": "@-2h",
+      "items": [
+        {
+          "key": "maintenance",
+          "kind": "MAINTENANCE",
+          "slugHint": "emergency-maintenance",
+          "title": "서버 안정화 긴급 점검",
+          "summary": "전 서버 접속이 일시적으로 제한됩니다. 종료 시각은 변경될 수 있습니다. (샘플 데이터)",
+          "startAt": "@-1h",
+          "endAt": "@+2h",
+          "priority": 80,
+          "timing": "auto",
+          "maintenance": {
+            "maintenanceType": "EMERGENCY",
+            "affectedServers": ["전 서버"],
+            "compensationSourceKey": "lostark-fx-maintenance-emergency#compensation"
+          }
+        },
+        {
+          "key": "compensation",
+          "kind": "REWARD",
+          "slugHint": "emergency-maintenance-compensation",
+          "title": "긴급 점검 보상",
+          "summary": "점검 종료 후 우편으로 지급됩니다. (샘플 데이터)",
+          "startAt": "@-1h",
+          "endAt": "@+7d/06:00",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "COMPENSATION",
+            "howToClaim": "게임 내 우편함에서 수령",
+            "items": [
+              { "name": "실링", "quantity": 50000, "unit": null },
+              { "name": "전설 카드 팩", "quantity": 1, "unit": "개" }
+            ],
+            "relatedSourceKey": "lostark-fx-maintenance-emergency#maintenance"
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "lostark-fx-event-attendance",
+      "url": "https://lostark.game.onstove.com/News/Event/Now",
+      "publishedAt": "@-2d/10:00",
+      "items": [
+        {
+          "key": "event",
+          "kind": "EVENT",
+          "slugHint": "autumn-attendance",
+          "title": "가을 출석 이벤트",
+          "summary": "매일 접속하면 성장 재료를 받을 수 있습니다. (샘플 데이터)",
+          "startAt": "@-2d/10:00",
+          "endAt": "@+10d/06:00",
+          "timing": "auto",
+          "event": {
+            "eventType": "LOGIN",
+            "eligibility": "아이템 레벨 1640 이상",
+            "rewardSummary": "명예의 파편, 재련 재료",
+            "rewards": [{ "name": "명예의 파편 주머니(대)", "quantity": 7, "unit": "개" }]
+          }
+        },
+        {
+          "key": "reward",
+          "kind": "REWARD",
+          "slugHint": "autumn-attendance-reward",
+          "title": "가을 출석 보상",
+          "startAt": "@-2d/10:00",
+          "endAt": "@+10d/06:00",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "ATTENDANCE",
+            "howToClaim": "출석 체크 화면에서 매일 수령",
+            "items": [{ "name": "명예의 파편 주머니(대)", "quantity": 7, "unit": "개" }],
+            "relatedSourceKey": "lostark-fx-event-attendance#event"
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "lostark-fx-event-festival",
+      "url": "https://lostark.game.onstove.com/News/Event/Now",
+      "publishedAt": "@-14d/10:00",
+      "items": [
+        {
+          "key": "event",
+          "kind": "EVENT",
+          "slugHint": "harvest-festival",
+          "title": "수확의 축제",
+          "summary": "축제 주화 교환이 곧 종료됩니다. (샘플 데이터)",
+          "startAt": "@-14d/10:00",
+          "endAt": "@+1d/06:00",
+          "timing": "auto",
+          "event": {
+            "eventType": "SEASONAL",
+            "eligibility": null,
+            "rewardSummary": "축제 주화 교환",
+            "rewards": []
+          }
+        },
+        {
+          "key": "weekend",
+          "kind": "REWARD",
+          "slugHint": "weekend-login-reward",
+          "title": "주말 접속 보상",
+          "summary": "곧 마감되는 접속 보상입니다. (샘플 데이터)",
+          "startAt": "@-2d",
+          "endAt": "@+4h",
+          "reward": {
+            "rewardType": "LOGIN",
+            "howToClaim": "접속 후 이벤트 알림에서 수령",
+            "items": [{ "name": "골드", "quantity": 1000, "unit": null }],
+            "relatedSourceKey": null
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "lostark-fx-coupon",
+      "url": "https://lostark.game.onstove.com/News/Notice/List",
+      "publishedAt": "@-1d",
+      "items": [
+        {
+          "key": "coupon",
+          "kind": "REDEEM_CODE",
+          "title": "테스트용 쿠폰 코드 (사용 불가)",
+          "summary": "개발 환경 확인용 가짜 코드입니다. 실제 게임에서 사용할 수 없습니다.",
+          "startAt": "@-1d",
+          "endAt": "@+6d/23:59",
+          "redeemCode": {
+            "code": "GPTEST-LOA-COUPON1",
+            "region": "kr",
+            "items": [{ "name": "실링", "quantity": 10000, "unit": null }]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "lostark-fx-event-halloween",
+      "url": "https://lostark.game.onstove.com/News/Event/Now",
+      "publishedAt": "@-1d/10:00",
+      "items": [
+        {
+          "key": "event",
+          "kind": "EVENT",
+          "slugHint": "pumpkin-night",
+          "title": "호박등 축제 예고",
+          "summary": "다음 주 시작하는 시즌 이벤트입니다. (샘플 데이터)",
+          "startAt": "@+4d/10:00",
+          "endAt": "@+18d/06:00",
+          "timing": "auto",
+          "event": {
+            "eventType": "SEASONAL",
+            "eligibility": null,
+            "rewardSummary": "한정 탈것",
+            "rewards": []
+          }
+        }
+      ]
+    }
+  ]
+}

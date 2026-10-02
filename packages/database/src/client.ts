@@ -25,7 +25,10 @@ export interface PostgresConnectionOptions {
   statementTimeoutMs?: number;
 }
 
-export function connectPostgres(url: string, options: PostgresConnectionOptions = {}): PostgresConnection {
+export function connectPostgres(
+  url: string,
+  options: PostgresConnectionOptions = {},
+): PostgresConnection {
   const client = postgres(url, {
     max: options.max ?? 10,
     onnotice: () => undefined,

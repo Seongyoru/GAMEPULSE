@@ -11,7 +11,10 @@ import { toEpochMs } from './time/zone';
 /** Types that describe a moment (release/publication) rather than a time range. */
 export const POINT_IN_TIME_TYPES: readonly ContentType[] = ['PATCH', 'UPDATE', 'ANNOUNCEMENT'];
 
-type TimeFields = Pick<ContentRecord, 'type' | 'startAt' | 'endAt' | 'sourcePublishedAt' | 'publishedAt'>;
+type TimeFields = Pick<
+  ContentRecord,
+  'type' | 'startAt' | 'endAt' | 'sourcePublishedAt' | 'publishedAt'
+>;
 
 /** startAt ?? sourcePublishedAt ?? publishedAt, as epoch ms. */
 export function effectiveTimeMs(record: Omit<TimeFields, 'type' | 'endAt'>): number {
@@ -24,7 +27,9 @@ export function effectiveTimeMs(record: Omit<TimeFields, 'type' | 'endAt'>): num
 }
 
 export function isPointInTime(record: TimeFields): boolean {
-  return POINT_IN_TIME_TYPES.includes(record.type) || (record.startAt === null && record.endAt === null);
+  return (
+    POINT_IN_TIME_TYPES.includes(record.type) || (record.startAt === null && record.endAt === null)
+  );
 }
 
 export function matchesWindow(record: TimeFields, window: { from: string; to: string }): boolean {
@@ -55,14 +60,19 @@ function compareIds(a: string, b: string): number {
   return a < b ? -1 : 1;
 }
 
-export function compareContent(order: ContentOrder): (a: ContentRecord, b: ContentRecord) => number {
+export function compareContent(
+  order: ContentOrder,
+): (a: ContentRecord, b: ContentRecord) => number {
   if (order === 'start') {
     return (a, b) => effectiveTimeMs(a) - effectiveTimeMs(b) || compareIds(a.id, b.id);
   }
   return (a, b) => effectiveTimeMs(b) - effectiveTimeMs(a) || compareIds(a.id, b.id);
 }
 
-export function applyContentQuery(records: readonly ContentRecord[], query: ContentQuery): ContentRecord[] {
+export function applyContentQuery(
+  records: readonly ContentRecord[],
+  query: ContentQuery,
+): ContentRecord[] {
   const filtered = records.filter((record) => matchesContentQuery(record, query));
   filtered.sort(compareContent(query.order ?? 'recent'));
   return query.limit === undefined ? filtered : filtered.slice(0, query.limit);

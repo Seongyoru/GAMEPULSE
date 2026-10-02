@@ -34,7 +34,12 @@ export const CONTRACT_SOURCES: Record<'fixture' | 'official' | 'manual', SourceD
     isOfficial: true,
     collectorStatus: 'DISABLED',
   }),
-  manual: makeSource({ id: 'genshin-manual', name: 'GAMEPULSE 운영자 입력', type: 'MANUAL', collectorStatus: 'MANUAL_ONLY' }),
+  manual: makeSource({
+    id: 'genshin-manual',
+    name: 'GAMEPULSE 운영자 입력',
+    type: 'MANUAL',
+    collectorStatus: 'MANUAL_ONLY',
+  }),
 };
 
 export function contractPublishInput(
@@ -147,7 +152,10 @@ const banner = makeCandidate('BANNER', {
   },
 });
 
-export function describeContentStoreContract(name: string, createHarness: () => Promise<StoreHarness>): void {
+export function describeContentStoreContract(
+  name: string,
+  createHarness: () => Promise<StoreHarness>,
+): void {
   describe(`ContentStore contract — ${name}`, () => {
     let harness: StoreHarness;
     const store = () => harness.store();
@@ -167,12 +175,34 @@ export function describeContentStoreContract(name: string, createHarness: () => 
     });
 
     it('syncs registry data idempotently', async () => {
-      expect(await store().syncGames(GAMES, LATER)).toEqual({ created: 0, updated: 0, unchanged: GAMES.length });
+      expect(await store().syncGames(GAMES, LATER)).toEqual({
+        created: 0,
+        updated: 0,
+        unchanged: GAMES.length,
+      });
       const changed = { ...CONTRACT_SOURCES.manual, notes: 'changed' };
-      expect(await store().syncSources([changed], LATER)).toEqual({ created: 0, updated: 1, unchanged: 0 });
-      const rule = makeResetRule({ id: 'genshin-daily', gameId: 'genshin', frequency: 'DAILY', dayOfWeek: null, timezone: 'UTC+8' });
-      expect(await store().syncResetRules([rule], NOW)).toEqual({ created: 1, updated: 0, unchanged: 0 });
-      expect(await store().syncResetRules([rule], LATER)).toEqual({ created: 0, updated: 0, unchanged: 1 });
+      expect(await store().syncSources([changed], LATER)).toEqual({
+        created: 0,
+        updated: 1,
+        unchanged: 0,
+      });
+      const rule = makeResetRule({
+        id: 'genshin-daily',
+        gameId: 'genshin',
+        frequency: 'DAILY',
+        dayOfWeek: null,
+        timezone: 'UTC+8',
+      });
+      expect(await store().syncResetRules([rule], NOW)).toEqual({
+        created: 1,
+        updated: 0,
+        unchanged: 0,
+      });
+      expect(await store().syncResetRules([rule], LATER)).toEqual({
+        created: 0,
+        updated: 0,
+        unchanged: 1,
+      });
       expect(await store().listResetRules(['genshin'])).toEqual([rule]);
       expect(await store().listResetRules(['lol'])).toEqual([]);
     });
@@ -192,8 +222,21 @@ export function describeContentStoreContract(name: string, createHarness: () => 
 
       const afterStale = await store().startRun({ ...base, now: '2026-10-02T05:00:00.001Z' });
       expect(afterStale).not.toBeNull();
-      const counters = { discovered: 3, fetched: 3, new: 2, updated: 1, unchanged: 0, failed: 0, skipped: 0 };
-      await store().finishRun(afterStale?.id ?? '', { status: 'SUCCEEDED', counters, error: null, finishedAt: LATER });
+      const counters = {
+        discovered: 3,
+        fetched: 3,
+        new: 2,
+        updated: 1,
+        unchanged: 0,
+        failed: 0,
+        skipped: 0,
+      };
+      await store().finishRun(afterStale?.id ?? '', {
+        status: 'SUCCEEDED',
+        counters,
+        error: null,
+        finishedAt: LATER,
+      });
       const runs = await store().listRuns(10);
       expect(runs.map((run) => run.status).sort()).toEqual(['ABANDONED', 'SUCCEEDED']);
       expect(runs.find((run) => run.status === 'SUCCEEDED')?.counters).toEqual(counters);
@@ -219,10 +262,14 @@ export function describeContentStoreContract(name: string, createHarness: () => 
       };
       const first = await store().insertRawDocument(doc);
       expect((await store().insertRawDocument({ ...doc, fetchedAt: NOW })).id).toBe(first.id);
-      expect((await store().findLatestRawDocument('genshin-fixture', 'doc-1'))?.contentHash).toBe('hash-a');
+      expect((await store().findLatestRawDocument('genshin-fixture', 'doc-1'))?.contentHash).toBe(
+        'hash-a',
+      );
 
       await store().insertRawDocument({ ...doc, contentHash: 'hash-b', fetchedAt: LATER });
-      expect((await store().findLatestRawDocument('genshin-fixture', 'doc-1'))?.contentHash).toBe('hash-b');
+      expect((await store().findLatestRawDocument('genshin-fixture', 'doc-1'))?.contentHash).toBe(
+        'hash-b',
+      );
       expect(await store().findLatestRawDocument('genshin-fixture', 'missing')).toBeNull();
 
       expect(await store().pruneRawText(LATER)).toBe(1);
@@ -245,20 +292,28 @@ export function describeContentStoreContract(name: string, createHarness: () => 
       expect(await store().findParseResult('abc', 'mock', '1')).toBeNull();
       await store().insertParseResult(result);
       await store().insertParseResult(result);
-      expect(await store().findParseResult('abc', 'mock', '1')).toEqual({ output: { candidates: [] } });
+      expect(await store().findParseResult('abc', 'mock', '1')).toEqual({
+        output: { candidates: [] },
+      });
       expect(await store().findParseResult('abc', 'mock', '2')).toBeNull();
     });
 
     it('publishes, detects unchanged content and updates in place', async () => {
-      const created = await store().publishContent(contractPublishInput(richEvent, CONTRACT_SOURCES.fixture));
+      const created = await store().publishContent(
+        contractPublishInput(richEvent, CONTRACT_SOURCES.fixture),
+      );
       expect(created.outcome).toBe('created');
       expect(created.slug).toBe('genshin-impact-event-lantern-rite');
 
-      const again = await store().publishContent(contractPublishInput(richEvent, CONTRACT_SOURCES.fixture, { now: LATER }));
+      const again = await store().publishContent(
+        contractPublishInput(richEvent, CONTRACT_SOURCES.fixture, { now: LATER }),
+      );
       expect(again).toEqual({ ...created, outcome: 'unchanged' });
 
       const changed = { ...richEvent, title: '해등절 축제 (연장)', endAt: '2026-10-25T19:59:00Z' };
-      const updated = await store().publishContent(contractPublishInput(changed, CONTRACT_SOURCES.fixture, { now: LATER }));
+      const updated = await store().publishContent(
+        contractPublishInput(changed, CONTRACT_SOURCES.fixture, { now: LATER }),
+      );
       expect(updated).toEqual({ ...created, outcome: 'updated' });
 
       const record = await store().getContentBySlug(created.slug);
@@ -278,7 +333,11 @@ export function describeContentStoreContract(name: string, createHarness: () => 
       await store().publishContent(contractPublishInput(banner, CONTRACT_SOURCES.fixture));
       const code = makeCandidate('REDEEM_CODE', {
         sourceKey: 'code-1',
-        redeemCode: { code: 'GPTEST-NOTREAL-01', region: 'asia', items: [{ name: '원석', quantity: 60, unit: null }] },
+        redeemCode: {
+          code: 'GPTEST-NOTREAL-01',
+          region: 'asia',
+          items: [{ name: '원석', quantity: 60, unit: null }],
+        },
       });
       const maintenance = makeCandidate('MAINTENANCE', {
         sourceKey: 'maint-1',
@@ -312,7 +371,9 @@ export function describeContentStoreContract(name: string, createHarness: () => 
       expect(event?.provenance).toHaveLength(1);
       expect(event?.provenance[0]).toMatchObject({ sourceId: 'genshin-fixture', role: 'PRIMARY' });
 
-      const reward = await store().getContentBySlug(buildContentSlug({ gameSlug: 'genshin-impact', candidate: rewardForEvent }));
+      const reward = await store().getContentBySlug(
+        buildContentSlug({ gameSlug: 'genshin-impact', candidate: rewardForEvent }),
+      );
       expect(reward?.detail).toEqual({
         type: 'REWARD',
         rewardType: 'LOGIN',
@@ -329,11 +390,25 @@ export function describeContentStoreContract(name: string, createHarness: () => 
         changes: patch.patch.changes,
       });
 
-      const bannerRecord = await store().getContentBySlug(buildContentSlug({ gameSlug: 'genshin-impact', candidate: banner }));
-      expect(bannerRecord?.detail).toEqual({ type: 'BANNER', bannerType: 'CHARACTER', phase: 1, featured: banner.banner.featured });
+      const bannerRecord = await store().getContentBySlug(
+        buildContentSlug({ gameSlug: 'genshin-impact', candidate: banner }),
+      );
+      expect(bannerRecord?.detail).toEqual({
+        type: 'BANNER',
+        bannerType: 'CHARACTER',
+        phase: 1,
+        featured: banner.banner.featured,
+      });
 
-      const codeRecord = await store().getContentBySlug(buildContentSlug({ gameSlug: 'genshin-impact', candidate: code }));
-      expect(codeRecord?.detail).toEqual({ type: 'REDEEM_CODE', code: 'GPTEST-NOTREAL-01', region: 'asia', items: code.redeemCode.items });
+      const codeRecord = await store().getContentBySlug(
+        buildContentSlug({ gameSlug: 'genshin-impact', candidate: code }),
+      );
+      expect(codeRecord?.detail).toEqual({
+        type: 'REDEEM_CODE',
+        code: 'GPTEST-NOTREAL-01',
+        region: 'asia',
+        items: code.redeemCode.items,
+      });
 
       const maintenanceRecord = await store().getContentBySlug(
         buildContentSlug({ gameSlug: 'genshin-impact', candidate: maintenance }),
@@ -350,23 +425,39 @@ export function describeContentStoreContract(name: string, createHarness: () => 
       const a = makeCandidate('EVENT', { sourceKey: 'a', slugHint: 'same' });
       const b = makeCandidate('EVENT', { sourceKey: 'b', slugHint: 'same' });
       const first = await store().publishContent(contractPublishInput(a, CONTRACT_SOURCES.fixture));
-      const second = await store().publishContent(contractPublishInput(b, CONTRACT_SOURCES.fixture));
+      const second = await store().publishContent(
+        contractPublishInput(b, CONTRACT_SOURCES.fixture),
+      );
       expect(first.slug).toBe('genshin-impact-event-same');
       expect(second.slug).toMatch(/^genshin-impact-event-same-[0-9a-f]{8}$/);
       const renamed = await store().publishContent(
-        contractPublishInput({ ...a, slugHint: 'renamed' }, CONTRACT_SOURCES.fixture, { now: LATER }),
+        contractPublishInput({ ...a, slugHint: 'renamed' }, CONTRACT_SOURCES.fixture, {
+          now: LATER,
+        }),
       );
       expect(renamed.slug).toBe(first.slug);
     });
 
     it('finds content by source key, semantic key and provenance; supersedes weaker sources', async () => {
       const manualCandidate = { ...richEvent, sourceKey: 'manual-1', isSynthetic: false };
-      const manual = await store().publishContent(contractPublishInput(manualCandidate, CONTRACT_SOURCES.manual));
-      expect((await store().findContentBySourceKey('genshin-manual', 'manual-1'))?.id).toBe(manual.id);
-      const bySemantic = await store().findContentBySemanticKey('genshin', semanticKey(manualCandidate));
+      const manual = await store().publishContent(
+        contractPublishInput(manualCandidate, CONTRACT_SOURCES.manual),
+      );
+      expect((await store().findContentBySourceKey('genshin-manual', 'manual-1'))?.id).toBe(
+        manual.id,
+      );
+      const bySemantic = await store().findContentBySemanticKey(
+        'genshin',
+        semanticKey(manualCandidate),
+      );
       expect(bySemantic.map((ref) => ref.sourceType)).toEqual(['MANUAL']);
 
-      const officialCandidate = { ...richEvent, sourceKey: 'official-99', isSynthetic: false, title: '해등절 축제 [공식]' };
+      const officialCandidate = {
+        ...richEvent,
+        sourceKey: 'official-99',
+        isSynthetic: false,
+        title: '해등절 축제 [공식]',
+      };
       const superseded = await store().publishContent(
         contractPublishInput(officialCandidate, CONTRACT_SOURCES.official, {
           supersedeId: manual.id,
@@ -385,7 +476,9 @@ export function describeContentStoreContract(name: string, createHarness: () => 
         ['genshin-manual', 'SUPPORTING'],
       ]);
       // The weaker source's key still resolves to the record through provenance.
-      expect((await store().findContentBySourceKey('genshin-manual', 'manual-1'))?.id).toBe(manual.id);
+      expect((await store().findContentBySourceKey('genshin-manual', 'manual-1'))?.id).toBe(
+        manual.id,
+      );
 
       await store().recordProvenance(manual.id, {
         sourceId: 'genshin-fixture',
@@ -401,22 +494,43 @@ export function describeContentStoreContract(name: string, createHarness: () => 
     it('applies content queries consistently', async () => {
       const mk = (key: string, overrides: Partial<NormalizedCandidate>) =>
         store().publishContent(
-          contractPublishInput({ ...makeCandidate('EVENT', { sourceKey: key }), ...overrides } as NormalizedCandidate, CONTRACT_SOURCES.fixture),
+          contractPublishInput(
+            { ...makeCandidate('EVENT', { sourceKey: key }), ...overrides } as NormalizedCandidate,
+            CONTRACT_SOURCES.fixture,
+          ),
         );
       await mk('past', { startAt: '2026-09-01T00:00:00Z', endAt: '2026-09-10T00:00:00Z' });
       await mk('live', { startAt: '2026-09-25T00:00:00Z', endAt: '2026-10-20T00:00:00Z' });
       await mk('open', { startAt: '2026-08-01T00:00:00Z', endAt: null });
       await mk('future', { startAt: '2026-11-01T00:00:00Z', endAt: '2026-11-10T00:00:00Z' });
-      await store().publishContent(contractPublishInput({ ...patch, sourceKey: 'p-old', patch: { ...patch.patch, version: '5.0' }, startAt: '2026-01-01T00:00:00Z' }, CONTRACT_SOURCES.fixture));
+      await store().publishContent(
+        contractPublishInput(
+          {
+            ...patch,
+            sourceKey: 'p-old',
+            patch: { ...patch.patch, version: '5.0' },
+            startAt: '2026-01-01T00:00:00Z',
+          },
+          CONTRACT_SOURCES.fixture,
+        ),
+      );
       await store().publishContent(contractPublishInput(patch, CONTRACT_SOURCES.fixture));
       await store().publishContent(
-        contractPublishInput(makeCandidate('EVENT', { sourceKey: 'hidden' }), CONTRACT_SOURCES.fixture, { status: 'PENDING_REVIEW' }),
+        contractPublishInput(
+          makeCandidate('EVENT', { sourceKey: 'hidden' }),
+          CONTRACT_SOURCES.fixture,
+          { status: 'PENDING_REVIEW' },
+        ),
       );
 
       const window = { from: '2026-09-28T00:00:00Z', to: '2026-10-09T00:00:00Z' };
       const inWindow = await store().listContent({ window });
       expect(inWindow.map((r) => r.slug).sort()).toEqual(
-        ['genshin-impact-event-live', 'genshin-impact-event-open', 'genshin-impact-patch-6-1'].sort(),
+        [
+          'genshin-impact-event-live',
+          'genshin-impact-event-open',
+          'genshin-impact-patch-6-1',
+        ].sort(),
       );
       const ordered = await store().listContent({ order: 'start', types: ['EVENT'] });
       expect(ordered.map((r) => r.slug)).toEqual([
@@ -426,12 +540,15 @@ export function describeContentStoreContract(name: string, createHarness: () => 
         'genshin-impact-event-future',
       ]);
       const recent = await store().listContent({ order: 'recent', limit: 2 });
-      expect(recent.map((r) => r.slug)).toEqual(['genshin-impact-event-future', 'genshin-impact-patch-6-1']);
+      expect(recent.map((r) => r.slug)).toEqual([
+        'genshin-impact-event-future',
+        'genshin-impact-patch-6-1',
+      ]);
       expect(await store().listContent({ gameIds: ['lol'] })).toEqual([]);
       expect(await store().listContent({ includeSynthetic: false })).toEqual([]);
-      expect((await store().listContent({ statuses: ['PENDING_REVIEW'] })).map((r) => r.slug)).toEqual([
-        'genshin-impact-event-hidden',
-      ]);
+      expect(
+        (await store().listContent({ statuses: ['PENDING_REVIEW'] })).map((r) => r.slug),
+      ).toEqual(['genshin-impact-event-hidden']);
       expect(await store().getContentBySlug('genshin-impact-event-hidden')).toBeNull();
 
       const slugs = await store().listContentSlugs();

@@ -8,7 +8,10 @@ import { isValidTimeZone } from '../time/zone';
 
 export const resetRuleDefinitionSchema = z
   .object({
-    id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(80),
+    id: z
+      .string()
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+      .max(80),
     gameId: z.string().min(1).max(40),
     /** Display name in the source locale, e.g. "주간 초기화". */
     name: z.string().min(1).max(80),
@@ -19,7 +22,13 @@ export const resetRuleDefinitionSchema = z
     /** ISO weekday 1 (Mon) … 7 (Sun); required for WEEKLY. */
     dayOfWeek: z.number().int().min(1).max(7).nullable(),
     /** 1-31, or -1 for the last day of the month; required for MONTHLY. */
-    dayOfMonth: z.number().int().min(-1).max(31).refine((d) => d !== 0).nullable(),
+    dayOfMonth: z
+      .number()
+      .int()
+      .min(-1)
+      .max(31)
+      .refine((d) => d !== 0)
+      .nullable(),
     /** RFC 5545 RRULE subset for CUSTOM_RRULE (see reset/rrule.ts). */
     rrule: z.string().min(1).max(300).nullable(),
     /** DTSTART anchor (ISO) for interval-based rules, e.g. bi-weekly resets. */
@@ -38,7 +47,11 @@ export const resetRuleDefinitionSchema = z
       ctx.addIssue({ code: 'custom', path: ['dayOfWeek'], message: 'WEEKLY rules need dayOfWeek' });
     }
     if (rule.frequency === 'MONTHLY' && rule.dayOfMonth === null) {
-      ctx.addIssue({ code: 'custom', path: ['dayOfMonth'], message: 'MONTHLY rules need dayOfMonth' });
+      ctx.addIssue({
+        code: 'custom',
+        path: ['dayOfMonth'],
+        message: 'MONTHLY rules need dayOfMonth',
+      });
     }
     if (rule.frequency === 'CUSTOM_RRULE' && rule.rrule === null) {
       ctx.addIssue({ code: 'custom', path: ['rrule'], message: 'CUSTOM_RRULE rules need rrule' });

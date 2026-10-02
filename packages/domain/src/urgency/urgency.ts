@@ -73,8 +73,12 @@ function urgency(reason: UrgencyReason, at: number | null): Urgency {
 }
 
 /** When an item became (or becomes) relevant: release/start, else official publication. */
-export function effectiveStartMs(item: Pick<UrgencyInput, 'startAt' | 'sourcePublishedAt' | 'publishedAt'>): number | null {
-  return toEpochMs(item.startAt) ?? toEpochMs(item.sourcePublishedAt) ?? toEpochMs(item.publishedAt);
+export function effectiveStartMs(
+  item: Pick<UrgencyInput, 'startAt' | 'sourcePublishedAt' | 'publishedAt'>,
+): number | null {
+  return (
+    toEpochMs(item.startAt) ?? toEpochMs(item.sourcePublishedAt) ?? toEpochMs(item.publishedAt)
+  );
 }
 
 export function computeItemUrgency(item: UrgencyInput, now: Date | number): Urgency {

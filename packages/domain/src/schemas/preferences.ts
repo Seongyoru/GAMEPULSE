@@ -49,11 +49,15 @@ export function sanitizePreferences(input: unknown): UserPreferences {
       )
     : [];
   const timezone =
-    typeof raw.timezone === 'string' && isValidTimeZone(raw.timezone) ? raw.timezone : defaults.timezone;
+    typeof raw.timezone === 'string' && isValidTimeZone(raw.timezone)
+      ? raw.timezone
+      : defaults.timezone;
   const locale =
     typeof raw.locale === 'string' && isSupportedLocale(raw.locale) ? raw.locale : defaults.locale;
   const dismissed = Array.isArray(raw.dismissedPulseIds)
-    ? raw.dismissedPulseIds.filter((id): id is string => typeof id === 'string').slice(-MAX_DISMISSED)
+    ? raw.dismissedPulseIds
+        .filter((id): id is string => typeof id === 'string')
+        .slice(-MAX_DISMISSED)
     : [];
   const configuredAtParse = z.iso.datetime({ offset: true }).safeParse(raw.configuredAt);
 
@@ -68,7 +72,10 @@ export function sanitizePreferences(input: unknown): UserPreferences {
 }
 
 /** Game ids to display: the user's MY GAMES, or the anonymous defaults. */
-export function effectiveGameIds(preferences: UserPreferences, fallback: readonly string[]): string[] {
+export function effectiveGameIds(
+  preferences: UserPreferences,
+  fallback: readonly string[],
+): string[] {
   return preferences.selectedGameIds.length > 0 ? [...preferences.selectedGameIds] : [...fallback];
 }
 

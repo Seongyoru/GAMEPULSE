@@ -13,6 +13,11 @@ const scopedNext = nextVitals.map((config) => ({
   ...config,
   files: REACT_FILES,
   settings: { ...config.settings, next: { rootDir: 'apps/web/' } },
+  rules: {
+    ...config.rules,
+    // App Router only: this rule targets the Pages Router.
+    '@next/next/no-html-link-for-pages': 'off',
+  },
 }));
 
 export default defineConfig([

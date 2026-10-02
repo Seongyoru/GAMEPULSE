@@ -14,6 +14,7 @@ export * from './schemas/manual';
 
 export * from './games/types';
 export * from './games/registry';
+export * from './games/reset-rules';
 
 export * from './time/zone';
 export * from './time/format';

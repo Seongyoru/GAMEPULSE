@@ -36,17 +36,19 @@ export function decodeHtmlEntities(input: string): string {
 
 /** Removes tags, decodes entities, strips control characters and collapses whitespace. */
 export function sanitizePlainText(input: string): string {
-  return decodeHtmlEntities(
-    input
-      .replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, ' ')
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<[^>]+>/g, ' '),
-  )
-    // eslint-disable-next-line no-control-regex -- removing control characters is the point
-    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u200b\ufeff]/g, '')
-    .replace(/[ \t\f\v\u00a0]+/g, ' ')
-    .replace(/\s*\n\s*/g, '\n')
-    .trim();
+  return (
+    decodeHtmlEntities(
+      input
+        .replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, ' ')
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<[^>]+>/g, ' '),
+    )
+      // eslint-disable-next-line no-control-regex -- removing control characters is the point
+      .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u200b\ufeff]/g, '')
+      .replace(/[ \t\f\v\u00a0]+/g, ' ')
+      .replace(/\s*\n\s*/g, '\n')
+      .trim()
+  );
 }
 
 /** Truncates on a character boundary with an ellipsis, never exceeding maxLength. */

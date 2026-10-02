@@ -91,7 +91,8 @@ export function classifyTodayItem(
   options: TodayOptions = DEFAULT_TODAY_OPTIONS,
 ): TodaySectionId | null {
   const start = toEpochMs(item.startAt);
-  const startsWithin = (windowMs: number) => start !== null && start > nowMs && start - nowMs <= windowMs;
+  const startsWithin = (windowMs: number) =>
+    start !== null && start > nowMs && start - nowMs <= windowMs;
 
   switch (item.type) {
     case 'MAINTENANCE': {
@@ -116,7 +117,9 @@ export function classifyTodayItem(
       if (status === 'LIVE' || status === 'ENDING_SOON') return 'rewards';
       if (status === 'UNKNOWN') {
         const published = effectiveStartMs(item);
-        return published !== null && nowMs - published <= options.upcomingWindowMs ? 'rewards' : null;
+        return published !== null && nowMs - published <= options.upcomingWindowMs
+          ? 'rewards'
+          : null;
       }
       if (status === 'UPCOMING' && startsWithin(options.upcomingWindowMs)) return 'upcoming';
       return null;
@@ -125,7 +128,8 @@ export function classifyTodayItem(
     case 'BANNER': {
       const status = computeStatusForType(item.type, item, nowMs);
       if (status === 'ENDING_SOON') return 'endingSoon';
-      if (status === 'LIVE' && start !== null && nowMs - start <= NEW_CONTENT_WINDOW_MS) return 'newEvents';
+      if (status === 'LIVE' && start !== null && nowMs - start <= NEW_CONTENT_WINDOW_MS)
+        return 'newEvents';
       if (status === 'UPCOMING' && startsWithin(options.upcomingWindowMs)) return 'upcoming';
       return null;
     }
@@ -189,12 +193,18 @@ export function buildToday(input: {
   const sortKey = (entry: TodayEntry) =>
     entry.kind === 'item'
       ? { urgency: entry.urgency, priority: entry.item.priority, title: entry.item.title }
-      : { urgency: entry.urgency, priority: entry.rule.isPrimary ? 60 : 50, title: entry.rule.name };
+      : {
+          urgency: entry.urgency,
+          priority: entry.rule.isPrimary ? 60 : 50,
+          title: entry.rule.name,
+        };
   for (const id of Object.keys(sections) as TodaySectionId[]) {
     sections[id].sort((a, b) => compareUrgency(sortKey(a), sortKey(b)));
   }
 
-  const resetsWithinDay = sections.resets.filter((entry) => entry.urgency.reason === 'RESET_24H').length;
+  const resetsWithinDay = sections.resets.filter(
+    (entry) => entry.urgency.reason === 'RESET_24H',
+  ).length;
   const summary: TodaySummary = {
     updates: sections.critical.length,
     rewards: sections.rewards.length,

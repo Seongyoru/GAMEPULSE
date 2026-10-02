@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Ingestion pipeline: discover → fetch → raw document → parse → normalize → validate → deduplicate → publish.",
+  "description": "Ingestion pipeline: discover \u2192 fetch \u2192 raw document \u2192 parse \u2192 normalize \u2192 validate \u2192 deduplicate \u2192 publish.",
   "exports": {
     ".": "./src/index.ts"
   },
@@ -14,6 +14,7 @@
     "@gamepulse/collectors": "workspace:*",
     "@gamepulse/domain": "workspace:*",
     "@gamepulse/observability": "workspace:*",
+    "@gamepulse/parsers": "workspace:*",
     "@gamepulse/validators": "workspace:*"
   },
   "devDependencies": {

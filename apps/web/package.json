@@ -4,13 +4,7 @@
   "private": true,
   "type": "module",
   "description": "GAMEPULSE public web app (Next.js App Router).",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "typecheck": "next typegen && tsc --noEmit -p .",
-    "test:e2e": "playwright test"
-  },
+  "scripts": {},
   "dependencies": {
     "@gamepulse/collectors": "workspace:*",
     "@gamepulse/config": "workspace:*",
