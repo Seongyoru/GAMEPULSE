@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { GAME_IDS } from './helpers';
 
 test.describe('game pages', () => {
   test('game detail shows the overview and navigates between tabs @mobile', async ({ page }) => {
@@ -45,7 +46,7 @@ test.describe('game pages', () => {
 
   test('games index lists every game', async ({ page }) => {
     await page.goto('/games');
-    await expect(page.locator('[data-testid^="game-card-"]')).toHaveCount(5);
+    await expect(page.locator('[data-testid^="game-card-"]')).toHaveCount(GAME_IDS.length);
     await page.getByTestId('game-card-wuwa').getByRole('link').first().click();
     await expect(page).toHaveURL(/\/games\/wuthering-waves$/);
   });

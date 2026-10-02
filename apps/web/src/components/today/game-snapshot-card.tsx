@@ -1,7 +1,7 @@
 'use client';
 
 import { isFeatureAvailable, requireGame, type GameSnapshot } from '@gamepulse/domain';
-import { GameBadge, cx } from '@gamepulse/ui';
+import { GameBadge, SourceAttributionNote, cx } from '@gamepulse/ui';
 import { Countdown } from '@gamepulse/ui/client';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
@@ -136,6 +136,7 @@ export function GameSnapshotCard({
       ) : (
         <p className="py-2 text-sm text-muted">{s.none}</p>
       )}
+      <SourceAttributionNote attributions={snapshot.sourceAttributions} className="mt-1" />
     </article>
   );
 }

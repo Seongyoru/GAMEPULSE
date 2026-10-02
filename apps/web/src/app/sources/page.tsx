@@ -1,6 +1,6 @@
 import { listSourceDefinitions } from '@gamepulse/collectors';
 import {
-  listGames,
+  listPublicGames,
   SOURCE_TYPES,
   type CollectorStatus,
   type SourceDefinition,
@@ -71,7 +71,7 @@ export default function SourcesPage() {
           게임은 운영팀이 공식 공지를 확인해 직접 입력합니다.
         </p>
       }
-      sections={listGames().map((game) => ({
+      sections={listPublicGames().map((game) => ({
         title: gameView(game).name,
         body: (
           <ul className="space-y-2">

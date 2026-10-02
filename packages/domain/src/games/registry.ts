@@ -259,8 +259,35 @@ export const GAMES: readonly GameConfig[] = [...GAME_DEFINITIONS].sort(
 const BY_ID = new Map(GAMES.map((game) => [game.gameId, game]));
 const BY_SLUG = new Map(GAMES.map((game) => [game.slug, game]));
 
+/**
+ * Whether a game is shown on the site. INACTIVE games are registered but hidden everywhere
+ * (listings, MY GAMES, content, sitemap) and not collected on a schedule — for games prepared
+ * ahead of launch, paused, or taken down at a publisher's request.
+ */
+export function isPublicGame(game: GameConfig): boolean {
+  return game.status !== 'INACTIVE';
+}
+
+const PUBLIC_GAMES: readonly GameConfig[] = GAMES.filter(isPublicGame);
+
+/** Every registered game, hidden ones included (pipeline, seed, operator tools). */
 export function listGames(): readonly GameConfig[] {
   return GAMES;
+}
+
+/** Games shown on the site. Everything user-facing lists games through this. */
+export function listPublicGames(): readonly GameConfig[] {
+  return PUBLIC_GAMES;
+}
+
+export function isPublicGameId(gameId: string): boolean {
+  const game = BY_ID.get(gameId);
+  return game !== undefined && isPublicGame(game);
+}
+
+/** Keeps entries (content, slugs, reset rules, selections) that belong to public games. */
+export function onlyPublicGames<T extends { readonly gameId: string }>(entries: readonly T[]): T[] {
+  return entries.filter((entry) => isPublicGameId(entry.gameId));
 }
 
 export function listGameIds(): string[] {
@@ -287,7 +314,7 @@ export function isGameId(value: string): boolean {
 
 /** Games shown to anonymous users before MY GAMES is configured. */
 export function defaultGameIds(): string[] {
-  return GAMES.filter((game) => game.defaultForAnonymous).map((game) => game.gameId);
+  return PUBLIC_GAMES.filter((game) => game.defaultForAnonymous).map((game) => game.gameId);
 }
 
 export function localizedText(

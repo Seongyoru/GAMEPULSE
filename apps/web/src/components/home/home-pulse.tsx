@@ -4,13 +4,14 @@ import {
   buildGameSnapshot,
   buildPulseStream,
   buildToday,
-  listGames,
+  listPublicGames,
+  sourceAttributions,
   TODAY_SECTIONS,
   type PulseItem,
   type PulseMoment,
   type ResetRuleDefinition,
 } from '@gamepulse/domain';
-import { SectionHeader, Timeline } from '@gamepulse/ui';
+import { SectionHeader, SourceAttributionNote, Timeline } from '@gamepulse/ui';
 import { useNow } from '@gamepulse/ui/client';
 import Link from 'next/link';
 import { useMemo } from 'react';
@@ -70,7 +71,7 @@ export function HomePulse({
 
   const snapshots = useMemo(
     () =>
-      listGames()
+      listPublicGames()
         .filter((game) => gameKey.split(',').includes(game.gameId))
         .map((game) =>
           buildGameSnapshot({ gameId: game.gameId, items, resets, now: new Date(now) }),
@@ -137,6 +138,12 @@ export function HomePulse({
                 ),
               };
             })}
+          />
+          <SourceAttributionNote
+            attributions={sourceAttributions(
+              moments.flatMap((moment) => (moment.item ? [moment.item] : [])),
+            )}
+            className="mt-2"
           />
         </section>
       ) : null}

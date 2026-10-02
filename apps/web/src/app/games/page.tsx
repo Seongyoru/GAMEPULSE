@@ -1,4 +1,4 @@
-import { GAME_FEATURES, listGames, type GameConfig } from '@gamepulse/domain';
+import { GAME_FEATURES, listPublicGames, type GameConfig } from '@gamepulse/domain';
 import { ACCENT_CLASSES, cx } from '@gamepulse/ui';
 import Link from 'next/link';
 import { JsonLdScript } from '@/components/content/json-ld';
@@ -18,7 +18,7 @@ function featureLabel(game: GameConfig, feature: (typeof GAME_FEATURES)[number])
 }
 
 export default function GamesPage() {
-  const games = listGames().filter((game) => game.status !== 'INACTIVE');
+  const games = listPublicGames();
   return (
     <div className="space-y-6 pt-6">
       <JsonLdScript

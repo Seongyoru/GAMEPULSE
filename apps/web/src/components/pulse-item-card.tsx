@@ -118,6 +118,7 @@ export function PulseItemCard({ item, serverNow, actions, className }: PulseItem
       rewards={facts.rewardItems ?? []}
       sample={item.isSynthetic}
       sampleLabel={ko.status.sample}
+      attribution={item.sourceAttribution}
       trackEvent={trackEventFor(item)}
       actions={actions}
       className={className}

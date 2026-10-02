@@ -8,6 +8,7 @@ import {
   defaultGameIds,
   defaultPreferences,
   effectiveGameIds,
+  isPublicGameId,
   sanitizePreferences,
   type PreferencesStore,
   type UserPreferences,
@@ -17,6 +18,14 @@ import { PREFERENCES_STORAGE_KEY } from './my-games-boot';
 
 /** Stable snapshot used for SSR and hydration (anonymous defaults). */
 const SERVER_SNAPSHOT: UserPreferences = defaultPreferences();
+
+/** A stored selection may name games hidden since it was saved (INACTIVE); the site never shows them. */
+function withPublicGames(preferences: UserPreferences): UserPreferences {
+  const selectedGameIds = preferences.selectedGameIds.filter(isPublicGameId);
+  return selectedGameIds.length === preferences.selectedGameIds.length
+    ? preferences
+    : { ...preferences, selectedGameIds };
+}
 
 class LocalStoragePreferencesStore implements PreferencesStore {
   private cache: UserPreferences | null = null;
@@ -42,12 +51,13 @@ class LocalStoragePreferencesStore implements PreferencesStore {
     } catch {
       stored = null;
     }
-    this.cache = stored === null ? defaultPreferences() : sanitizePreferences(stored);
+    this.cache =
+      stored === null ? defaultPreferences() : withPublicGames(sanitizePreferences(stored));
     return this.cache;
   };
 
   set = (next: UserPreferences): void => {
-    this.cache = sanitizePreferences(next);
+    this.cache = withPublicGames(sanitizePreferences(next));
     try {
       window.localStorage.setItem(PREFERENCES_STORAGE_KEY, JSON.stringify(this.cache));
     } catch {

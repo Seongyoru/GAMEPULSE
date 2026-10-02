@@ -200,6 +200,50 @@ describe('buildGameSnapshot', () => {
     expect(wuwa.currentEvents).toBe(2);
     expect(wuwa.currentBanner).toBeNull();
   });
+
+  it("lists the attributions required by that game's sources only", () => {
+    const nexon = 'Data based on NEXON Open API';
+    const withNexon = [
+      ...items,
+      makePulseItem({ gameId: 'maplestory', type: 'ANNOUNCEMENT', sourceAttribution: nexon }),
+    ];
+    expect(
+      buildGameSnapshot({ gameId: 'maplestory', items: withNexon, resets, now }).sourceAttributions,
+    ).toEqual([nexon]);
+    expect(
+      buildGameSnapshot({ gameId: 'genshin', items: withNexon, resets, now }).sourceAttributions,
+    ).toEqual([]);
+  });
+});
+
+describe('calendar attribution', () => {
+  it('keeps the source attribution on content entries and none on resets', () => {
+    const entries = collectCalendarEntries({
+      items: [
+        makePulseItem({
+          id: 'nexon-event',
+          gameId: 'maplestory',
+          type: 'EVENT',
+          startAt: hoursFrom(now, 1),
+          endAt: hoursFrom(now, 30),
+          sourceAttribution: 'Data based on NEXON Open API',
+        }),
+      ],
+      resets,
+      from: new Date(hoursFrom(now, -24)),
+      to: new Date(hoursFrom(now, 24 * 8)),
+    });
+    const content = entries.filter((entry) => entry.type !== null);
+    expect(content.length).toBeGreaterThan(0);
+    expect(
+      content.every((entry) => entry.sourceAttribution === 'Data based on NEXON Open API'),
+    ).toBe(true);
+    expect(
+      entries
+        .filter((entry) => entry.type === null)
+        .every((entry) => entry.sourceAttribution === null),
+    ).toBe(true);
+  });
 });
 
 describe('buildPulseStream', () => {

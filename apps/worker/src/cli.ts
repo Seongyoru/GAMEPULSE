@@ -23,7 +23,12 @@ import {
   type AdapterHealth,
 } from '@gamepulse/collectors';
 import { fixturesAllowed } from '@gamepulse/config';
-import { COLLECTOR_MODES, isValidTimeZone, type CollectorMode } from '@gamepulse/domain';
+import {
+  COLLECTOR_MODES,
+  isPublicGameId,
+  isValidTimeZone,
+  type CollectorMode,
+} from '@gamepulse/domain';
 import { PARSE_TASKS, type ParseTask } from '@gamepulse/parsers';
 import {
   ingestFixtures,
@@ -125,8 +130,11 @@ async function seed(runtime: Runtime): Promise<boolean> {
 async function ingest(runtime: Runtime): Promise<boolean> {
   const mode = parseMode(values.mode, runtime.env.COLLECTOR_MODE);
   await syncRegistry(runtime.store);
+  // --all (cron) skips hidden games like the scheduler; --adapter <id> can still target one.
   const adapterIds = values.all
-    ? listAdapterDefinitions({ mode }).map((definition) => definition.id)
+    ? listAdapterDefinitions({ mode })
+        .filter((definition) => isPublicGameId(definition.gameId))
+        .map((definition) => definition.id)
     : values.adapter
       ? [values.adapter]
       : [];

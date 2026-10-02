@@ -30,6 +30,8 @@ export interface CalendarEntry {
   title: string;
   at: string;
   href: string | null;
+  /** Attribution the entry's source requires (null for resets and most sources). */
+  sourceAttribution: string | null;
 }
 
 export interface CalendarDay {
@@ -81,6 +83,7 @@ export function collectCalendarEntries(input: {
         title: item.title,
         at: new Date(at).toISOString(),
         href: item.href,
+        sourceAttribution: item.sourceAttribution,
       });
 
     if (item.type === 'PATCH' || item.type === 'UPDATE') {
@@ -104,6 +107,7 @@ export function collectCalendarEntries(input: {
         title: rule.name,
         at: occurrence.toISOString(),
         href: null,
+        sourceAttribution: null,
       });
     }
   }

@@ -1,4 +1,4 @@
-import { contentPath, listGames } from '@gamepulse/domain';
+import { contentPath, listPublicGames } from '@gamepulse/domain';
 import type { MetadataRoute } from 'next';
 import { getSlugs, isSampleDataMode } from '@/server/content';
 import { gameTabPath, GAME_TABS, isTabAvailable } from '@/server/games';
@@ -21,15 +21,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.2,
     })),
   ];
-  const gameEntries: MetadataRoute.Sitemap = listGames()
-    .filter((game) => game.status !== 'INACTIVE')
-    .flatMap((game) =>
-      GAME_TABS.filter((tab) => isTabAvailable(game, tab)).map((tab) => ({
-        url: absoluteUrl(gameTabPath(game, tab)),
-        changeFrequency: 'hourly' as const,
-        priority: tab === 'overview' ? 0.8 : 0.6,
-      })),
-    );
+  const gameEntries: MetadataRoute.Sitemap = listPublicGames().flatMap((game) =>
+    GAME_TABS.filter((tab) => isTabAvailable(game, tab)).map((tab) => ({
+      url: absoluteUrl(gameTabPath(game, tab)),
+      changeFrequency: 'hourly' as const,
+      priority: tab === 'overview' ? 0.8 : 0.6,
+    })),
+  );
   const contentEntries: MetadataRoute.Sitemap = (await getSlugs())
     .filter((entry) => !entry.isSynthetic)
     .map((entry) => ({

@@ -73,6 +73,8 @@ export interface PulseCardProps {
   rewards?: readonly RewardItem[];
   sample?: boolean;
   sampleLabel?: string;
+  /** Attribution the item's source requires next to its data (e.g. NEXON Open API). */
+  attribution?: string | null;
   /** Analytics event name emitted (via delegated listener) when the card is opened. */
   trackEvent?: string;
   /** Extra controls rendered above the link overlay (e.g. a "claimed" button). */
@@ -92,6 +94,7 @@ export function PulseCard({
   rewards,
   sample,
   sampleLabel = '샘플',
+  attribution,
   trackEvent,
   actions,
   className,
@@ -129,6 +132,7 @@ export function PulseCard({
         </h3>
         {summary ? <p className="mt-0.5 line-clamp-2 text-sm text-muted">{summary}</p> : null}
         {rewards && rewards.length > 0 ? <RewardBadge items={rewards} className="mt-1" /> : null}
+        <SourceAttributionNote attributions={attribution ? [attribution] : []} className="mt-1" />
       </div>
       {meta || actions ? (
         <div className="flex shrink-0 flex-col items-end justify-center gap-1 text-right text-sm">
@@ -155,6 +159,8 @@ export interface EventCardProps {
   featured?: readonly string[];
   sample?: boolean;
   sampleLabel?: string;
+  /** Attribution the item's source requires next to its data (e.g. NEXON Open API). */
+  attribution?: string | null;
   trackEvent?: string;
   className?: string;
 }
@@ -172,6 +178,7 @@ export function EventCard({
   featured,
   sample,
   sampleLabel = '샘플',
+  attribution,
   trackEvent,
   className,
 }: EventCardProps) {
@@ -214,6 +221,7 @@ export function EventCard({
           <p className="mt-0.5 truncate text-sm text-text">{featured.join(' · ')}</p>
         ) : null}
         {rewards && rewards.length > 0 ? <RewardBadge items={rewards} className="mt-1" /> : null}
+        <SourceAttributionNote attributions={attribution ? [attribution] : []} className="mt-1" />
       </div>
       {meta ? (
         <div className="flex shrink-0 flex-col items-end justify-center text-right text-sm">
@@ -261,6 +269,22 @@ export function SourceBadge({
         <span aria-hidden>↗</span>
       </a>
     </div>
+  );
+}
+
+export interface SourceAttributionNoteProps {
+  /** Attribution texts required by the sources of the data shown; renders nothing when empty. */
+  attributions: readonly string[];
+  className?: string;
+}
+
+/** Source-required attribution (e.g. "Data based on NEXON Open API") shown next to that source's data. */
+export function SourceAttributionNote({ attributions, className }: SourceAttributionNoteProps) {
+  if (attributions.length === 0) return null;
+  return (
+    <p data-testid="source-attribution" className={cx('text-[11px] text-muted', className)}>
+      {attributions.join(' · ')}
+    </p>
   );
 }
 

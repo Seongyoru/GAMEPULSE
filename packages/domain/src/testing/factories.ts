@@ -111,6 +111,7 @@ export function makePulseItem(
     sourceName: record.source.name,
     sourceType: record.source.type,
     sourceUrl: record.source.url,
+    sourceAttribution: record.source.attribution,
     facts: pulseFactsFor(record.detail),
     ...overrides,
   };

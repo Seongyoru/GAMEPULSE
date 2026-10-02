@@ -1,5 +1,11 @@
 import 'server-only';
-import { getGameBySlug, isFeatureAvailable, listGames, type GameConfig } from '@gamepulse/domain';
+import {
+  getGameBySlug,
+  isFeatureAvailable,
+  isPublicGame,
+  listPublicGames,
+  type GameConfig,
+} from '@gamepulse/domain';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ko } from '@/lib/i18n';
@@ -19,14 +25,12 @@ export type GameTab = (typeof GAME_TABS)[number];
 /** Resolves a /games/[game] slug or renders the 404 page. */
 export function gameFromParam(slug: string): GameConfig {
   const game = getGameBySlug(slug);
-  if (!game || game.status === 'INACTIVE') notFound();
+  if (!game || !isPublicGame(game)) notFound();
   return game;
 }
 
 export function gameStaticParams(): Array<{ game: string }> {
-  return listGames()
-    .filter((game) => game.status !== 'INACTIVE')
-    .map((game) => ({ game: game.slug }));
+  return listPublicGames().map((game) => ({ game: game.slug }));
 }
 
 /** Whether a tab has anything to show for this game (driven by GameConfig.features). */

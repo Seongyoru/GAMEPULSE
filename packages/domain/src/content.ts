@@ -177,6 +177,8 @@ export interface PulseItem {
   sourceName: string;
   sourceType: SourceType;
   sourceUrl: string;
+  /** Attribution the source requires next to its data (e.g. NEXON Open API), shown on cards. */
+  sourceAttribution: string | null;
   facts: PulseFacts;
 }
 
@@ -233,6 +235,21 @@ export function toPulseItem(record: ContentRecord): PulseItem {
     sourceName: record.source.name,
     sourceType: record.source.type,
     sourceUrl: record.source.url,
+    sourceAttribution: record.source.attribution,
     facts: pulseFactsFor(record.detail),
   };
+}
+
+/**
+ * Distinct attributions required by the sources of `items`, in first-seen order. Compact views
+ * (calendar, timeline, snapshots) show these once per section instead of per entry.
+ */
+export function sourceAttributions(
+  items: Iterable<Pick<PulseItem, 'sourceAttribution'>>,
+): string[] {
+  const seen = new Set<string>();
+  for (const item of items) {
+    if (item.sourceAttribution) seen.add(item.sourceAttribution);
+  }
+  return [...seen];
 }

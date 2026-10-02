@@ -1,6 +1,6 @@
 'use client';
 
-import { listGames } from '@gamepulse/domain';
+import { listPublicGames } from '@gamepulse/domain';
 import { GameFilter } from '@gamepulse/ui/client';
 import Link from 'next/link';
 import { track } from '@/lib/analytics';
@@ -8,7 +8,7 @@ import { ko } from '@/lib/i18n';
 import { toggleGame, usePreferences } from '@/lib/preferences';
 import { gameView } from '@/lib/present';
 
-const GAME_OPTIONS = listGames().map((game) => {
+const GAME_OPTIONS = listPublicGames().map((game) => {
   const view = gameView(game);
   return { gameId: view.gameId, name: view.name, accent: view.accent };
 });

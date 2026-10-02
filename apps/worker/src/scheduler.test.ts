@@ -16,6 +16,23 @@ describe('planSchedule', () => {
     expect(scheduled.every((entry) => entry.everyMinutes === 60)).toBe(true);
   });
 
+  it('never schedules adapters of hidden (INACTIVE) games, in any mode', () => {
+    const hideLol = { isGameCollected: (gameId: string) => gameId !== 'lol' };
+    for (const mode of ['fixture', 'live'] as const) {
+      const { scheduled, skipped } = planSchedule(
+        parseServerEnv({ COLLECTOR_MODE: mode }),
+        hideLol,
+      );
+      expect(scheduled.some((entry) => entry.definition.gameId === 'lol')).toBe(false);
+      expect(skipped.find((entry) => entry.adapterId === 'lol-fixture')?.reason).toBe(
+        'game is hidden (INACTIVE)',
+      );
+      expect(skipped.find((entry) => entry.adapterId === 'lol-ddragon')?.reason).toBe(
+        'game is hidden (INACTIVE)',
+      );
+    }
+  });
+
   it('never schedules fixture adapters in live mode', () => {
     const { scheduled, skipped } = planSchedule(parseServerEnv({ COLLECTOR_MODE: 'live' }));
     expect(scheduled.filter((entry) => entry.definition.source.type === 'FIXTURE')).toEqual([]);

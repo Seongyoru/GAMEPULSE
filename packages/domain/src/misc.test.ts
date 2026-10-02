@@ -1,13 +1,24 @@
 import { describe, expect, it } from 'vitest';
-import { contentPath, routeFamilyForType, toPulseItem } from './content';
+import { contentPath, routeFamilyForType, sourceAttributions, toPulseItem } from './content';
 import { CONTENT_TYPES } from './enums';
-import { GAMES, getGameBySlug, isFeatureAvailable, isGameId, requireGame } from './games/registry';
+import {
+  defaultGameIds,
+  GAMES,
+  getGameBySlug,
+  isFeatureAvailable,
+  isGameId,
+  isPublicGame,
+  isPublicGameId,
+  listPublicGames,
+  onlyPublicGames,
+  requireGame,
+} from './games/registry';
 import { RESET_RULES } from './games/reset-rules';
 import { validateSchedule } from './reset/engine';
 import { resetRuleDefinitionSchema } from './schemas/reset';
 import { applyContentQuery, matchesWindow } from './query';
 import { sanitizePlainText, truncateText } from './text';
-import { hoursFrom, makeContentRecord, TEST_NOW } from './testing/factories';
+import { hoursFrom, makeContentRecord, makePulseItem, TEST_NOW } from './testing/factories';
 import { isValidTimeZone } from './time/zone';
 
 describe('game registry', () => {
@@ -28,6 +39,22 @@ describe('game registry', () => {
     expect(getGameBySlug('genshin-impact')?.gameId).toBe('genshin');
     expect(isGameId('wuwa')).toBe(true);
     expect(() => requireGame('nope')).toThrow();
+  });
+
+  it('keeps INACTIVE games out of every public listing', () => {
+    const lol = requireGame('lol');
+    expect(isPublicGame(lol)).toBe(true);
+    expect(isPublicGame({ ...lol, status: 'BETA' })).toBe(true);
+    expect(isPublicGame({ ...lol, status: 'INACTIVE' })).toBe(false);
+
+    const publicIds = listPublicGames().map((game) => game.gameId);
+    expect(publicIds).toEqual(GAMES.filter(isPublicGame).map((game) => game.gameId));
+    expect(defaultGameIds().every((id) => publicIds.includes(id))).toBe(true);
+    expect(isPublicGameId('lol')).toBe(true);
+    expect(isPublicGameId('not-a-game')).toBe(false);
+    expect(onlyPublicGames([{ gameId: 'lol' }, { gameId: 'not-a-game' }])).toEqual([
+      { gameId: 'lol' },
+    ]);
   });
 });
 
@@ -87,6 +114,28 @@ describe('content routing', () => {
       changeCount: 1,
       changeHighlights: ['아리 Q 피해량 80 → 90'],
     });
+  });
+
+  it('carries the attribution a source requires onto the pulse item', () => {
+    const base = makeContentRecord();
+    const record = makeContentRecord({
+      source: { ...base.source, attribution: 'Data based on NEXON Open API' },
+    });
+    expect(toPulseItem(record).sourceAttribution).toBe('Data based on NEXON Open API');
+    expect(toPulseItem(makeContentRecord()).sourceAttribution).toBeNull();
+  });
+
+  it('collects each required attribution once, in first-seen order', () => {
+    const nexon = 'Data based on NEXON Open API';
+    expect(
+      sourceAttributions([
+        makePulseItem(),
+        makePulseItem({ sourceAttribution: nexon }),
+        makePulseItem({ sourceAttribution: 'Other attribution' }),
+        makePulseItem({ sourceAttribution: nexon }),
+      ]),
+    ).toEqual([nexon, 'Other attribution']);
+    expect(sourceAttributions([makePulseItem()])).toEqual([]);
   });
 });
 

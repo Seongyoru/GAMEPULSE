@@ -3,13 +3,14 @@
 import {
   addMonths,
   buildCalendarMonth,
-  listGames,
+  listPublicGames,
+  sourceAttributions,
   toCalendarDate,
   type CalendarEntry,
   type PulseItem,
   type ResetRuleDefinition,
 } from '@gamepulse/domain';
-import { Calendar, EmptyState, type CalendarCellEntry } from '@gamepulse/ui';
+import { Calendar, EmptyState, SourceAttributionNote, type CalendarCellEntry } from '@gamepulse/ui';
 import { GameFilter, useNow } from '@gamepulse/ui/client';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -18,7 +19,7 @@ import { ko } from '@/lib/i18n';
 import { useEffectiveGameIds } from '@/lib/preferences';
 import { formatInstant, gameView, gameViewById, typeLabel, VIEWER_TIMEZONE } from '@/lib/present';
 
-const ALL_GAMES = listGames().map((game) => {
+const ALL_GAMES = listPublicGames().map((game) => {
   const view = gameView(game);
   return { gameId: view.gameId, name: view.shortName, accent: view.accent };
 });
@@ -82,6 +83,7 @@ export function CalendarView({ items, resets, generatedAt, fixedGameId }: Calend
     .flat()
     .filter((day) => day.inMonth && day.entries.length > 0)
     .map((day) => ({ day, entries: day.entries }));
+  const attributions = sourceAttributions(agenda.flatMap(({ entries }) => entries));
 
   const onToggle = (gameId: string) => {
     const base = override ?? preferred;
@@ -194,6 +196,7 @@ export function CalendarView({ items, resets, generatedAt, fixedGameId }: Calend
           </ol>
         )}
       </section>
+      <SourceAttributionNote attributions={attributions} />
     </div>
   );
 }

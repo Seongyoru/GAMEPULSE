@@ -3,7 +3,15 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Countdown, GameFilter } from '../client';
-import { AdSlot, EventCard, PatchChange, RewardBadge, StatusChip } from '../index';
+import {
+  AdSlot,
+  EventCard,
+  PatchChange,
+  PulseCard,
+  RewardBadge,
+  SourceAttributionNote,
+  StatusChip,
+} from '../index';
 
 afterEach(cleanup);
 
@@ -148,5 +156,57 @@ describe('EventCard', () => {
     expect(screen.getByText('진행 중')).toBeTruthy();
     expect(screen.getByText('샘플')).toBeTruthy();
     expect(screen.getByTestId('event-card').getAttribute('data-mg-game')).toBe('genshin');
+  });
+});
+
+describe('source attribution', () => {
+  const NEXON = 'Data based on NEXON Open API';
+
+  it('shows the attribution a source requires on pulse and event cards', () => {
+    render(
+      <>
+        <PulseCard
+          href="/notices/maplestory-maintenance-1"
+          title="정기 점검 안내"
+          game={{ gameId: 'maplestory', name: '메이플', accent: 'orange' }}
+          typeLabel="점검"
+          attribution={NEXON}
+        />
+        <EventCard
+          href="/events/maplestory-event-1"
+          title="가을 이벤트"
+          game={{ gameId: 'maplestory', name: '메이플', accent: 'orange' }}
+          typeLabel="이벤트"
+          status={null}
+          period={null}
+          attribution={NEXON}
+        />
+      </>,
+    );
+    expect(screen.getAllByTestId('source-attribution').map((node) => node.textContent)).toEqual([
+      NEXON,
+      NEXON,
+    ]);
+  });
+
+  it('renders nothing when no shown source requires attribution', () => {
+    render(
+      <>
+        <PulseCard
+          href="/patches/lol-patch-1"
+          title="패치"
+          game={{ gameId: 'lol', name: 'LoL', accent: 'sky' }}
+          typeLabel="패치"
+          attribution={null}
+        />
+        <SourceAttributionNote attributions={[]} />
+      </>,
+    );
+    expect(screen.queryByTestId('source-attribution')).toBeNull();
+  });
+
+  it('lists several attributions once in a compact section note', () => {
+    render(<SourceAttributionNote attributions={[NEXON, 'Other source']} />);
+    expect(screen.getByTestId('source-attribution').textContent).toBe(`${NEXON} · Other source`);
   });
 });

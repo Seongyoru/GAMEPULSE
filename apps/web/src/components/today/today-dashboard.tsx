@@ -3,7 +3,7 @@
 import {
   buildGameSnapshot,
   buildToday,
-  listGames,
+  listPublicGames,
   TODAY_SECTIONS,
   type PulseItem,
   type ResetRuleDefinition,
@@ -72,7 +72,7 @@ export function TodayDashboard({ items, resets, generatedAt, adsMode }: TodayDas
   );
   const snapshots = useMemo(() => {
     const selected = gameKey.split(',');
-    return listGames()
+    return listPublicGames()
       .filter((game) => selected.includes(game.gameId))
       .map((game) => buildGameSnapshot({ gameId: game.gameId, items, resets, now: new Date(now) }));
   }, [gameKey, items, resets, now]);

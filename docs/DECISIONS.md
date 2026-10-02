@@ -217,3 +217,20 @@ registry.
 A `loading.tsx` boundary makes on-demand (ISR) pages start streaming with HTTP 200 before the page can call
 `notFound()`, turning unknown slugs into soft 404s. Content and game routes therefore have no loading boundary; their
 pages are prerendered or render quickly on first request. E2E tests assert real 404 status codes.
+
+## D-034 · Source-required attribution travels with the data (2026-10-02)
+
+A source's `attribution` (NEXON Open API: "Data based on NEXON Open API") is copied onto every `PulseItem`, calendar
+entry and game snapshot built from its records. Cards show it under the item; compact views (calendar agenda, the
+homepage timeline, game snapshot cards) show each required attribution once per section; detail pages show it under
+the source badge. Nothing renders when no displayed item needs one, so the notice never claims data the page does
+not show.
+
+## D-035 · INACTIVE means hidden everywhere (2026-10-02)
+
+`GameConfig.status = 'INACTIVE'` hides a game from every public surface — games index, MY GAMES options and stored
+selections, TODAY, homepage, calendar filters, sources page, sitemap, game routes (404) and its content (detail pages
+404, excluded from dashboards and slugs) — and the worker neither schedules nor `--all`-ingests its adapters.
+Operators can still ingest it explicitly. One switch therefore covers three cases: preparing a game before launch
+(content can be loaded while hidden), pausing one, and a fast takedown if a publisher objects. All user-facing code
+lists games through `listPublicGames()`; `listGames()` (everything) is for the pipeline and operator tools.

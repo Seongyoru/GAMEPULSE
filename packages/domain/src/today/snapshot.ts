@@ -3,7 +3,7 @@
  * dashboard (latest patch, next patch, primary reset, rewards, events, banner, maintenance).
  * Generic over all games — which rows render is driven by data and GameConfig.features.
  */
-import type { PulseItem } from '../content';
+import { sourceAttributions, type PulseItem } from '../content';
 import type { MaintenanceState } from '../enums';
 import { nextOccurrence } from '../reset/engine';
 import type { ResetRuleDefinition } from '../schemas/reset';
@@ -30,6 +30,8 @@ export interface GameSnapshot {
     | (SnapshotLink & { state: MaintenanceState; startAt: string | null; endAt: string | null })
     | null;
   lastUpdatedAt: string | null;
+  /** Attributions required by the sources of this game's items (e.g. NEXON Open API). */
+  sourceAttributions: string[];
 }
 
 const MAINTENANCE_LOOKAHEAD_MS = 3 * 24 * 60 * 60 * 1000;
@@ -160,5 +162,6 @@ export function buildGameSnapshot(input: {
         }
       : null,
     lastUpdatedAt: lastUpdated === undefined ? null : new Date(lastUpdated).toISOString(),
+    sourceAttributions: sourceAttributions(items),
   };
 }

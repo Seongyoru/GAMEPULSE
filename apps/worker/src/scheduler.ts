@@ -3,10 +3,11 @@
  * automated collection (collectorStatus ENABLED) and whose credentials are configured run
  * live. Fixture adapters run hourly in fixture mode to keep development data current; fixture
  * and mock modes are refused in production (synthetic data must never reach real users).
+ * Hidden (INACTIVE) games are never scheduled; operators can still ingest them explicitly.
  */
 import { listAdapterDefinitions, type AdapterDefinition } from '@gamepulse/collectors';
 import { fixturesAllowed, type ServerEnv } from '@gamepulse/config';
-import type { CollectorMode } from '@gamepulse/domain';
+import { isPublicGameId, type CollectorMode } from '@gamepulse/domain';
 
 export interface ScheduledAdapter {
   definition: AdapterDefinition;
@@ -21,7 +22,10 @@ export interface SkippedAdapter {
 
 const FIXTURE_REFRESH_MINUTES = 60;
 
-export function planSchedule(env: ServerEnv): {
+export function planSchedule(
+  env: ServerEnv,
+  options: { isGameCollected?: (gameId: string) => boolean } = {},
+): {
   scheduled: ScheduledAdapter[];
   skipped: SkippedAdapter[];
 } {
@@ -29,8 +33,13 @@ export function planSchedule(env: ServerEnv): {
   const skipped: SkippedAdapter[] = [];
   const mode = env.COLLECTOR_MODE;
   const syntheticRefused = mode !== 'live' && !fixturesAllowed(env);
+  const isGameCollected = options.isGameCollected ?? isPublicGameId;
 
   for (const definition of listAdapterDefinitions()) {
+    if (!isGameCollected(definition.gameId)) {
+      skipped.push({ adapterId: definition.id, reason: 'game is hidden (INACTIVE)' });
+      continue;
+    }
     if (syntheticRefused) {
       skipped.push({ adapterId: definition.id, reason: `${mode} mode is refused in production` });
       continue;

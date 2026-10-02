@@ -1,6 +1,8 @@
+import { listPublicGames } from '@gamepulse/domain';
 import { expect, type Page } from '@playwright/test';
 
-export const GAME_IDS = ['lol', 'lostark', 'maplestory', 'genshin', 'wuwa'] as const;
+/** Games the site shows, read from the registry: adding a game needs no E2E edits. */
+export const GAME_IDS: readonly string[] = listPublicGames().map((game) => game.gameId);
 const PREFERENCES_KEY = 'gamepulse:prefs:v1';
 
 /** Seeds MY GAMES before any page script runs (applies to every navigation of the page). */

@@ -47,6 +47,16 @@ describe('MY GAMES boot script', () => {
     expect(document.documentElement.getAttribute('data-mg')).toBe('lostark genshin');
   });
 
+  it('only lets ids of games shown on the site reach the attribute', () => {
+    window.localStorage.setItem(
+      PREFERENCES_STORAGE_KEY,
+      JSON.stringify({ selectedGameIds: ['retired-game', 'not-a-game'] }),
+    );
+    runBootScript();
+    // A selection of hidden or unknown games must not hide every card before hydration.
+    expect(document.documentElement.hasAttribute('data-mg')).toBe(false);
+  });
+
   it('ignores corrupted storage without throwing', () => {
     window.localStorage.setItem(PREFERENCES_STORAGE_KEY, '{not json');
     expect(runBootScript).not.toThrow();

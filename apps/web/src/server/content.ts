@@ -1,6 +1,9 @@
 import 'server-only';
 import {
   DAY_MS,
+  isPublicGameId,
+  listPublicGames,
+  onlyPublicGames,
   toPulseItem,
   typesForRouteFamily,
   type ContentRecord,
@@ -45,12 +48,15 @@ function selectDashboardItems(records: readonly ContentRecord[], nowMs: number):
 export const getDashboardData = cache(async (): Promise<DashboardData> => {
   const store = await getReadStore();
   const now = Date.now();
+  // Hidden (INACTIVE) games contribute nothing to shared views.
+  const gameIds = listPublicGames().map((game) => game.gameId);
   const [records, resets] = await Promise.all([
     store.listContent({
+      gameIds,
       window: { from: iso(now - 45 * DAY_MS), to: iso(now + 60 * DAY_MS) },
       order: 'start',
     }),
-    store.listResetRules(),
+    store.listResetRules(gameIds),
   ]);
   return { generatedAt: iso(now), items: selectDashboardItems(records, now), resets };
 });
@@ -91,9 +97,11 @@ export const getGamePatches = cache(
   },
 );
 
+/** A published record by slug; content of hidden (INACTIVE) games resolves to null (404). */
 export const getContentBySlug = cache(async (slug: string): Promise<ContentRecord | null> => {
   const store = await getReadStore();
-  return store.getContentBySlug(slug);
+  const record = await store.getContentBySlug(slug);
+  return record && isPublicGameId(record.gameId) ? record : null;
 });
 
 /** A content page's record plus the time it was rendered (the client clock's starting point). */
@@ -104,10 +112,10 @@ export const getContentPage = cache(
   },
 );
 
-/** Slugs for a route family (used by generateStaticParams and the sitemap). */
+/** Slugs of public games' content for a route family (generateStaticParams and the sitemap). */
 export const getSlugs = cache(async (family?: ContentRouteFamily) => {
   const store = await getReadStore();
-  const entries = await store.listContentSlugs();
+  const entries = onlyPublicGames(await store.listContentSlugs());
   if (!family) return entries;
   const types = typesForRouteFamily(family);
   return entries.filter((entry) => types.includes(entry.type));

@@ -54,8 +54,9 @@ deduplicate · monitor. Research and terms findings: [research log](research/), 
   (storage, 30-day TTL, commercial use and attribution display need legal review); needs `NEXON_OPEN_API_KEY`.
 - ⛔ Genshin Impact / Wuthering Waves website collection — publisher terms prohibit scraping/copying without written
   permission → `DISABLED` reference sources; manual ingestion until permission is granted.
-- ⏳ Before enabling a held source: verify the first live responses against the mock fixtures, enforce
-  `dataRetentionDays` for TTL-bound sources, show source attribution on every card that displays its data.
+- ✅ Source attribution on every card and compact view that displays a source's data (D-034); `dataRetentionDays`
+  enforced for TTL-bound sources (D-031)
+- ⏳ Before enabling a held source: verify the first live responses against the mock fixtures (needs the API key).
 
 ## Phase 4 — AI parsing ✅
 
@@ -91,6 +92,7 @@ deduplicate · monitor. Research and terms findings: [research log](research/), 
   `/api/health` (data source + last update, never cached)
 - ✅ Security headers (HSTS, nosniff, frame denial, referrer and permissions policies); secrets server-side only
 - ✅ Privacy policy, terms and data-sources pages (drafts: legal review pending), footer links, required Riot notice
+- ✅ Takedown/launch switch: `INACTIVE` games are hidden everywhere and not collected on a schedule (D-035)
 - ⏳ Legal review of the policy pages; written answers from Smilegate and NEXON; Riot product registration and
   production key; HoYoverse/Kuro permission requests (see [LEGAL_NOTES.md](LEGAL_NOTES.md))
 - ⏳ Production credentials, managed PostgreSQL backups/PITR, CDN, error-monitoring DSN, analytics decision

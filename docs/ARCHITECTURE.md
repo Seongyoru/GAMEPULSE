@@ -118,7 +118,8 @@ Games are data, not code paths: nothing in the web app, the domain engines or th
 1. **Research** the official sources, terms, robots policy, time zones and reset schedule; record them in
    `docs/research/<date>-<game>.md` and [DATA_SOURCES.md](DATA_SOURCES.md).
 2. **Registry** — add a `GameConfig` to `packages/domain/src/games/registry.ts`: id and immutable slug, localized and
-   short names, publisher, official URL and hosts (item links must stay on them), status, time zone and regions
+   short names, publisher, official URL and hosts (item links must stay on them), status (`INACTIVE` keeps the game
+   hidden everywhere until launch, D-035), time zone and regions
    (IANA or fixed offsets such as `UTC+8`), feature support per content type (drives game tabs), an accent from
    `GAME_ACCENTS`, terminology (e.g. what the game calls a banner), SEO keywords, `defaultForAnonymous`, sort order.
 3. **Reset rules** — add researched rules to `packages/domain/src/games/reset-rules.ts` with their `sourceUrl`, as
@@ -129,8 +130,9 @@ Games are data, not code paths: nothing in the web app, the domain engines or th
 5. **Sources and adapters** — add a live adapter only where the terms allow automated collection (`collectorStatus`),
    with recorded responses under `fixtures/http/<adapter>/` and mock-mode tests; otherwise add a reference source and
    use `pnpm ingest:manual` / `pnpm ingest:text`. List adapter ids in the game's `adapters`.
-6. **Run** `pnpm seed`, `pnpm test:unit` (registry consistency, fixtures, reset rules) and `pnpm test:e2e` (update the
-   game list in `apps/web/e2e/helpers.ts`).
+6. **Run** `pnpm seed`, `pnpm test:unit` (registry consistency, fixtures, reset rules) and `pnpm test:e2e` (the E2E
+   suite reads the game list from the registry).
+7. **Launch** by switching the status to `ACTIVE` once its reset rules are checked and its content is loaded.
 
 Everything else — TODAY, MY GAMES (including the pre-paint CSS), game pages and tabs, calendar, sitemap, structured
 data — picks the new game up from the registry.

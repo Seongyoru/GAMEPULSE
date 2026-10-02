@@ -33,6 +33,7 @@ export function EventItemCard({
       featured={item.facts.featured ?? []}
       sample={item.isSynthetic}
       sampleLabel={ko.status.sample}
+      attribution={item.sourceAttribution}
       trackEvent={trackEventFor(item)}
       className={className}
     />
