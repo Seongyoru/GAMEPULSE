@@ -37,6 +37,17 @@ unreachable). Alert when it fails or when `lastUpdatedAt` stops moving for longe
 - Urgent manual correction → manual ingestion; note that official sources outrank manual input, so fix the parser too.
 - Pending review items: `validation_results` with status `REVIEW` and `content_items.status = 'PENDING_REVIEW'`.
 
+## Pausing or removing a game or source
+
+- **A publisher asks us to stop** or a game must go offline: set the game's `status: 'INACTIVE'` in
+  `packages/domain/src/games/registry.ts` and deploy. The game disappears from every page, its content pages answer
+  404, the sitemap drops them and the worker stops collecting it (D-035). Data stays in the database until you delete
+  it, so the switch is reversible.
+- **Only one source must stop**: set that source's `collectorStatus` to `DISABLED` (live runs are refused) and
+  deploy; content it already produced stays until its retention window or a manual cleanup.
+- **Launching a prepared game**: load its content while it is still `INACTIVE` (`pnpm ingest:manual`,
+  `pnpm ingest:text`, or `pnpm ingest --adapter <id>`), verify its reset rules, then switch it to `ACTIVE`.
+
 ## AI parsing
 
 - Enable with `AI_PARSER=claude` and `ANTHROPIC_API_KEY` (worker/CLI only). Without them everything runs on the
