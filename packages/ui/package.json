@@ -1,0 +1,29 @@
+{
+  "name": "@gamepulse/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "GAMEPULSE design system: data-dense, game-neutral React components styled with Tailwind CSS.",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@gamepulse/domain": "workspace:*",
+    "clsx": "^2.1.1"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  }
+}

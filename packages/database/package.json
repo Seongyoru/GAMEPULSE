@@ -1,0 +1,28 @@
+{
+  "name": "@gamepulse/database",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "PostgreSQL schema (Drizzle), migrations, and ContentStore implementations (PostgreSQL + in-memory).",
+  "exports": {
+    ".": "./src/index.ts",
+    "./memory": "./src/memory/index.ts",
+    "./testing": "./src/testing/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/cli/migrate.ts",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@gamepulse/config": "workspace:*",
+    "@gamepulse/domain": "workspace:*",
+    "drizzle-orm": "^0.45.3",
+    "postgres": "^3.4.9"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "drizzle-kit": "^0.31.11"
+  }
+}

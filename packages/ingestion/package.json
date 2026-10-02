@@ -1,0 +1,22 @@
+{
+  "name": "@gamepulse/ingestion",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Ingestion pipeline: discover → fetch → raw document → parse → normalize → validate → deduplicate → publish.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@gamepulse/collectors": "workspace:*",
+    "@gamepulse/domain": "workspace:*",
+    "@gamepulse/observability": "workspace:*",
+    "@gamepulse/validators": "workspace:*"
+  },
+  "devDependencies": {
+    "@gamepulse/database": "workspace:*"
+  }
+}

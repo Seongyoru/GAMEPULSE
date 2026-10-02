@@ -1,0 +1,13 @@
+{
+  "name": "@gamepulse/observability",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Structured logging and a Sentry-compatible error-reporting abstraction.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  }
+}

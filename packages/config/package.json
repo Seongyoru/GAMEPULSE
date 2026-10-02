@@ -1,0 +1,17 @@
+{
+  "name": "@gamepulse/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Runtime configuration: environment schemas, constants and site settings shared by web and worker.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./env": "./src/env.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  }
+}

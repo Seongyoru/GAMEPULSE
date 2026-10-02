@@ -1,0 +1,18 @@
+{
+  "name": "@gamepulse/domain",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure, isomorphic GAMEPULSE domain: contracts, game registry, time, status, reset and urgency engines.",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/testing/factories.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  }
+}

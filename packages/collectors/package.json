@@ -1,0 +1,21 @@
+{
+  "name": "@gamepulse/collectors",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "SourceAdapter framework, polite HTTP client (rate limits, backoff, robots) and per-game source adapters.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/testing/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@gamepulse/config": "workspace:*",
+    "@gamepulse/domain": "workspace:*",
+    "@gamepulse/observability": "workspace:*",
+    "@gamepulse/parsers": "workspace:*",
+    "zod": "^4.6.5"
+  }
+}

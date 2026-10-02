@@ -1,0 +1,12 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Dependency lifecycle scripts are denied by default (pnpm >= 10).
+# Only packages that genuinely need a build step are approved here.
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  # Optional native accelerator for msgpackr (BullMQ); the pure-JS fallback is sufficient.
+  msgpackr-extract: false
