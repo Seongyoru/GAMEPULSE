@@ -1,3 +1,4 @@
+import { listPublicGames } from '@gamepulse/domain';
 import { act, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -63,12 +64,13 @@ describe('MY GAMES boot script', () => {
     expect(document.documentElement.hasAttribute('data-mg')).toBe(false);
   });
 
-  it('generates one hiding rule per game, scoped to MY GAMES containers', () => {
+  it('generates one hiding rule per game shown on the site, scoped to MY GAMES containers', () => {
     const css = myGamesCss();
     expect(css).toContain(
       'html[data-mg]:not([data-mg~="lol"]) [data-mg-scope] [data-mg-game="lol"]{display:none!important}',
     );
-    expect(css.match(/display:none/g)).toHaveLength(5);
+    expect(css.match(/display:none/g)).toHaveLength(listPublicGames().length);
+    expect(css).not.toContain('"zzz"');
   });
 });
 

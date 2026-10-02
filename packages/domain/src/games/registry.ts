@@ -250,6 +250,69 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     defaultForAnonymous: true,
     sortOrder: 50,
   },
+  {
+    // Prepared ahead of launch and hidden until its content is loaded and its reset rules are
+    // checked (docs/research/2026-10-02-zzz-nte.md, ROADMAP › Game backlog).
+    gameId: 'zzz',
+    slug: 'zenless-zone-zero',
+    name: 'Zenless Zone Zero',
+    localizedNames: { 'ko-KR': '젠레스 존 제로', 'en-US': 'Zenless Zone Zero' },
+    shortNames: { 'ko-KR': '젠존제', 'en-US': 'ZZZ' },
+    publisher: 'HoYoverse',
+    developer: 'HoYoverse',
+    officialUrl: 'https://zenless.hoyoverse.com/ko-kr/',
+    officialHosts: ['hoyoverse.com', 'hoyolab.com'],
+    status: 'INACTIVE',
+    timezone: ASIA_UTC8,
+    regions: [
+      {
+        id: 'asia',
+        name: { 'ko-KR': '아시아', 'en-US': 'Asia' },
+        timezone: ASIA_UTC8,
+        isDefault: true,
+      },
+      {
+        id: 'america',
+        name: { 'ko-KR': '아메리카', 'en-US': 'America' },
+        timezone: 'UTC-5',
+        isDefault: false,
+      },
+      {
+        id: 'europe',
+        name: { 'ko-KR': '유럽', 'en-US': 'Europe' },
+        timezone: 'UTC+1',
+        isDefault: false,
+      },
+      {
+        id: 'tw-hk-mo',
+        name: { 'ko-KR': 'TW/HK/MO', 'en-US': 'TW, HK, MO' },
+        timezone: ASIA_UTC8,
+        isDefault: false,
+      },
+    ],
+    features: {
+      patches: 'supported',
+      events: 'supported',
+      rewards: 'supported',
+      resets: 'supported',
+      maintenance: 'supported',
+      banners: 'supported',
+      redeemCodes: 'supported',
+    },
+    adapters: ['zzz-fixture'],
+    accent: 'lime',
+    terminology: { banner: { 'ko-KR': '채널', 'en-US': 'Channel' } },
+    seoKeywords: {
+      'ko-KR': [
+        '젠레스 존 제로 이벤트',
+        '젠레스 존 제로 채널 일정',
+        '젠레스 존 제로 리딤코드',
+        '젠레스 존 제로 업데이트',
+      ],
+    },
+    defaultForAnonymous: true,
+    sortOrder: 60,
+  },
 ];
 
 export const GAMES: readonly GameConfig[] = [...GAME_DEFINITIONS].sort(

@@ -36,12 +36,12 @@ export function planSchedule(
   const isGameCollected = options.isGameCollected ?? isPublicGameId;
 
   for (const definition of listAdapterDefinitions()) {
-    if (!isGameCollected(definition.gameId)) {
-      skipped.push({ adapterId: definition.id, reason: 'game is hidden (INACTIVE)' });
-      continue;
-    }
     if (syntheticRefused) {
       skipped.push({ adapterId: definition.id, reason: `${mode} mode is refused in production` });
+      continue;
+    }
+    if (!isGameCollected(definition.gameId)) {
+      skipped.push({ adapterId: definition.id, reason: 'game is hidden (INACTIVE)' });
       continue;
     }
     if (!definition.supportedModes.includes(mode)) {

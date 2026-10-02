@@ -1,7 +1,7 @@
 import { createTestAdapterContext, TEST_ANCHOR } from '@gamepulse/collectors/testing';
 import { getAdapterDefinition, manualSourceFor } from '@gamepulse/collectors';
 import { InMemoryContentStore } from '@gamepulse/database/memory';
-import { requireGame, type ContentStore } from '@gamepulse/domain';
+import { listGames, requireGame, type ContentStore } from '@gamepulse/domain';
 import { makeCandidate, makeSource } from '@gamepulse/domain/testing';
 import { createMemoryLogger, noopLogger } from '@gamepulse/observability';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -30,10 +30,12 @@ describe('fixture ingestion', () => {
     await syncRegistry(store, TEST_ANCHOR);
   });
 
-  it('ingests all five games and is idempotent on re-run', async () => {
+  it('ingests every registered game, hidden ones included, and is idempotent on re-run', async () => {
     const context = createTestAdapterContext({ mode: 'fixture' });
     const first = await ingestFixtures({ store, context, logger: noopLogger, trigger: 'TEST' });
-    expect(first.map((r) => r.gameId)).toEqual(['lol', 'lostark', 'maplestory', 'genshin', 'wuwa']);
+    // Operators prepare hidden (INACTIVE) games through the same pipeline; the web hides them.
+    expect(first.map((r) => r.gameId)).toEqual(listGames().map((game) => game.gameId));
+    expect(await store.getContentBySlug('zenless-zone-zero-code-test-redeem-code')).not.toBeNull();
     for (const report of first) {
       expect(report.status, report.adapterId).toBe('SUCCEEDED');
       expect(report.warnings, report.adapterId).toEqual([]);
@@ -57,7 +59,7 @@ describe('fixture ingestion', () => {
     await ingestFixtures({ store, context, logger: noopLogger, trigger: 'TEST' });
     const all = await store.listContent({});
     const count = (type: string) => all.filter((r) => r.type === type).length;
-    expect(new Set(all.map((r) => r.gameId)).size).toBe(5);
+    expect(new Set(all.map((r) => r.gameId)).size).toBe(listGames().length);
     expect(count('PATCH')).toBeGreaterThanOrEqual(3);
     expect(count('EVENT')).toBeGreaterThanOrEqual(10);
     expect(count('REWARD')).toBeGreaterThanOrEqual(10);

@@ -20,10 +20,14 @@ Source priority: official API → official structured feed → official website 
 | `maplestory-openapi` | MapleStory | NEXON Open API notices                      | `PENDING_REVIEW` | `NEXON_OPEN_API_KEY` | EVENT, UPDATE, MAINTENANCE, ANNOUNCEMENT    |
 | —                    | Genshin    | official website (`genshin-official-web`)   | `DISABLED`       | —                    | manual ingestion only                       |
 | —                    | WuWa       | official website (`wuwa-official-web`)      | `DISABLED`       | —                    | manual ingestion only                       |
+| —                    | ZZZ\*      | official website (`zzz-official-web`)       | `DISABLED`       | —                    | manual ingestion only                       |
 | —                    | LoL        | patch-notes website (`lol-patch-notes-web`) | `MANUAL_ONLY`    | —                    | manual ingestion only                       |
 
 Every live adapter also runs in `mock` mode against `fixtures/http/<adapter>/` and stores those records under a
 synthetic twin source `<source>-mock` (`FIXTURE`), never under the official source.
+
+\* Zenless Zone Zero is registered but `INACTIVE` (hidden until launch, D-035). Neverness to Everness is researched
+but not registered (see below and ROADMAP › Game backlog).
 
 ## Sources present for every game
 
@@ -101,6 +105,34 @@ synthetic twin source `<source>-mock` (`FIXTURE`), never under the official sour
 | Collector status       | `DISABLED` — Terms of Use §2(4) prohibit downloading/copying/displaying content without prior written consent; no documented API/feed                                          |
 | Terms review           | 2026-10-02                                                                                                                                                                     |
 | Notes                  | Korean site lags the English one (380 vs 701 articles). Korean notices print KST and sometimes mislabel it "server time". Korean agent: wutheringwaves_krsupport@kurogames.com |
+
+## Zenless Zone Zero (HoYoverse) — registered, hidden
+
+Research: [2026-10-02-zzz-nte.md](research/2026-10-02-zzz-nte.md).
+
+| Field                  | Official website news                                                                                                                                 |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Official / third party | Official                                                                                                                                              |
+| Source type            | Official website (plus the official HoYoLAB account)                                                                                                  |
+| Endpoint               | `zenless.hoyoverse.com/ko-kr/news` (category 296 = 공지사항); redeem codes at `zenless.hoyoverse.com/redemption` (login required)                     |
+| Authentication         | —                                                                                                                                                     |
+| Rate limit             | —                                                                                                                                                     |
+| Content types          | UPDATE, EVENT, BANNER (채널), REWARD, REDEEM_CODE, MAINTENANCE, ANNOUNCEMENT                                                                          |
+| Collector status       | `DISABLED` — ToS §7(c) prohibits content being "scraped" without written permission (이용약관 제8조 8)); no documented API/feed; robots.txt 404       |
+| Terms review           | 2026-10-02                                                                                                                                            |
+| Notes                  | Korean notices print KST ("(KST)"), older ones mix unconverted "(서버 시간)" values and write "24:59(KST)". Korean agent: kr_mkt_global@hoyoverse.com |
+
+## Neverness to Everness (Perfect World) — researched, not registered
+
+| Field                  | Official website news                                                                                                                                                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Official / third party | Official                                                                                                                                                                                                                    |
+| Source type            | Official website                                                                                                                                                                                                            |
+| Endpoint               | `nte.perfectworld.com/kr/article/news/` (뉴스 `gamenews`, 공지 `gamebroad`, 이벤트 `gameevent`)                                                                                                                             |
+| Content types          | UPDATE, EVENT, BANNER (한정 보드), REWARD, REDEEM_CODE (in game only), MAINTENANCE                                                                                                                                          |
+| Collector status       | Not registered. Automated collection `DISABLED` (EN ToS §3.4(s), §6.1(b)(iv); KO 이용약관 제4조②). §3.4(s) also covers "any manual process to do the same" → written permission or legal review **before manual ingestion** |
+| Terms review           | 2026-10-02                                                                                                                                                                                                                  |
+| Notes                  | Launched in Korea 2026-04-29. Daily/weekly reset (05:00 server time?) and per-server offsets are not officially stated. Contacts: nte.legal@perfectworld.com, Korean agent per 이용약관                                     |
 
 ## Re-review cadence
 

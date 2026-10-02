@@ -34,8 +34,15 @@ describe('game registry', () => {
     }
   });
 
-  it('supports the five MVP games', () => {
-    expect(GAMES.map((g) => g.gameId)).toEqual(['lol', 'lostark', 'maplestory', 'genshin', 'wuwa']);
+  it('shows the five MVP games and keeps prepared games hidden', () => {
+    expect(listPublicGames().map((g) => g.gameId)).toEqual([
+      'lol',
+      'lostark',
+      'maplestory',
+      'genshin',
+      'wuwa',
+    ]);
+    expect(GAMES.filter((g) => !isPublicGame(g)).map((g) => g.gameId)).toEqual(['zzz']);
     expect(getGameBySlug('genshin-impact')?.gameId).toBe('genshin');
     expect(isGameId('wuwa')).toBe(true);
     expect(() => requireGame('nope')).toThrow();
@@ -74,7 +81,7 @@ describe('reset rule registry', () => {
       RESET_RULES.filter((rule) => rule.isPrimary)
         .map((rule) => rule.gameId)
         .sort(),
-    ).toEqual(['genshin', 'lostark', 'maplestory', 'wuwa']);
+    ).toEqual(['genshin', 'lostark', 'maplestory', 'wuwa', 'zzz']);
   });
 });
 

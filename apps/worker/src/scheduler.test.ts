@@ -1,18 +1,19 @@
 import { parseServerEnv } from '@gamepulse/config';
+import { listPublicGames } from '@gamepulse/domain';
 import { describe, expect, it } from 'vitest';
 import { resolveAdapter } from './jobs';
 import { planSchedule } from './scheduler';
 
 describe('planSchedule', () => {
   it('refreshes every fixture adapter hourly in fixture mode', () => {
-    const { scheduled } = planSchedule(parseServerEnv({ COLLECTOR_MODE: 'fixture' }));
-    expect(scheduled.map((entry) => entry.definition.id)).toEqual([
-      'lol-fixture',
-      'lostark-fixture',
-      'maplestory-fixture',
-      'genshin-fixture',
-      'wuwa-fixture',
-    ]);
+    const { scheduled, skipped } = planSchedule(parseServerEnv({ COLLECTOR_MODE: 'fixture' }));
+    expect(scheduled.map((entry) => entry.definition.id)).toEqual(
+      listPublicGames().map((game) => `${game.gameId}-fixture`),
+    );
+    // Prepared (INACTIVE) games keep their fixtures for operators but are never scheduled.
+    expect(skipped.find((entry) => entry.adapterId === 'zzz-fixture')?.reason).toBe(
+      'game is hidden (INACTIVE)',
+    );
     expect(scheduled.every((entry) => entry.everyMinutes === 60)).toBe(true);
   });
 
@@ -89,7 +90,7 @@ describe('production safety', () => {
         GAMEPULSE_ALLOW_FIXTURES_IN_PRODUCTION: 'true',
       }),
     );
-    expect(scheduled).toHaveLength(5);
+    expect(scheduled).toHaveLength(listPublicGames().length);
   });
 });
 

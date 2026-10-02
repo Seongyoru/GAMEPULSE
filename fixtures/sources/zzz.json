@@ -1,0 +1,219 @@
+{
+  "gameId": "zzz",
+  "timezone": "UTC+8",
+  "locale": "ko-KR",
+  "region": "asia",
+  "documents": [
+    {
+      "externalId": "zzz-fx-version",
+      "url": "https://zenless.hoyoverse.com/ko-kr/news",
+      "publishedAt": "@-6d/11:00",
+      "items": [
+        {
+          "key": "update",
+          "kind": "UPDATE",
+          "slugHint": "sample-version-update",
+          "title": "버전 업데이트 「밤의 도시 샘플」",
+          "summary": "신규 에이전트와 스토리, 편의성 개선이 포함된 버전 업데이트입니다. (샘플 데이터)",
+          "startAt": "@-5d/11:00",
+          "priority": 70,
+          "timing": "auto"
+        },
+        {
+          "key": "maintenance",
+          "kind": "MAINTENANCE",
+          "slugHint": "sample-version-maintenance",
+          "title": "버전 업데이트 점검",
+          "startAt": "@-5d/06:00",
+          "endAt": "@-5d/11:00",
+          "timing": "auto",
+          "maintenance": {
+            "maintenanceType": "SCHEDULED",
+            "affectedServers": ["아시아", "아메리카", "유럽", "TW/HK/MO"],
+            "compensationSourceKey": "zzz-fx-version#compensation"
+          }
+        },
+        {
+          "key": "compensation",
+          "kind": "REWARD",
+          "slugHint": "sample-version-compensation",
+          "title": "업데이트 점검 보상",
+          "startAt": "@-5d/11:00",
+          "endAt": "@+20d/03:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "COMPENSATION",
+            "howToClaim": "게임 내 우편함에서 수령",
+            "items": [
+              {
+                "name": "폴리크롬",
+                "quantity": 300,
+                "unit": null
+              }
+            ],
+            "relatedSourceKey": "zzz-fx-version#maintenance"
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "zzz-fx-channel",
+      "url": "https://zenless.hoyoverse.com/ko-kr/news",
+      "publishedAt": "@-2d/11:00",
+      "items": [
+        {
+          "key": "character",
+          "kind": "BANNER",
+          "slugHint": "neon-rhythm-channel",
+          "title": "독점 채널 「네온 리듬」",
+          "summary": "한정 S급 에이전트 확률 UP 채널입니다. (샘플 데이터, 가상 에이전트)",
+          "startAt": "@-1d/12:00",
+          "endAt": "@+19d/14:59",
+          "timing": "auto",
+          "banner": {
+            "bannerType": "CHARACTER",
+            "phase": 2,
+            "featured": [
+              {
+                "name": "네온 가수",
+                "entityKey": "neon-singer",
+                "rarity": 5
+              },
+              {
+                "name": "그림자 정비공",
+                "entityKey": "shadow-mechanic",
+                "rarity": 4
+              },
+              {
+                "name": "골목 배달부",
+                "entityKey": "alley-courier",
+                "rarity": 4
+              }
+            ]
+          }
+        },
+        {
+          "key": "w-engine",
+          "kind": "BANNER",
+          "slugHint": "neon-beat-w-engine-channel",
+          "title": "W-엔진 채널 「네온 비트」",
+          "summary": "한정 S급 W-엔진 확률 UP 채널입니다. (샘플 데이터)",
+          "startAt": "@-1d/12:00",
+          "endAt": "@+19d/14:59",
+          "timing": "auto",
+          "banner": {
+            "bannerType": "WEAPON",
+            "phase": 2,
+            "featured": [
+              {
+                "name": "네온 비트",
+                "entityKey": "neon-beat",
+                "rarity": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "zzz-fx-events",
+      "url": "https://zenless.hoyoverse.com/ko-kr/news",
+      "publishedAt": "@-6d/11:00",
+      "items": [
+        {
+          "key": "night-patrol",
+          "kind": "EVENT",
+          "slugHint": "night-patrol",
+          "title": "이벤트 「야간 순찰」",
+          "startAt": "@-5d/12:00",
+          "endAt": "@+9d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": "인터노트 레벨 15 이상",
+            "rewardSummary": "폴리크롬 420",
+            "rewards": [
+              {
+                "name": "폴리크롬",
+                "quantity": 420,
+                "unit": null
+              }
+            ]
+          }
+        },
+        {
+          "key": "arcade-rush",
+          "kind": "EVENT",
+          "slugHint": "arcade-rush",
+          "title": "이벤트 「아케이드 러시」 예고",
+          "startAt": "@+4d/12:00",
+          "endAt": "@+18d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "폴리크롬, 육성 재료",
+            "rewards": []
+          }
+        },
+        {
+          "key": "past-event",
+          "kind": "EVENT",
+          "slugHint": "summer-heatwave",
+          "title": "이벤트 「한여름 열기」",
+          "startAt": "@-30d/12:00",
+          "endAt": "@-3d/03:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "폴리크롬",
+            "rewards": []
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "zzz-fx-code",
+      "url": "https://zenless.hoyoverse.com/redemption",
+      "publishedAt": "@-1d/20:00",
+      "items": [
+        {
+          "key": "code",
+          "slugHint": "test-redeem-code",
+          "kind": "REDEEM_CODE",
+          "title": "테스트용 리딤코드 (사용 불가)",
+          "summary": "개발 환경 확인용 가짜 코드입니다. 실제 게임에서 사용할 수 없습니다.",
+          "startAt": "@-1d/20:00",
+          "endAt": "@+2d/23:59",
+          "redeemCode": {
+            "code": "GPTEST-ZZZ-001",
+            "region": "asia",
+            "items": [
+              {
+                "name": "폴리크롬",
+                "quantity": 60,
+                "unit": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "zzz-fx-notice",
+      "url": "https://zenless.hoyoverse.com/ko-kr/news",
+      "publishedAt": "@-4h",
+      "items": [
+        {
+          "key": "notice",
+          "kind": "ANNOUNCEMENT",
+          "slugHint": "server-notice",
+          "title": "서버 안정화 작업 안내",
+          "summary": "일부 지역에서 접속 지연이 발생해 안정화 작업을 진행합니다. (샘플 데이터)",
+          "priority": 60
+        }
+      ]
+    }
+  ]
+}

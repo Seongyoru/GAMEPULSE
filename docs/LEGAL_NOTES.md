@@ -56,6 +56,21 @@
 - Terms §2(4): content may not be downloaded, copied, displayed or exploited without prior written consent; licence
   is non-commercial. → collectors `DISABLED`; manual ingestion. Contact: 쿠로게임즈코리아 (wutheringwaves_krsupport@kurogames.com).
 
+### HoYoverse — Zenless Zone Zero (registered, hidden)
+
+- Same position as Genshin Impact: ToS §7(c) prohibits content being "scraped" without written permission; the Korean
+  이용약관 제8조 8) and 제28조 2) prohibit copying obtained information for other purposes and commercial reuse.
+  → collector `DISABLED`; manual ingestion of facts with links. One permission request to HoYoverse can cover both
+  games (주식회사 코그노스피어코리아, kr_mkt_global@hoyoverse.com).
+
+### Perfect World — Neverness to Everness (researched, not registered)
+
+- EN ToS (effective 2026-07-08) §3.4(s) bans robots, spiders and crawlers that monitor or copy information **"or any
+  manual process to do the same"**; §6.1(b) bans commercial use, public display and data mining; the Korean 이용약관
+  제4조② bans copying/transmitting/displaying content without authorisation.
+  → no collector, and **no manual ingestion before written permission or legal review** (nte.legal@perfectworld.com
+  or the Korean agent named in the 이용약관, 주식회사 퍼펙트월드코리아).
+
 ## Manual ingestion of facts
 
 Manual entries record facts (titles, dates, reward quantities) with a link to the official notice. Summaries are
@@ -80,7 +95,8 @@ written by GAMEPULSE in its own words and kept short. Redeem codes are only publ
       compact views (calendar, timeline, game snapshots) render the source's attribution (D-034). The 30-day
       `dataRetentionDays` is enforced by the maintenance job (D-031).
 - [ ] Legal review of `/privacy`, `/terms` and `/sources` (drafts describing current behaviour).
-- [ ] Permission requests to HoYoverse/Kuro if automated collection is desired.
+- [ ] Permission requests to HoYoverse (Genshin Impact and Zenless Zone Zero together) and Kuro if automated
+      collection is desired; to Perfect World before Neverness to Everness is added at all.
 - [ ] Privacy policy and terms of service pages; cookie/analytics consent where required.
 - [ ] Advertising policy review per publisher before enabling any ad slot.
 - [ ] Human verification of reset schedules.

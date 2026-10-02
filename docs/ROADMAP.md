@@ -97,3 +97,18 @@ deduplicate · monitor. Research and terms findings: [research log](research/), 
   production key; HoYoverse/Kuro permission requests (see [LEGAL_NOTES.md](LEGAL_NOTES.md))
 - ⏳ Production credentials, managed PostgreSQL backups/PITR, CDN, error-monitoring DSN, analytics decision
 - ⏳ Human verification of reset rules (all `UNVERIFIED` today) and advertising policy review per publisher
+
+## Game backlog
+
+Adding a game is configuration, not new code (ARCHITECTURE › Adding a game): a registry entry, researched reset
+rules, a synthetic fixture feed and source entries — about an hour per game, plus its research. The real cost is
+operating it: for publishers without an API, someone enters each notice. Candidates are therefore researched early,
+registered `INACTIVE` (hidden, D-035) when they are ready, and switched on when someone can keep them current.
+
+| Game                                 | State                                  | Before launch                                                                                                                      |
+| ------------------------------------ | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Zenless Zone Zero (`zzz`, HoYoverse) | ✅ registered `INACTIVE`, fixture feed | Verify daily/weekly and Shiyu Defense resets in game; load current content (manual / `ingest:text`); decide anonymous default      |
+| Neverness to Everness (`nte`, 이환)  | 🔎 researched, not registered          | ⛔ Written permission or legal review first (ToS §3.4(s) also covers manual monitoring); confirm resets and server offsets in game |
+
+Research: [research/2026-10-02-zzz-nte.md](research/2026-10-02-zzz-nte.md). Other candidates get the same treatment:
+research note → backlog row → hidden registration → launch.

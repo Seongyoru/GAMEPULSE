@@ -3,6 +3,7 @@ import { createTestAdapterContext, TEST_ANCHOR } from '@gamepulse/collectors/tes
 import { defaultFixturesDir, getAdapterDefinition, ManualFileAdapter } from '@gamepulse/collectors';
 import { PostgresContentStore } from '@gamepulse/database';
 import { createTestDatabase, type TestDatabase } from '@gamepulse/database/testing';
+import { listGames } from '@gamepulse/domain';
 import { makeCandidate, makeSource } from '@gamepulse/domain/testing';
 import { noopLogger } from '@gamepulse/observability';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
@@ -36,7 +37,7 @@ describe(`ingestion → PostgreSQL (${process.env.TEST_DATABASE_URL ? 'server' :
     const created = first.reduce((sum, report) => sum + report.counters.new, 0);
     const records = await store.listContent({});
     expect(records.length).toBe(created);
-    expect(new Set(records.map((record) => record.gameId)).size).toBe(5);
+    expect(new Set(records.map((record) => record.gameId)).size).toBe(listGames().length);
 
     const second = await ingestFixtures({ store, context, logger: noopLogger, trigger: 'TEST' });
     expect(

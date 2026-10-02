@@ -58,7 +58,7 @@ packages/ingestion  discover → fetch → raw → parse → validate → dedupe
 packages/observability  structured logging, Sentry-compatible error reporting
 packages/ui         design-system components
 packages/config     environment schema
-fixtures/           synthetic feeds for all five games + manual-ingestion examples
+fixtures/           synthetic feeds for every registered game + manual-ingestion examples
 docs/               product, architecture, data model, sources, legal notes, runbook
 ```
 

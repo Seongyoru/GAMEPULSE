@@ -133,4 +133,25 @@ export const REFERENCE_SOURCES: readonly SourceDefinition[] = [
     notes:
       'Terms of Use (2025-09-29) §2(4) forbid downloading/copying content without prior written consent. Disabled until Kuro Games grants permission; manual ingestion meanwhile.',
   },
+  {
+    id: 'zzz-official-web',
+    gameId: 'zzz',
+    name: '젠레스 존 제로 공식 홈페이지 소식',
+    type: 'OFFICIAL_WEB',
+    isOfficial: true,
+    homepageUrl: 'https://zenless.hoyoverse.com/ko-kr/news',
+    allowedHosts: ['hoyoverse.com', 'hoyolab.com'],
+    authentication: 'NONE',
+    rateLimit: null,
+    contentTypes: ['UPDATE', 'EVENT', 'BANNER', 'MAINTENANCE', 'REDEEM_CODE', 'ANNOUNCEMENT'],
+    collectorStatus: 'DISABLED',
+    termsUrl: 'https://zenless.hoyoverse.com/ko-kr/company/terms',
+    termsReviewedAt: '2026-10-02',
+    robotsPolicy:
+      'robots.txt is absent (404), but no documented API or feed exists and the terms prohibit scraping without written permission.',
+    attribution: null,
+    dataRetentionDays: null,
+    notes:
+      'Same terms as Genshin Impact (ToS §7(c), 이용약관 제8조 8)). Disabled until HoYoverse grants written permission; manual ingestion meanwhile.',
+  },
 ];
