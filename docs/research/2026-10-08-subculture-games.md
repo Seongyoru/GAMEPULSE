@@ -53,7 +53,7 @@ who have not chosen MY GAMES yet.
   SD건담 지 제네레이션 이터널, 프로젝트 세카이 (kr-pjsekai.com did not resolve). These can be added once each has an
   official Korean page and reset times.
 - **Arguably not subculture:** 세븐나이츠 리버스 (Korean press calls it a 수집형 RPG; monthly revenue rank 21–57
-  throughout 2026). Add it if the scope widens to character-collection RPGs.
+  throughout 2026). Left out by the product owner's decision (2026-10-08).
 - **Small or faded Korean player base:** 벽람항로, 스타세이비어, 주술회전 팬텀 퍼레이드, 앙상블스타즈!!, 뱅드림! 아워
   노트 (launched 2026-09-21; too early to judge), 일곱 개의 대죄: Origin, 나 혼자만 레벨업: 어라이즈, 듀엣나이트 어비스,
   스텔라 소라, 무기미도, 헤븐 번즈 레드, 에테르 게이저, 페르소나5: 더 팬텀 X, 퍼니싱: 그레이 레이븐, 인피니티 니키.
