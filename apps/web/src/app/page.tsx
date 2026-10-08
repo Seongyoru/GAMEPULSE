@@ -19,6 +19,8 @@ export const metadata = pageMetadata({
 
 const PULSE_PATH = 'M0 82 H520 l26-46 34 86 30-104 26 64 18-18 H1400';
 
+const HERO_GAMES = 6;
+
 /** Title cards three per row; a shorter last row is centred (honeycomb). */
 function posterClass(index: number, count: number): string {
   const remainder = count % 3;
@@ -33,7 +35,12 @@ function posterClass(index: number, count: number): string {
 export default async function HomePage() {
   const data = await getDashboardData();
   const t = ko.home;
-  const games = listPublicGames().map(gameView);
+  const allGames = listPublicGames();
+  // The hero features the most popular games (the anonymous defaults); the rest are on /games.
+  const games = allGames
+    .filter((game) => game.defaultForAnonymous)
+    .slice(0, HERO_GAMES)
+    .map(gameView);
   return (
     <>
       <JsonLdScript data={websiteJsonLd()} />
@@ -90,27 +97,36 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
-          <ul className="grid grid-cols-6 gap-2.5 sm:gap-3" aria-label={t.supportedGames}>
-            {games.map((game, index) => (
-              <li key={game.gameId} className={posterClass(index, games.length)}>
-                <Link href={`/games/${game.slug}`} className="group block rounded-2xl">
-                  <GameCover
-                    gameId={game.gameId}
-                    className="aspect-[3/4] rounded-2xl ring-1 ring-white/15 transition duration-300 group-hover:-translate-y-1 group-hover:ring-white/40"
-                  >
-                    <div className="flex h-full flex-col justify-end p-2.5 sm:p-3">
-                      <span className="font-title text-lg leading-tight text-white [text-shadow:0_2px_10px_rgb(0_0_0/0.55)] sm:text-2xl">
-                        {game.name}
-                      </span>
-                      <span className="mt-1 hidden font-display text-[10px] font-bold uppercase tracking-[0.14em] text-white/70 sm:block">
-                        {game.publisher}
-                      </span>
-                    </div>
-                  </GameCover>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div>
+            <ul className="grid grid-cols-6 gap-2.5 sm:gap-3" aria-label={t.supportedGames}>
+              {games.map((game, index) => (
+                <li key={game.gameId} className={posterClass(index, games.length)}>
+                  <Link href={`/games/${game.slug}`} className="group block rounded-2xl">
+                    <GameCover
+                      gameId={game.gameId}
+                      className="aspect-[3/4] rounded-2xl ring-1 ring-white/15 transition duration-300 group-hover:-translate-y-1 group-hover:ring-white/40"
+                    >
+                      <div className="flex h-full flex-col justify-end p-2.5 sm:p-3">
+                        <span className="font-title text-lg leading-tight text-white [text-shadow:0_2px_10px_rgb(0_0_0/0.55)] sm:text-2xl">
+                          {game.name}
+                        </span>
+                        <span className="mt-1 hidden font-display text-[10px] font-bold uppercase tracking-[0.14em] text-white/70 sm:block">
+                          {game.publisher}
+                        </span>
+                      </div>
+                    </GameCover>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/games"
+              className="mt-3 block text-right text-sm font-bold text-white/80 hover:text-white"
+              data-testid="hero-all-games"
+            >
+              {t.allGames(allGames.length)} →
+            </Link>
+          </div>
         </div>
       </section>
       <HomePulse items={data.items} resets={data.resets} generatedAt={data.generatedAt} />

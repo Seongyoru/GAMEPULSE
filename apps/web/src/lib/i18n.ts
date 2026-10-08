@@ -137,6 +137,7 @@ export const ko = {
     happeningToday: "What's happening today?",
     happeningTodayKo: '지금 모든 게임에서 일어나는 일',
     supportedGames: '지원 게임',
+    allGames: (count: number) => `지원 게임 ${count}개 모두 보기`,
     comingUp: '48시간 안에',
     seeAll: '전체 보기',
   },
