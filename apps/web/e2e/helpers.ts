@@ -1,8 +1,10 @@
-import { listPublicGames } from '@gamepulse/domain';
+import { defaultGameIds, listPublicGames } from '@gamepulse/domain';
 import { expect, type Page } from '@playwright/test';
 
 /** Games the site shows, read from the registry: adding a game needs no E2E edits. */
 export const GAME_IDS: readonly string[] = listPublicGames().map((game) => game.gameId);
+/** Games shown to visitors who have not chosen MY GAMES yet. */
+export const DEFAULT_GAME_IDS: readonly string[] = defaultGameIds();
 const PREFERENCES_KEY = 'gamepulse:prefs:v1';
 
 /** Seeds MY GAMES before any page script runs (applies to every navigation of the page). */

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { GAME_IDS, presetMyGames, visibleGameIds } from './helpers';
+import { DEFAULT_GAME_IDS, presetMyGames, visibleGameIds } from './helpers';
 
 test.describe('TODAY', () => {
   test('shows only MY GAMES items @mobile', async ({ page }) => {
@@ -14,7 +14,7 @@ test.describe('TODAY', () => {
   test('covers every default game for anonymous visitors', async ({ page }) => {
     await page.goto('/today');
     await expect(page.getByTestId('today-summary')).toContainText('오늘의 게임 소식');
-    await expect.poll(() => visibleGameIds(page)).toEqual([...GAME_IDS].sort());
+    await expect.poll(() => visibleGameIds(page)).toEqual([...DEFAULT_GAME_IDS].sort());
     await expect(page.getByTestId('today-section-rewards')).toBeVisible();
     await expect(page.getByTestId('today-section-resets')).toBeVisible();
   });

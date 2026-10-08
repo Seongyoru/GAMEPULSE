@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { GAME_IDS } from './helpers';
+import { DEFAULT_GAME_IDS } from './helpers';
 
 test.describe('homepage', () => {
   test('opens with the hero, the live pulse and every supported game @mobile', async ({ page }) => {
@@ -7,7 +7,7 @@ test.describe('homepage', () => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('All Your Games.');
     await expect(page.getByTestId('sample-banner')).toBeVisible();
     await expect(page.locator('#home-happening')).toBeVisible();
-    for (const gameId of GAME_IDS)
+    for (const gameId of DEFAULT_GAME_IDS)
       await expect(page.getByTestId(`snapshot-${gameId}`)).toBeVisible();
 
     await page.getByTestId('hero-choose-games').click();

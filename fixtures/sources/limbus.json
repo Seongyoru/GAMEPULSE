@@ -1,0 +1,213 @@
+{
+  "gameId": "limbus",
+  "timezone": "Asia/Seoul",
+  "locale": "ko-KR",
+  "region": "kr",
+  "documents": [
+    {
+      "externalId": "limbus-fx-version",
+      "url": "https://limbuscompany.kr/",
+      "publishedAt": "@-6d/11:00",
+      "items": [
+        {
+          "key": "update",
+          "kind": "UPDATE",
+          "slugHint": "sample-update",
+          "title": "업데이트 「새벽의 항로」",
+          "priority": 70,
+          "timing": "auto",
+          "summary": "신규 캐릭터와 스토리, 편의성 개선이 포함된 업데이트입니다. (샘플 데이터)",
+          "startAt": "@-5d/11:00"
+        },
+        {
+          "key": "maintenance",
+          "kind": "MAINTENANCE",
+          "slugHint": "sample-update-maintenance",
+          "title": "정기 점검",
+          "startAt": "@-5d/07:00",
+          "endAt": "@-5d/11:00",
+          "timing": "auto",
+          "maintenance": {
+            "maintenanceType": "SCHEDULED",
+            "affectedServers": ["한국"],
+            "compensationSourceKey": "limbus-fx-version#compensation"
+          }
+        },
+        {
+          "key": "compensation",
+          "kind": "REWARD",
+          "slugHint": "sample-maintenance-compensation",
+          "title": "정기 점검 보상",
+          "startAt": "@-5d/11:00",
+          "endAt": "@+20d/05:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "COMPENSATION",
+            "howToClaim": "게임 내 우편함에서 수령",
+            "items": [
+              {
+                "name": "광기",
+                "quantity": 300,
+                "unit": null
+              }
+            ],
+            "relatedSourceKey": "limbus-fx-version#maintenance"
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "limbus-fx-banner",
+      "url": "https://limbuscompany.kr/",
+      "publishedAt": "@-2d/11:00",
+      "items": [
+        {
+          "key": "character",
+          "kind": "BANNER",
+          "slugHint": "sample-pickup",
+          "title": "픽업 추출 「별빛 서약」",
+          "summary": "한정 캐릭터 확률 UP 추출입니다. (샘플 데이터, 가상 캐릭터)",
+          "startAt": "@-1d/11:00",
+          "endAt": "@+12d/05:59",
+          "timing": "auto",
+          "banner": {
+            "bannerType": "CHARACTER",
+            "phase": 1,
+            "featured": [
+              {
+                "name": "별빛 기사",
+                "entityKey": "starlight-knight",
+                "rarity": 5
+              },
+              {
+                "name": "새벽 궁수",
+                "entityKey": "dawn-archer",
+                "rarity": 4
+              },
+              {
+                "name": "골목 탐정",
+                "entityKey": "alley-detective",
+                "rarity": 4
+              }
+            ]
+          }
+        },
+        {
+          "key": "next",
+          "kind": "BANNER",
+          "slugHint": "sample-next-pickup",
+          "title": "픽업 추출 「은하 열차」 예고",
+          "summary": "다음 한정 추출 예고입니다. (샘플 데이터, 가상 캐릭터)",
+          "startAt": "@+13d/11:00",
+          "endAt": "@+27d/05:59",
+          "timing": "auto",
+          "banner": {
+            "bannerType": "CHARACTER",
+            "phase": 2,
+            "featured": [
+              {
+                "name": "은하 차장",
+                "entityKey": "galaxy-conductor",
+                "rarity": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "limbus-fx-events",
+      "url": "https://limbuscompany.kr/",
+      "publishedAt": "@-6d/11:00",
+      "items": [
+        {
+          "key": "main-event",
+          "kind": "EVENT",
+          "slugHint": "sample-festival",
+          "title": "이벤트 「가을 축제」",
+          "startAt": "@-5d/11:00",
+          "endAt": "@+9d/05:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "광기 420",
+            "rewards": [
+              {
+                "name": "광기",
+                "quantity": 420,
+                "unit": null
+              }
+            ]
+          }
+        },
+        {
+          "key": "upcoming",
+          "kind": "EVENT",
+          "slugHint": "sample-night-market",
+          "title": "이벤트 「야시장」 예고",
+          "startAt": "@+4d/11:00",
+          "endAt": "@+18d/05:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "광기, 육성 재료",
+            "rewards": []
+          }
+        },
+        {
+          "key": "login",
+          "kind": "REWARD",
+          "slugHint": "sample-login-bonus",
+          "title": "출석 이벤트 보상",
+          "startAt": "@-3d/11:00",
+          "endAt": "@+4d/05:59",
+          "timing": "auto",
+          "reward": {
+            "rewardType": "LOGIN",
+            "howToClaim": "7일 출석 시 게임 내 우편함으로 지급",
+            "items": [
+              {
+                "name": "광기",
+                "quantity": 100,
+                "unit": null
+              }
+            ],
+            "relatedSourceKey": null
+          }
+        },
+        {
+          "key": "past-event",
+          "kind": "EVENT",
+          "slugHint": "sample-summer-event",
+          "title": "이벤트 「한여름 해변」",
+          "startAt": "@-30d/11:00",
+          "endAt": "@-3d/05:59",
+          "timing": "auto",
+          "event": {
+            "eventType": "IN_GAME",
+            "eligibility": null,
+            "rewardSummary": "광기",
+            "rewards": []
+          }
+        }
+      ]
+    },
+    {
+      "externalId": "limbus-fx-notice",
+      "url": "https://limbuscompany.kr/",
+      "publishedAt": "@-4h",
+      "items": [
+        {
+          "key": "notice",
+          "kind": "ANNOUNCEMENT",
+          "slugHint": "sample-server-notice",
+          "title": "접속 안정화 작업 안내",
+          "priority": 60,
+          "summary": "일부 환경에서 접속 지연이 발생해 안정화 작업을 진행합니다. (샘플 데이터)"
+        }
+      ]
+    }
+  ]
+}

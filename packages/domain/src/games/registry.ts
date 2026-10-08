@@ -9,6 +9,87 @@ import type { GameConfig, GameFeature } from './types';
 
 const ASIA_UTC8 = 'UTC+8';
 
+const ALL_FEATURES: GameConfig['features'] = {
+  patches: 'supported',
+  events: 'supported',
+  rewards: 'supported',
+  resets: 'supported',
+  maintenance: 'supported',
+  banners: 'supported',
+  redeemCodes: 'supported',
+};
+
+interface SubcultureGameSpec {
+  gameId: string;
+  slug: string;
+  name: string;
+  ko: string;
+  shortKo: string;
+  shortEn: string;
+  publisher: string;
+  developer: string;
+  officialUrl: string;
+  officialHosts: readonly string[];
+  /** Zone of the server Korean players use. */
+  timezone: string;
+  /** Name of that server; Korean-only services use "한국". */
+  server?: { id: string; ko: string; en: string };
+  /** The game's word for gacha banners, e.g. 모집, 워프. */
+  bannerTerm: { ko: string; en: string };
+  features?: Partial<GameConfig['features']>;
+  accent: GameConfig['accent'];
+  /** Placeholder art (D-037): existing motifs are reused until licensed artwork replaces them. */
+  artMotif: GameConfig['artMotif'];
+  defaultForAnonymous?: boolean;
+  sortOrder: number;
+}
+
+/**
+ * A subculture game with one Korean-facing server and a synthetic fixture feed. Facts are
+ * researched per game (docs/research/2026-10-08-subculture-games.md) and stay unverified until a
+ * person checks them in game.
+ */
+function subcultureGame(spec: SubcultureGameSpec): GameConfig {
+  const server = spec.server ?? { id: 'kr', ko: '한국', en: 'Korea' };
+  return {
+    gameId: spec.gameId,
+    slug: spec.slug,
+    name: spec.name,
+    localizedNames: { 'ko-KR': spec.ko, 'en-US': spec.name },
+    shortNames: { 'ko-KR': spec.shortKo, 'en-US': spec.shortEn },
+    publisher: spec.publisher,
+    developer: spec.developer,
+    officialUrl: spec.officialUrl,
+    officialHosts: spec.officialHosts,
+    status: 'ACTIVE',
+    timezone: spec.timezone,
+    regions: [
+      {
+        id: server.id,
+        name: { 'ko-KR': server.ko, 'en-US': server.en },
+        timezone: spec.timezone,
+        isDefault: true,
+      },
+    ],
+    features: { ...ALL_FEATURES, ...spec.features },
+    adapters: [`${spec.gameId}-fixture`],
+    accent: spec.accent,
+    artMotif: spec.artMotif,
+    terminology: { banner: { 'ko-KR': spec.bannerTerm.ko, 'en-US': spec.bannerTerm.en } },
+    seoKeywords: {
+      'ko-KR': [
+        `${spec.ko} 이벤트`,
+        `${spec.ko} ${spec.bannerTerm.ko} 일정`,
+        `${spec.ko} 쿠폰`,
+        `${spec.ko} 업데이트`,
+        `${spec.shortKo} 초기화 시간`,
+      ],
+    },
+    defaultForAnonymous: spec.defaultForAnonymous ?? false,
+    sortOrder: spec.sortOrder,
+  };
+}
+
 const GAME_DEFINITIONS: readonly GameConfig[] = [
   // PC online games, hidden since GAMEPULSE focuses on subculture games (D-037). Kept as
   // configuration so they can return without new code.
@@ -320,6 +401,221 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     defaultForAnonymous: true,
     sortOrder: 60,
   },
+  // Subculture games (D-037), researched 2026-10-08.
+  subcultureGame({
+    gameId: 'hsr',
+    slug: 'honkai-star-rail',
+    name: 'Honkai: Star Rail',
+    ko: '붕괴: 스타레일',
+    shortKo: '스타레일',
+    shortEn: 'HSR',
+    publisher: 'HoYoverse',
+    developer: 'HoYoverse',
+    officialUrl: 'https://hsr.hoyoverse.com/ko-kr/home',
+    officialHosts: ['hoyoverse.com', 'hoyolab.com'],
+    timezone: 'UTC+8',
+    server: { id: 'asia', ko: '아시아', en: 'Asia' },
+    bannerTerm: { ko: '워프', en: 'Warp' },
+    accent: 'indigo',
+    artMotif: 'stars',
+    defaultForAnonymous: true,
+    sortOrder: 42,
+  }),
+  subcultureGame({
+    gameId: 'bluearchive',
+    slug: 'blue-archive',
+    name: 'Blue Archive',
+    ko: '블루 아카이브',
+    shortKo: '블아',
+    shortEn: 'BA',
+    publisher: 'NEXON',
+    developer: 'NEXON Games',
+    officialUrl: 'https://bluearchive.nexon.com/',
+    officialHosts: ['nexon.com'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '모집', en: 'Recruitment' },
+    accent: 'sky',
+    artMotif: 'waves',
+    defaultForAnonymous: true,
+    sortOrder: 70,
+  }),
+  subcultureGame({
+    gameId: 'nikke',
+    slug: 'goddess-of-victory-nikke',
+    name: 'GODDESS OF VICTORY: NIKKE',
+    ko: '승리의 여신: 니케',
+    shortKo: '니케',
+    shortEn: 'NIKKE',
+    publisher: 'Level Infinite',
+    developer: 'SHIFT UP',
+    officialUrl: 'https://nikke-kr.com/',
+    officialHosts: ['nikke-kr.com', 'blablalink.com'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '모집', en: 'Recruit' },
+    accent: 'rose',
+    artMotif: 'hazard',
+    defaultForAnonymous: true,
+    sortOrder: 80,
+  }),
+  subcultureGame({
+    gameId: 'umamusume',
+    slug: 'umamusume-pretty-derby',
+    name: 'Umamusume: Pretty Derby',
+    ko: '우마무스메 프리티 더비',
+    shortKo: '우마무스메',
+    shortEn: 'Umamusume',
+    publisher: 'Kakao Games',
+    developer: 'Cygames',
+    officialUrl: 'https://umamusume.kakaogames.com/',
+    officialHosts: ['kakaogames.com'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '가챠', en: 'Gacha' },
+    accent: 'orange',
+    artMotif: 'maple',
+    defaultForAnonymous: true,
+    sortOrder: 90,
+  }),
+  subcultureGame({
+    gameId: 'trickcal',
+    slug: 'trickcal-revive',
+    name: 'Trickcal Re:VIVE',
+    ko: '트릭컬 리바이브',
+    shortKo: '트릭컬',
+    shortEn: 'Trickcal',
+    publisher: 'EPIDGames',
+    developer: 'EPIDGames',
+    officialUrl: 'https://trickcal.com/',
+    officialHosts: ['trickcal.com'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '모집', en: 'Recruitment' },
+    accent: 'lime',
+    artMotif: 'maple',
+    defaultForAnonymous: true,
+    sortOrder: 100,
+  }),
+  subcultureGame({
+    gameId: 'arknights',
+    slug: 'arknights',
+    name: 'Arknights',
+    ko: '명일방주',
+    shortKo: '명방',
+    shortEn: 'AK',
+    publisher: 'Yostar',
+    developer: 'Hypergryph',
+    officialUrl: 'https://www.arknights.kr/',
+    officialHosts: ['arknights.kr'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '헤드헌팅', en: 'Headhunting' },
+    features: { redeemCodes: 'limited' },
+    accent: 'teal',
+    artMotif: 'compass',
+    sortOrder: 110,
+  }),
+  subcultureGame({
+    gameId: 'limbus',
+    slug: 'limbus-company',
+    name: 'Limbus Company',
+    ko: '림버스 컴퍼니',
+    shortKo: '림버스',
+    shortEn: 'Limbus',
+    publisher: 'Project Moon',
+    developer: 'Project Moon',
+    officialUrl: 'https://limbuscompany.kr/',
+    officialHosts: ['limbuscompany.kr', 'limbuscompany.com', 'projectmoon.studio'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '추출', en: 'Extraction' },
+    features: { redeemCodes: 'unsupported' },
+    accent: 'amber',
+    artMotif: 'hextech',
+    sortOrder: 120,
+  }),
+  subcultureGame({
+    gameId: 'epic7',
+    slug: 'epic-seven',
+    name: 'Epic Seven',
+    ko: '에픽세븐',
+    shortKo: '에픽세븐',
+    shortEn: 'E7',
+    publisher: 'Smilegate',
+    developer: 'Super Creative',
+    officialUrl: 'https://epic7.onstove.com/ko',
+    officialHosts: ['onstove.com'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '소환', en: 'Summon' },
+    accent: 'rose',
+    artMotif: 'stars',
+    sortOrder: 130,
+  }),
+  subcultureGame({
+    gameId: 'fgo',
+    slug: 'fate-grand-order',
+    name: 'Fate/Grand Order',
+    ko: '페이트/그랜드 오더',
+    shortKo: '페그오',
+    shortEn: 'FGO',
+    publisher: 'Netmarble',
+    developer: 'Lasengle',
+    officialUrl: 'https://fgo.netmarble.com',
+    officialHosts: ['netmarble.com'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '소환', en: 'Summon' },
+    features: { redeemCodes: 'limited' },
+    accent: 'indigo',
+    artMotif: 'compass',
+    sortOrder: 140,
+  }),
+  subcultureGame({
+    gameId: 'gf2',
+    slug: 'girls-frontline-2-exilium',
+    name: "Girls' Frontline 2: Exilium",
+    ko: '소녀전선2: 망명',
+    shortKo: '소전2',
+    shortEn: 'GF2',
+    publisher: 'HaoPlay',
+    developer: 'Sunborn',
+    officialUrl: 'https://gf2.haoplay.com/kr/',
+    officialHosts: ['haoplay.com'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '발주', en: 'Procurement' },
+    accent: 'violet',
+    artMotif: 'hazard',
+    sortOrder: 150,
+  }),
+  subcultureGame({
+    gameId: 'hi3',
+    slug: 'honkai-impact-3rd',
+    name: 'Honkai Impact 3rd',
+    ko: '붕괴3rd',
+    shortKo: '붕3',
+    shortEn: 'HI3',
+    publisher: 'HoYoverse',
+    developer: 'HoYoverse',
+    officialUrl: 'https://honkaiimpact3.hoyoverse.com/kr/ko-kr/',
+    officialHosts: ['hoyoverse.com', 'hoyolab.com'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '보급', en: 'Supply' },
+    accent: 'sky',
+    artMotif: 'hextech',
+    sortOrder: 160,
+  }),
+  subcultureGame({
+    gameId: 'gfl',
+    slug: 'girls-frontline',
+    name: "Girls' Frontline",
+    ko: '소녀전선',
+    shortKo: '소전',
+    shortEn: 'GFL',
+    publisher: 'X.D. Global',
+    developer: 'Sunborn',
+    officialUrl: 'http://www.girlsfrontline.co.kr/',
+    officialHosts: ['girlsfrontline.co.kr'],
+    timezone: 'Asia/Seoul',
+    bannerTerm: { ko: '제조', en: 'Production' },
+    features: { redeemCodes: 'limited' },
+    accent: 'amber',
+    artMotif: 'compass',
+    sortOrder: 170,
+  }),
 ];
 
 export const GAMES: readonly GameConfig[] = [...GAME_DEFINITIONS].sort(

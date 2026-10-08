@@ -77,11 +77,11 @@ describe('reset rule registry', () => {
 
   it('marks every researched rule as unverified until a human confirms it', () => {
     expect(RESET_RULES.every((rule) => rule.verification === 'UNVERIFIED')).toBe(true);
-    expect(
-      RESET_RULES.filter((rule) => rule.isPrimary)
-        .map((rule) => rule.gameId)
-        .sort(),
-    ).toEqual(['genshin', 'lostark', 'maplestory', 'wuwa', 'zzz']);
+    // Each public game that offers resets has exactly one primary rule (the one cards show).
+    for (const game of listPublicGames().filter((g) => isFeatureAvailable(g, 'resets'))) {
+      const primary = RESET_RULES.filter((rule) => rule.gameId === game.gameId && rule.isPrimary);
+      expect(primary, game.gameId).toHaveLength(1);
+    }
   });
 });
 
