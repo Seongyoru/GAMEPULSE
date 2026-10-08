@@ -9,7 +9,7 @@ test.describe('primary navigation', () => {
   }) => {
     // The narrowest common phone width: the old header row clipped 내 게임 at 360–390 px.
     if (isMobile) await page.setViewportSize({ width: 360, height: 780 });
-    await page.goto('/games/lost-ark/events');
+    await page.goto('/games/genshin-impact/events');
     const nav = page.getByRole('navigation', { name: '주요 메뉴' });
     const width = page.viewportSize()?.width ?? 0;
     for (const name of PRIMARY_LINKS) {

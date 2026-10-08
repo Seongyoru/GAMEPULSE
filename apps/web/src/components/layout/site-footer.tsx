@@ -1,3 +1,4 @@
+import { isPublicGameId } from '@gamepulse/domain';
 import { GameMark, type GameArtSpec } from '@gamepulse/ui';
 import Link from 'next/link';
 import { ko } from '@/lib/i18n';
@@ -62,7 +63,8 @@ export function SiteFooter({ games }: { games: readonly GameArtSpec[] }) {
         </nav>
         <div className="mt-6 space-y-2 text-xs leading-relaxed">
           <p>{ko.footer.disclaimer}</p>
-          <p lang="en">{ko.footer.riot}</p>
+          {/* Riot's required notice, while a Riot game is listed. */}
+          {isPublicGameId('lol') ? <p lang="en">{ko.footer.riot}</p> : null}
         </div>
       </div>
     </footer>

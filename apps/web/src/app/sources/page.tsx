@@ -1,8 +1,9 @@
 import { listSourceDefinitions } from '@gamepulse/collectors';
 import {
+  type CollectorStatus,
+  isPublicGameId,
   listPublicGames,
   SOURCE_TYPES,
-  type CollectorStatus,
   type SourceDefinition,
 } from '@gamepulse/domain';
 import { PolicyPage } from '@/components/content/policy-page';
@@ -57,7 +58,7 @@ function SourceRow({ source }: { source: SourceDefinition }) {
 export default function SourcesPage() {
   // Most authoritative first: official API → feed → website → operator input.
   const sources = listSourceDefinitions()
-    .filter((source) => source.type !== 'FIXTURE')
+    .filter((source) => source.type !== 'FIXTURE' && isPublicGameId(source.gameId))
     .sort((a, b) => SOURCE_TYPES.indexOf(a.type) - SOURCE_TYPES.indexOf(b.type));
   return (
     <PolicyPage

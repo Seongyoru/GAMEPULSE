@@ -8,15 +8,18 @@ test.describe('policies, sources and health', () => {
     await footer.getByRole('link', { name: '데이터 출처' }).click();
     await expect(page).toHaveURL(/\/sources$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('데이터 출처');
-    await expect(page.getByText('Data based on NEXON Open API')).toBeVisible();
-    await expect(page.getByText('공식 API 자동 수집').first()).toBeVisible();
+    await expect(page.locator('main')).toContainText('원신');
+    // Sources of hidden games are not listed.
+    await expect(page.getByText('Data based on NEXON Open API')).toHaveCount(0);
 
     await page
       .getByRole('navigation', { name: 'footer' })
       .getByRole('link', { name: '이용약관' })
       .click();
     await expect(page).toHaveURL(/\/terms$/);
-    await expect(page.getByText("isn't endorsed by Riot Games").first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('이용약관');
+    // Riot's notice is shown only while a Riot game is listed.
+    await expect(page.getByText("isn't endorsed by Riot Games")).toHaveCount(0);
 
     await page
       .getByRole('navigation', { name: 'footer' })

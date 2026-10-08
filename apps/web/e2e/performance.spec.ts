@@ -41,7 +41,7 @@ const PAGES = [
   '/today',
   '/games/genshin-impact',
   '/calendar',
-  '/patches/league-of-legends-patch-26-19',
+  '/patches/genshin-impact-patch-7-1',
 ];
 
 test.describe('performance budgets', () => {
@@ -57,7 +57,7 @@ test.describe('performance budgets', () => {
   }
 
   test('personalized TODAY does not shift layout @mobile', async ({ page }) => {
-    await presetMyGames(page, ['genshin', 'lostark']);
+    await presetMyGames(page, ['genshin', 'zzz']);
     await observeVitals(page);
     await page.goto('/today', { waitUntil: 'networkidle' });
     const vitals = await readVitals(page);

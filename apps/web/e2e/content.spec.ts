@@ -32,10 +32,10 @@ test.describe('content detail', () => {
   });
 
   test('patch detail lists structured changes', async ({ page }) => {
-    await page.goto('/patches/league-of-legends-patch-26-19');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('26.19 패치');
+    await page.goto('/patches/genshin-impact-patch-7-1');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('7.1 버전 업데이트');
     await expect(page.locator('#patch-changes')).toContainText('변경 사항');
-    await expect(page.getByText('아리', { exact: true })).toBeVisible();
+    await expect(page.getByText('별빛의 가희 (가상 캐릭터)', { exact: true })).toBeVisible();
   });
 
   test('synthetic redeem codes are flagged and cannot be copied', async ({ page }) => {
@@ -46,11 +46,11 @@ test.describe('content detail', () => {
   });
 
   test('content in the wrong URL family redirects to its canonical URL', async ({ page }) => {
-    await page.goto('/events/league-of-legends-patch-26-19');
-    await expect(page).toHaveURL(/\/patches\/league-of-legends-patch-26-19$/);
+    await page.goto('/events/genshin-impact-patch-7-1');
+    await expect(page).toHaveURL(/\/patches\/genshin-impact-patch-7-1$/);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
-      /\/patches\/league-of-legends-patch-26-19$/,
+      /\/patches\/genshin-impact-patch-7-1$/,
     );
   });
 

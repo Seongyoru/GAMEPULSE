@@ -34,34 +34,34 @@ describe('game registry', () => {
     }
   });
 
-  it('shows the five MVP games and keeps prepared games hidden', () => {
-    expect(listPublicGames().map((g) => g.gameId)).toEqual([
+  it('shows the subculture games and keeps the PC online games hidden', () => {
+    const publicIds = listPublicGames().map((g) => g.gameId);
+    expect(publicIds).toEqual(expect.arrayContaining(['genshin', 'wuwa', 'zzz']));
+    expect(GAMES.filter((g) => !isPublicGame(g)).map((g) => g.gameId)).toEqual([
       'lol',
       'lostark',
       'maplestory',
-      'genshin',
-      'wuwa',
     ]);
-    expect(GAMES.filter((g) => !isPublicGame(g)).map((g) => g.gameId)).toEqual(['zzz']);
     expect(getGameBySlug('genshin-impact')?.gameId).toBe('genshin');
     expect(isGameId('wuwa')).toBe(true);
     expect(() => requireGame('nope')).toThrow();
   });
 
   it('keeps INACTIVE games out of every public listing', () => {
-    const lol = requireGame('lol');
-    expect(isPublicGame(lol)).toBe(true);
-    expect(isPublicGame({ ...lol, status: 'BETA' })).toBe(true);
-    expect(isPublicGame({ ...lol, status: 'INACTIVE' })).toBe(false);
+    const genshin = requireGame('genshin');
+    expect(isPublicGame(genshin)).toBe(true);
+    expect(isPublicGame({ ...genshin, status: 'BETA' })).toBe(true);
+    expect(isPublicGame({ ...genshin, status: 'INACTIVE' })).toBe(false);
 
     const publicIds = listPublicGames().map((game) => game.gameId);
     expect(publicIds).toEqual(GAMES.filter(isPublicGame).map((game) => game.gameId));
     expect(defaultGameIds().every((id) => publicIds.includes(id))).toBe(true);
-    expect(isPublicGameId('lol')).toBe(true);
+    expect(isPublicGameId('genshin')).toBe(true);
+    expect(isPublicGameId('lol')).toBe(false);
     expect(isPublicGameId('not-a-game')).toBe(false);
-    expect(onlyPublicGames([{ gameId: 'lol' }, { gameId: 'not-a-game' }])).toEqual([
-      { gameId: 'lol' },
-    ]);
+    expect(
+      onlyPublicGames([{ gameId: 'genshin' }, { gameId: 'lol' }, { gameId: 'not-a-game' }]),
+    ).toEqual([{ gameId: 'genshin' }]);
   });
 });
 

@@ -42,16 +42,16 @@ describe('MY GAMES boot script', () => {
   it('copies valid stored game ids onto <html data-mg> before hydration', () => {
     window.localStorage.setItem(
       PREFERENCES_STORAGE_KEY,
-      JSON.stringify({ selectedGameIds: ['lostark', 'genshin', 'x"]{}<script>', 42] }),
+      JSON.stringify({ selectedGameIds: ['zzz', 'genshin', 'x"]{}<script>', 42] }),
     );
     runBootScript();
-    expect(document.documentElement.getAttribute('data-mg')).toBe('lostark genshin');
+    expect(document.documentElement.getAttribute('data-mg')).toBe('zzz genshin');
   });
 
   it('only lets ids of games shown on the site reach the attribute', () => {
     window.localStorage.setItem(
       PREFERENCES_STORAGE_KEY,
-      JSON.stringify({ selectedGameIds: ['retired-game', 'not-a-game'] }),
+      JSON.stringify({ selectedGameIds: ['lostark', 'not-a-game'] }),
     );
     runBootScript();
     // A selection of hidden or unknown games must not hide every card before hydration.
@@ -67,27 +67,27 @@ describe('MY GAMES boot script', () => {
   it('generates one hiding rule per game shown on the site, scoped to MY GAMES containers', () => {
     const css = myGamesCss();
     expect(css).toContain(
-      'html[data-mg]:not([data-mg~="lol"]) [data-mg-scope] [data-mg-game="lol"]{display:none!important}',
+      'html[data-mg]:not([data-mg~="genshin"]) [data-mg-scope] [data-mg-game="genshin"]{display:none!important}',
     );
     expect(css.match(/display:none/g)).toHaveLength(listPublicGames().length);
-    expect(css).not.toContain('"zzz"');
+    expect(css).not.toContain('"lostark"');
   });
 });
 
 describe('preferences store', () => {
   it('persists toggles and keeps <html data-mg> in sync', () => {
     expect(toggleGame('wuwa').selected).toBe(true);
-    expect(toggleGame('maplestory').selected).toBe(true);
+    expect(toggleGame('zzz').selected).toBe(true);
     const stored = JSON.parse(window.localStorage.getItem(PREFERENCES_STORAGE_KEY) ?? 'null') as {
       selectedGameIds: string[];
       configuredAt: string | null;
     };
-    expect(stored.selectedGameIds).toEqual(['wuwa', 'maplestory']);
+    expect(stored.selectedGameIds).toEqual(['wuwa', 'zzz']);
     expect(stored.configuredAt).not.toBeNull();
-    expect(document.documentElement.getAttribute('data-mg')).toBe('wuwa maplestory');
+    expect(document.documentElement.getAttribute('data-mg')).toBe('wuwa zzz');
 
     expect(toggleGame('wuwa').selected).toBe(false);
-    expect(toggleGame('maplestory').selected).toBe(false);
+    expect(toggleGame('zzz').selected).toBe(false);
     expect(document.documentElement.hasAttribute('data-mg')).toBe(false);
   });
 
@@ -112,10 +112,10 @@ describe('preferences store', () => {
     const root = createRoot(container);
     act(() => root.render(<Probe />));
     act(() => {
-      toggleGame('lol');
+      toggleGame('genshin');
     });
-    expect(container.textContent).toBe('lol');
-    expect(seen.at(-1)).toEqual(['lol']);
+    expect(container.textContent).toBe('genshin');
+    expect(seen.at(-1)).toEqual(['genshin']);
     act(() => root.unmount());
   });
 });

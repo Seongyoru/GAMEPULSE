@@ -249,3 +249,12 @@ with the publisher's permission; `GameCover`/`GameMark` are the single place tha
 On phones the primary links (오늘, 게임, 캘린더, 내 게임) become a bottom tab bar instead of a header row that clipped
 on 360–390 px screens; from `sm` up they sit in the header. It is one set of links restyled per breakpoint, so tests and
 assistive technology see a single navigation, and `aria-current` marks where the visitor is.
+
+## D-037 · Subculture games only; PC online games hidden (2026-10-08)
+
+GAMEPULSE now covers subculture (anime-style character-collection) games, mobile first, including long-running
+titles. League of Legends, Lost Ark and MapleStory are switched to INACTIVE: hidden from every page, the sitemap and
+collection (D-035), but their configuration, adapters and fixtures stay so they can return without new code. Riot's
+required notice is shown only while a Riot game is listed, and the sources page lists only public games. New games
+reuse the existing art motifs as placeholders: the art is expected to be replaced by licensed official imagery, so no
+new motifs are drawn.

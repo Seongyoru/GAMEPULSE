@@ -3,11 +3,11 @@ import { GAME_IDS, presetMyGames, visibleGameIds } from './helpers';
 
 test.describe('TODAY', () => {
   test('shows only MY GAMES items @mobile', async ({ page }) => {
-    await presetMyGames(page, ['maplestory', 'wuwa']);
+    await presetMyGames(page, ['wuwa', 'zzz']);
     await page.goto('/today');
     await expect(page.getByTestId('today-summary')).toContainText('내 게임 소식');
-    await expect.poll(() => visibleGameIds(page)).toEqual(['maplestory', 'wuwa']);
-    await expect(page.getByTestId('snapshot-maplestory')).toBeVisible();
+    await expect.poll(() => visibleGameIds(page)).toEqual(['wuwa', 'zzz']);
+    await expect(page.getByTestId('snapshot-zzz')).toBeVisible();
     await expect(page.getByTestId('snapshot-genshin')).toHaveCount(0);
   });
 

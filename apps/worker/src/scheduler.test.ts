@@ -10,8 +10,8 @@ describe('planSchedule', () => {
     expect(scheduled.map((entry) => entry.definition.id)).toEqual(
       listPublicGames().map((game) => `${game.gameId}-fixture`),
     );
-    // Prepared (INACTIVE) games keep their fixtures for operators but are never scheduled.
-    expect(skipped.find((entry) => entry.adapterId === 'zzz-fixture')?.reason).toBe(
+    // Hidden (INACTIVE) games keep their fixtures for operators but are never scheduled.
+    expect(skipped.find((entry) => entry.adapterId === 'lostark-fixture')?.reason).toBe(
       'game is hidden (INACTIVE)',
     );
     expect(scheduled.every((entry) => entry.everyMinutes === 60)).toBe(true);
@@ -37,7 +37,7 @@ describe('planSchedule', () => {
   it('never schedules fixture adapters in live mode', () => {
     const { scheduled, skipped } = planSchedule(parseServerEnv({ COLLECTOR_MODE: 'live' }));
     expect(scheduled.filter((entry) => entry.definition.source.type === 'FIXTURE')).toEqual([]);
-    expect(skipped.find((entry) => entry.adapterId === 'lol-fixture')?.reason).toBe(
+    expect(skipped.find((entry) => entry.adapterId === 'genshin-fixture')?.reason).toBe(
       'does not support live mode',
     );
   });
@@ -45,6 +45,8 @@ describe('planSchedule', () => {
 
 describe('live schedule', () => {
   it('schedules only ENABLED sources and skips held ones with a reason', () => {
+    // As if the PC games were public again: their API sources are the only live adapters.
+    const everyGame = { isGameCollected: () => true };
     const { scheduled, skipped } = planSchedule(
       parseServerEnv({
         COLLECTOR_MODE: 'live',
@@ -52,6 +54,7 @@ describe('live schedule', () => {
         NEXON_OPEN_API_KEY: 'k',
         RIOT_API_KEY: 'k',
       }),
+      everyGame,
     );
     expect(scheduled.map((entry) => [entry.definition.id, entry.everyMinutes])).toEqual([
       ['lol-ddragon', 180],

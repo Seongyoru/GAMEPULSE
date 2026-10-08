@@ -18,19 +18,19 @@ test.describe('calendar', () => {
     await expect(page.getByTestId('calendar-month')).toHaveText(currentKstMonth());
 
     // Weekly resets guarantee entries for these games in every month.
-    await expect(page.locator('[data-agenda-entry="lostark"]').first()).toBeVisible();
     await expect(page.locator('[data-agenda-entry="genshin"]').first()).toBeVisible();
+    await expect(page.locator('[data-agenda-entry="wuwa"]').first()).toBeVisible();
 
-    const lostark = page.locator('[data-game-toggle="lostark"]');
-    await expect(lostark).toHaveAttribute('aria-pressed', 'true');
-    await lostark.click();
-    await expect(lostark).toHaveAttribute('aria-pressed', 'false');
-    await expect(page.locator('[data-agenda-entry="lostark"]')).toHaveCount(0);
-    await expect(page.locator('[data-calendar-entry="lostark"]')).toHaveCount(0);
+    const genshin = page.locator('[data-game-toggle="genshin"]');
+    await expect(genshin).toHaveAttribute('aria-pressed', 'true');
+    await genshin.click();
+    await expect(genshin).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.locator('[data-agenda-entry="genshin"]')).toHaveCount(0);
+    await expect(page.locator('[data-calendar-entry="genshin"]')).toHaveCount(0);
+    await expect(page.locator('[data-agenda-entry="wuwa"]').first()).toBeVisible();
+
+    await genshin.click();
     await expect(page.locator('[data-agenda-entry="genshin"]').first()).toBeVisible();
-
-    await lostark.click();
-    await expect(page.locator('[data-agenda-entry="lostark"]').first()).toBeVisible();
   });
 
   test('navigates between months', async ({ page }) => {

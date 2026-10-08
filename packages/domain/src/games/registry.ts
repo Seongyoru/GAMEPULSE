@@ -10,6 +10,8 @@ import type { GameConfig, GameFeature } from './types';
 const ASIA_UTC8 = 'UTC+8';
 
 const GAME_DEFINITIONS: readonly GameConfig[] = [
+  // PC online games, hidden since GAMEPULSE focuses on subculture games (D-037). Kept as
+  // configuration so they can return without new code.
   {
     gameId: 'lol',
     slug: 'league-of-legends',
@@ -20,7 +22,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     developer: 'Riot Games',
     officialUrl: 'https://www.leagueoflegends.com/ko-kr/',
     officialHosts: ['leagueoflegends.com', 'riotgames.com'],
-    status: 'ACTIVE',
+    status: 'INACTIVE',
     timezone: 'Asia/Seoul',
     regions: [
       {
@@ -57,7 +59,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     developer: 'Smilegate RPG',
     officialUrl: 'https://lostark.game.onstove.com/',
     officialHosts: ['onstove.com'],
-    status: 'ACTIVE',
+    status: 'INACTIVE',
     timezone: 'Asia/Seoul',
     regions: [
       {
@@ -101,7 +103,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     developer: 'NEXON',
     officialUrl: 'https://maplestory.nexon.com/',
     officialHosts: ['nexon.com'],
-    status: 'ACTIVE',
+    status: 'INACTIVE',
     timezone: 'Asia/Seoul',
     regions: [
       {
@@ -256,8 +258,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     sortOrder: 50,
   },
   {
-    // Prepared ahead of launch and hidden until its content is loaded and its reset rules are
-    // checked (docs/research/2026-10-02-zzz-nte.md, ROADMAP › Game backlog).
+    // Research: docs/research/2026-10-02-zzz-nte.md. Reset rules remain UNVERIFIED in game.
     gameId: 'zzz',
     slug: 'zenless-zone-zero',
     name: 'Zenless Zone Zero',
@@ -267,7 +268,7 @@ const GAME_DEFINITIONS: readonly GameConfig[] = [
     developer: 'HoYoverse',
     officialUrl: 'https://zenless.hoyoverse.com/ko-kr/',
     officialHosts: ['hoyoverse.com', 'hoyolab.com'],
-    status: 'INACTIVE',
+    status: 'ACTIVE',
     timezone: ASIA_UTC8,
     regions: [
       {

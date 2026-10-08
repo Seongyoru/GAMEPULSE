@@ -1,3 +1,4 @@
+import { isPublicGameId } from '@gamepulse/domain';
 import { PolicyPage } from '@/components/content/policy-page';
 import { ko } from '@/lib/i18n';
 import { pageMetadata } from '@/server/seo';
@@ -52,7 +53,8 @@ export default function TermsPage() {
           body: (
             <>
               <p>{ko.footer.disclaimer}</p>
-              <p lang="en">{ko.footer.riot}</p>
+              {/* Riot's required notice, while a Riot game is listed. */}
+              {isPublicGameId('lol') ? <p lang="en">{ko.footer.riot}</p> : null}
               <p>
                 GAMEPULSE는 공식 공지 전문을 복제하지 않으며, 구조화한 사실과 짧은 요약만
                 제공합니다.
